@@ -1,0 +1,20 @@
+ScriptID SourceID Filename
+--------------------------
+642  6945 GetLatestVimScripts.vim
+1075 6895 netrw.vim
+1502 6578 vimball.vim
+1008 3118 srec.vim (ftplugin)
+1009 3119 srec.vim (syntax file)
+475  2535 latex-suite (install in vimfiles.latex)
+614  3666 C-Referenz
+670  6208 visincr.vim (Visual Increment)
+862  2635 cscope_quickfix.vim
+51    171 cscope_macros.vim
+102  5306 DirDiff.vim
+1189 6533 matrix.vim
+1173 5475 tcomment
+948  2878 Scons Compiler plugin
+1709 6421 Scons Syntax file
+1772 6973 DAMOS.zip DAMOS tools (von Stefan)
+987  6809 DoxygenToolkit.vim
+1397 6887 xml.vim

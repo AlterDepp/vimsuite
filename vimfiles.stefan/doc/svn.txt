@@ -1,0 +1,33 @@
+*svn.txt*       Funktinen fuer das Arbeiten mit Subversion
+
+
+SVNstudio bietet Funktionen zum Arbeiten mit Subversion und eine Oberflöche,
+die das committen erleichtert.
+
+==============================================================================
+                                          *svn* *SVN* *SVNstudio* *Subversion*
+
+                                                                  *:SVNcommit*
+:SVNcommit [comment]           Einchecken aller Files im aktuellen Verzeichnis
+Falls comment angegeben wird, so wird dieser verwendet. Andernfalls wird der
+Kommentar interaktiv erfragt.
+
+                                                                    *:SVNdiff*
+:SVNdiff [version]        Zeigt die Änderungen gegenüber der Vorgänger-Version
+Wenn version angegeben wird, so wird diese mit der aktuellen verglichen
+
+                                                                  *:SVNstatus*
+:SVNstatus                    Zeigt die Änderungen gegenüber der Datenbank an.
+
+                                                                  *:SVNupdate*
+:SVNupdate      Aktualisiert das aktuelle Verzeichnis mit dem Datenbank-Inhalt
+
+                                                                     *:SVNlog*
+:SVNlog                                        Zeigt die Versions-Historie an.
+
+                                                                     *:SVNadd*
+:SVNadd                  Fügt das aktuelle File in die Versionsverwaltung ein.
+
+                                                                  *:SVNstudio*
+:SVNstudio               Öffnet eine Oberfläche, um einen commit durchzuführen
+

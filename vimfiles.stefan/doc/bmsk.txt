@@ -1,0 +1,213 @@
+*bmsk.txt*      Funktinen fuer das Arbeiten mit BMSK-Projekten
+
+
+|BMSK.1|   Auswählen des Projektes
+|BMSK.2|   Einstellungen
+|BMSK.3|   Compilieren
+|BMSK.4|   Arbeiten mit Files
+|BMSK.5|   Tags
+|BMSK.6|   Grep
+|BMSK.7|   DAMOS-Tools
+
+==============================================================================
+*BMSK.1* Auswählen des Projektes                    *Projekt* *Project* *BMSK*
+
+Ein BMSK-Projekt bezieht sich nicht auf eine VIM-Session, sondern nur auf den
+Build-Prozess des BMSK-Projektes. Mit dem Auswählen eines Projektes werden nur
+die Pfade für|:Bmsk|,|:checkpath|,|:find|,|gf|... gesetzt.
+Das Verwenden von Sessions empfielt sich zusätzlich (siehe|VimSuite|).
+
+                                                             *:SetBmskProject*
+:SetBmskProject [Pfad]           Setzen der Einstellungen für ein BMSK-Projekt
+
+Mit dem Befehl|:SetBmskProject|können alle Einstellungen für ein
+BMSK-Projekt vorgenommen werden. Es wird in das Verzeichnis .../bmsk
+gewechselt und alle Tools werden mit dem neuen Pfad ausgeführt. Ausserdem wird
+das passende Tag-File und die richtige|cscope|-Datenbasis verwendet.
+
+Als Pfad muss das Verzeichnis angegeben werden, in dem das make_fsw.bat liegt.
+Wenn der Pfad weggelassen wird, so kommt ein Datei-Auswahl-Dialog.
+
+Mit der Tab-Erweiterung (siehe|cmdline-completion|) werden alle Projekte im 
+aktuellen|bmskWA|-Pfad angezeigt, sowie alle Projekte, die in|projects.txt| 
+angegeben sind.
+
+                                                                *projects.txt*
+In der Datei|projects.txt|im Verzeichnis .../vim können die Pfade von
+Projekten angegeben werden, die bei dem Befehl|:SetBmskProject|mit der
+Tab-Erweiterung oder im Menü ausgewählt werden können. Dabei ist in jeder
+Zeile der Datei das Verzeichnis des Makefiles anzugeben.
+
+                                                         *:SetBmskWA* *bmskWA*
+:SetBmskWA {Pfad}           Setzen des Pfades, in dem die BMSK-Projekte liegen
+
+Mit dem Befehl|:SetBmskWA|wird der Pfad gesetzt, in dem die
+Tab-Erweiterung des Befehls|:SetBmskProject|nach Projekten sucht.
+
+==============================================================================
+*BMSK.2*   Einstellungen
+                                                                  *:SetMuster*
+:SetMuster [Muster]                            Einstellen des Hardware-Standes
+
+Für Muster können alle Mustervarianten angegeben werden
+
+                                                                   *:SetEgas*
+:SetEgas [Variante]                               Einstellen der Egas-Variante
+
+Für Variante können alle Egas-Varianten angegeben werden
+
+                                                           *:SetMotorvariante*
+:SetMotorvariante [Variante]                      Einstellen der Motorvariante
+
+Für Variante kann K25, K40, K46 oder K71 angegeben werden
+
+                                                                 *:SetSWStand*
+:SetSWStand [Stand]                             Einstellen des Software-Stands
+
+Für Stand kann Test, Entwickler oder Serie angegeben werden.
+
+                                                                   *:SetXlint*
+:SetXlint [Hexwert]                           Einstellen der Bmsk-Lint-Options
+
+Für Hexwert kann z.B. 0x115 angegeben werden. Siehe dazu die
+HTML-Dokumentation
+
+==============================================================================
+*BMSK.3*   Compilieren
+                                                                       *:Bmsk*
+:Bmsk                                           Compilieren des BMSK-Projektes
+
+Alle gängigen Optionen können über die Tab-Erweiterung ausgewählt werden.
+
+                                                                       *:Lint*
+:Lint                                     Überprüfen der Software mit FlexLint
+
+Dieser Befehl kann auch über 'Bmsk lint file=%:p' erreicht werden
+
+                                                                   *:BmskDoku*
+:BmskDoku                                  Erzeugen einer Doku im BMSK-Projekt
+
+Es wird|Bmsk|ein der Fehlerparser aus der|LaTeX-Suite|verwendet.  Dadurch sind 
+auch normale LaTeX-Warnings zu sehen. Diese müssen jedoch nicht alle beseitigt 
+werden.
+Alle gängigen Optionen können über die Tab-Erweiterung ausgewählt werden.
+Wird der Befehl ohne Parameter aufgerufen, so wird die Funktion interaktiv 
+abgefragt.
+
+==============================================================================
+*BMSK.4*   Arbeiten mit Files
+
+Um Files schnell zu finden sind alle relevanten Pfade in die Variable|'path'|
+eingetragen. Dadurch kann mit:
+
+        |:find|{filename}
+
+ein File geöffnet werden, ohne den Pfad anzugeben.
+
+Wenn sich der Cursor auf einem Filenamen befindet (z.B. #include "module.c") 
+so kann man mit
+
+        |gf|
+
+direkt in das File springen.
+
+Jedes File, das schon einmal geladen war ist in der|buffer-list|enthalten.
+Es kann über das Menü oder mit
+
+        |:b|{filename}
+
+geöffnet werden. Dabei ist ausserdem die Tab-Erweiterung aktiv.
+
+
+                                                    *:BuffersUpdate* *Buffers*
+:BuffersUpdate                 Aktualisieren aller Dateien eines BMSK-Projekts
+
+Mit dem Befehl|:BuffersUpdate|werden alle Dateien eines BMSK-Projekts als
+Buffer in Vim geladen. Diese können dann z.B. mit einer Session gespeichert
+werden.
+
+Mit dem integrierten File-Explorer kann auch gearbeitet werden:|:Explore|
+
+                                                                 *:COPYoutput*
+:COPYoutput                       Product-Files auf Austauschlaufwerk kopieren
+
+Mit diesem Befehl werden die Files im Product-Verzeichnis auf das
+Austauschlaufwerk kopiert. Das Ziel ist in der Variablen Austausch und
+myAustausch gespeichert. Diese müssen im File _vimrc richtig gesetzt werden.
+
+                                                               *:RENAMEoutput*
+:RENAMEoutput                                         Product-Files umbenennen
+
+Mit diesem Befehl werden die Files im Product-Verzeichnis umbenannt. Die als
+Argument übergebene Erweiterung wird nach dem Programmstandsnamen vor dem
+Punkt eingefügt.
+Beispiel: >
+
+	:RENAMEoutput _test01
+
+Dadurch werden die Files folgendermassen umbenannt:
+115BXXXX.daf       -> 115BXXXX_test01.daf
+770115XE.a2l       -> 770115XE_test01.a2l
+770115XE.dcm       -> 770115XE_test01.dcm
+770115XE.elf       -> 770115XE_test01.elf
+770115XE.map       -> 770115XE_test01.map
+770115XE.paf       -> 770115XE_test01.paf
+770115XE.s19       -> 770115XE_test01.s19
+
+                                                          *:CopyProgrammstand*
+:CopyProgrammstand                    alle Product-Files auf Server ausliefern
+
+Mit diesem Befehl werden die Files in allen Product-Verzeichnissen in die 
+Auslieferstrucktur in einem Verzeichnis kopiert, das über einen 
+File-Open-Dialog gewählt werden kann.
+
+==============================================================================
+*BMSK.5*   Tags
+
+Die BMS-K arbeitet mit zwei unterschiedlichen Datenbanken:
+|ctags| und |cscope|.
+
+                                                                 *:BMSK-ctags*
+Die Datenbank von ctags erfasst alle Tags in DAMOS und Python-Files. Sie 
+werden mit >
+
+        Bmsk ctags
+
+und >
+
+        Bmsk ptags
+
+erzeugt. Zu einem Tag kann mit der Taste <TAB> gesprungen werden. Zurück kommt 
+man mit <BS>. Zu den DAMOS-Files gehören kgs- und osp-Files, d.h. es kann auch 
+zu Umrechnungsformeln, Codesyntaxen, usw. gesprungen werden.
+
+                                                                *:BMSK-cscope*
+Die Datenbank von cscope erfasst alle Tags in c-, h- und d-Files. Sie werden 
+mit >
+
+        Bmsk cscope
+
+erzeugt. Zu einem Tag kann mit der Taste <CR> gesprungen werden. Zurück kommt 
+man mit <BS>.|Cscope|bietet viele weitere Möglichkeiten.
+
+==============================================================================
+*BMSK.6*   Grep
+
+Die Funktion zur Suche mit einem externen|grepprg|wird zugunsten der internen 
+Variante|:vimgrep|nicht unterstützt. In der Regel kann der einfache Befehl
+                                                                   *:GrepBmsk*
+:GrepBmsk [pattern]
+
+verwendet werden. Es unterstützt Regular expressions und findet mehrere 
+Treffer in einer Zeile, die mit <CTRL-n> durchlaufen werden können. Gesucht 
+wird in allen c-, h- und kgs-Files unterhalb von bmsk/sw
+
+Alternativ gibt es den Befehl|:Grep|aus der|VimSuite|.
+
+==============================================================================
+*BMSK.7*   DAMOS-Tools
+
+Siehe eigene Dokumentation zu|damos|
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

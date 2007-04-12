@@ -1,0 +1,47 @@
+
+"let g:debug = 1
+
+let g:backupdir   = expand($TEMP . '/vi')
+let g:swapdir     = expand($TEMP . '/vi')
+
+let g:gvim        = expand($VIMRUNTIME . '/gvim.exe ')
+let g:pythonPath  = expand('c:/wa/tools/python/2.4.1')
+let g:diff        = expand($VIMRUNTIME . '/diff ')
+let g:svn         = expand('svn ')
+let g:cvs         = expand('cvs ')
+let g:cp          = expand('copy ')
+let g:rm          = expand('del ')
+let g:rm_f        = expand('del ') . '/Q '
+let g:mkdir       = expand('mkdir ')
+
+" unix-tools
+let g:vimtools    = expand(g:vimfiles . '/tools')
+let g:patch       = expand(g:vimtools . '/patch.exe ')
+let g:ctags       = expand(g:vimtools . '/ctags.exe ')
+let g:cscope      = expand(g:vimtools . '/cscope.exe ')
+let g:tee         = expand(g:vimtools . '/tee.exe ')
+let g:untee       = expand(g:vimtools . '/untee.bat ')
+
+"let g:nobmsk = 1
+"let g:nobmskmenu = 1
+"let g:noccm = 1
+"let g:noccmmenu = 1
+
+if has('gui')
+
+    " set Font
+"    set guifont=Lucida_Console:h7
+    set guifont=Terminal:h6
+    "set guifontwide=
+
+    " Set standards for GUI
+    set guioptions=arL
+    "set menu
+    set guioptions+=m
+    "set tearoff-feature
+    set guioptions+=t
+    " add toolbar
+"    set guioptions+=T
+
+    colorscheme Stefan
+endif

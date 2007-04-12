@@ -1,0 +1,28 @@
+*ccm.txt*       Funktinen fuer das Arbeiten mit Synergy/CM
+
+
+Um mit dem Konfigurations-Management-Tool Synergy/CM (CCM) zu arbeiten muss
+das Tool gestartet und die richtige Default-Task ausgewählt sein. Dann können
+die folgenden Befehle aus einem Buffer heraus ausgeführt werden:
+
+==============================================================================
+                               *ccm* *CCM* *Synergy* *Synergy/CM* *CM/Synergy*
+
+                                                                *:CCMcheckout*
+:CCMcheckout [comment]                           Auschecken eines Files in CCM
+
+                                                              *:CCMcheckpoint*
+:CCMcheckpoint [comment]                 Einchecken eines Files als checkpoint
+
+                                                              *:CCMchangeable*
+:CCMchangeable Zeigt an, ob der user ein working objekt vom aktuellen File hat
+
+                                                                    *:CCMdiff*
+:CCMdiff                  Zeigt die Änderungen gegenüber der Vorgänger-Version
+
+                                                                  *:CCMobject*
+:CCMobject                                  Gibt den kompletten objectname aus
+
+                                                                 *:CCMhistory*
+:CCMhistory                      Öffnet den History-View für das aktuelle File
+

@@ -1,0 +1,208 @@
+*vi-hints.txt*  For Vim version 7
+
+
+Vim usage hints from Stefan Liebl
+
+moving:
+----------------
+w		next word
+b		previous word
+e		next end of word
+ge		prev end of word
+^		first non white-space in line
+0		beginning of line
+fx		find x
+tx		to x
+%		match paren
+H		top of page
+M		middle of page
+L		end of page
+G		end of file
+gg		top of file
+<CTRL-U>	up a half page
+<CTRL-D>	down a half page
+<CTRL-F>	forward a page
+<CTRL-B>	backward a page
+''		jump back
+50%		jump to 50% of the file
+<CTRL-O>	jump to older position
+<CTRL-I>	jump to newer position
+:set virtualedit=all	allow moving over end of line
+
+visual mode:
+----------------
+v		start visual mode
+V		start visual line mode
+<CTRL-V>	start visual rectangle mode in UNIX
+<CTRL-Q>	start visual rectangle mode in WINDOWS
+o		select the other edge
+O		select the other corner
+p		insert register 0
+P		insert register "
+:I		standard: insert text at start of each line
+		in VimSuite: Increase Numbers (see|visincr|)
+:A		append text to end of each line
+c		change to text in each line
+U		make upper case
+u		make lower case
+r		fill block with character
+>		shift block right
+<		shift block left
+J		join lines
+gq		format text
+
+searching:
+----------------
+/		find (command line)
+/.../e		move cursor to end of match
+/xxx\zsyyy/	find xxxyyy but jump to yyy (see|\zs|)
+?		find backwards
+*		find word under cursor
+#		find word under cursor backwards
+/\<		find beginning of word
+/\>		find end of word
+[i		find first occurence of word under cursor from beginning of file
+]i		find first occurence of word under cursor form cursor
+[d		find makro definion
+:nohls		highlight off
+fx		find next x in line
+gd		go to definition
+gf		go to file
+:find		find file and edit
+
+registers:
+----------------
+:register	display contents of all registers
+**yy		copy to clipboard in UNIX
+<CTRL-C>	copy to clipboard in WINDOWS
+**p		paste from clipboard in UNIX
+<CTRL-V>	paste from clipboard in WINDOWS
+"ap		put content of register a
+"ay$		copy content of line to register a
+
+macro-recording:
+----------------
+qa		start recording macro a
+qA		append to macro a
+a		stop recording macro a
+@a		execute macro a
+
+marks:
+----------------
+mx		set named mark x
+mX		set global named mark X
+`x		goto mark
+'x		goto mark (beginning of the line)
+''		position before jump
+'"		position when leaving the file
+'.		position of last change
+'[		beginning of last change
+']		end of last change
+:marks		list all marks
+
+tags:
+----------------
+:tag xxx	find a tag
+<TAB>		find ctag under cursor (only for VimSuite)
+<CR>		find cscope-tag under cursor (only for VimSuite)
+<S-TAB>		return to previous location (only for VimSuite)
+<BB>		return to previous location (only for VimSuite)
+
+changing:
+----------------
+.		repeat last change
+u		undo
+<CTRL-R>	redo
+**yy		copy to clipboard
+**p		paste from clipboard
+-		change case
+g~w		change case for a word
+gUw		make word uppercase
+guw		make word lowercase
+:s/pattern/text replace pattern with text
+:global/pat/cmd	search pattern and execute command
+<CTRL-P>	complete word to match before cursor
+<CTRL-N>	complete word to match after cursor
+<CTRL-Y>	insert character above cursor
+<CTRL-R>a	insert register a
+<CTRL-O>cmd	execute normal mode command
+>>		indent current line
+<CTRL-T>	indent current line
+>>		unindent current line
+<CTRL-D>	unindent current line
+
+formatting:
+----------------
+:set textwith=	set length of lines
+gq{motion}	format text (wokts also visable)
+==		format actual line
+:retab 4	change tabstop to 4 and change text to look the same
+
+display:
+----------------
+<CTRL-L>	refresh display
+:zf		fold create
+:zm		fold more
+:zr		fold reduce
+:zo		fold open
+:zc		fold close
+:gui		start gui from terminal
+
+differences:
+----------------
+:vertical diffsplit file
+]c		next change
+[c		last change
+:diffupdate	update highliting
+dp		diff put
+do		diff obtain
+
+make and grep:
+----------------
+:ccn		goto error n
+:cl		list errors
+:cn		goto next error
+:cp		goto previous error
+:colder		switch to older error-list
+:cnewer		switch to newer error-list
+:cfile <name>	read file as error-file
+
+file-operations:
+----------------
+:edit file	(re)load a file
+:b file		switch buffer to file
+<CTRL-^>	jump to last file
+:args		list arguments (files in buffer)
+vim -r file	recover from a crash
+:edit .		open file explorer
+gf		go to file under cursor
+<CTRL-O>	jump back
+:find		find file in path
+:sfind		open file in new window
+
+commandranges:
+----------------
+:1,5s/...	execute command s for lines 1 to 5
+:5s/...		execute command s in line 5
+:.,$s/...	execute command s from actual line to the end of the file
+:'a,'bs/...	execute command s from mark a to mark b
+:5:s/...	execute command s for 5 lines
+:%s/...		execute command for all lines
+
+command line editing:
+----------------
+<TAB>		complete match
+<CTRL-D>	list all matches
+<CTRL-R><CTRL-W> insert word under cursor
+%:p		actual complete file-name
+
+hints and help:
+----------------
+:checkpath	check include-files
+:options	give a list of all options
+:command	list all user-commands
+:function	list all functions
+:autocommand	list all autocommands
+ga		ascii value of character under cursor
+
+vim:tw=78:ts=8:ft=help:norl:
