@@ -14,9 +14,6 @@ let b:forceRedoTexCompiler = 'yes'
 let g:Tex_ShowallLines = 1
 "execute 'source ' . expand(g:vimfiles . '/compiler/tex.vim')
 
-let g:makeprg = simplify(GetBmskDir() . '/make_fsw.bat')
-let &makeprg = g:makeprg . ' $*'
-
 if exists('g:make_log')
     let &shellpipe = '| ' . g:tee . PathNormpath(make_log)  . ' | ' . g:tee
 else
@@ -133,22 +130,6 @@ if (g:SW_Stand != '')
     let g:makeopts = g:makeopts . ' Stand=' . g:SW_Stand
 endif
 
-" user commands 
-command! -nargs=* Make execute(':make! <args> ' . g:makeopts)
-command! -nargs=0 Clean call Clean()
-command! -nargs=0 CleanAll call CleanAll()
-command! Compile call Compile_File()
-command! PreCompile call PreCompile_File()
-
-" Clean function
-function! Clean()
-    Make clean
-endfunction
-function! CleanAll()
-    cscope kill -1
-    Make cleanall
-endfunction
-
 " reformat i-file
 command! ReformatIFile call Reformat_IFile()
 function! Reformat_IFile() abort
@@ -166,40 +147,5 @@ function! Reformat_IFile() abort
         " go to line of include-file
         execute  'normal /\c^# \d\+ ".*\(' . cName . '\)\@<!"' . CR
     endwhile
-endfunction
-
-function! GetMakeVar(varName)
-    let var = GetMakeVars([a:varName])
-    if has_key(var, a:varName)
-        let varValue = var[a:varName]
-    else
-        let varValue = ''
-    endif
-    return varValue
-endfunction
-
-function! GetMakeVars(varNameList)
-    let varlist = {}
-    try
-        let vars = join(a:varNameList, ' ')
-        let command = g:makeprg . g:makeopts . ' getvar name="' . vars . '"'
-        let output = system(command)
-        let lines = split(output, "\n")
-        if len(lines) == 1
-            " make < make-43 (Antwort nur VALUE)
-            let RE = '\(.*\)'
-            let SU = "let varlist['" . vars . "']='\\1'"
-        else
-            " make >= make-43 (Antwort: NAME=VALUE
-            let RE = '^\(\w\+\)=\(.*\)\s*'
-            let SU = "let varlist['\\1']='\\2'"
-        endif
-        for line in lines
-            if match(line, RE) >= 0
-                execute substitute(line, RE, SU, '')
-            endif
-        endfor
-    endtry
-    return varlist
 endfunction
 

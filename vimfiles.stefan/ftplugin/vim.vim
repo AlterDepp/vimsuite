@@ -10,7 +10,9 @@ setlocal softtabstop=4
 setlocal formatoptions=croq
 
 " vimfiles sollen immer im unix-Format gespeichert werden
-setlocal fileformat=unix
+if filereadable('%')
+    setlocal fileformat=unix
+endif
 
 " commenting
 let b:commentstring = '"'

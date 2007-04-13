@@ -45,6 +45,8 @@ function s:SetBmskProject(basedir)
         let basedir = fnamemodify(makefile, ':p:h')
         let makefile = fnamemodify(makefile, ':t')
         if ((makefile == 'make_fsw.bat') || (makefile == 'makefile.mak') || (makefile == 'makefile'))
+            let g:makeCommand = makefile
+            let &makeprg = g:makeCommand . ' $*'
             call s:SetBmskDirs(basedir)
         else
             echo 'No makefile:' makefile
@@ -59,6 +61,8 @@ function s:SetBmskProject(basedir)
                 let basedir = fnamemodify(makefile, ':p:h')
             endif
             if (filereadable(makefile))
+                let g:makeCommand = makefile
+                let &makeprg = g:makeCommand . ' $*'
                 call s:SetBmskDirs(basedir)
             else
                 echo 'No makefile' makefile
@@ -755,7 +759,8 @@ command -nargs=? GrepBmsk call GrepFull(GetBmskSwDir(), '*.c *.h *.kgs', '<args>
 " ----------------
 " Make and compile
 " ----------------
-command -complete=custom,GetAllBmskTargets -nargs=* Bmsk call s:Bmsk('<args>')
+"command -complete=custom,GetAllBmskTargets -nargs=* Make call s:Make('<args>')
+command -complete=custom,GetAllBmskTargets -nargs=* Bmsk call s:Make('<args>')
 command -complete=custom,GetAllBmskTargets -nargs=* BmskDoku call s:BmskDoku('<args>')
 command -nargs=* Clean compiler bmsk | Clean <args>
 command -nargs=* CleanAll compiler bmsk | CleanAll <args>
@@ -764,11 +769,11 @@ command -nargs=* Lint Bmsk <args> %:t:r.lint
 command -complete=customlist,GetAllBmskSWStand -nargs=1 BmskAll call s:BmskAll('<args>')
 
 " Programmstand compilieren
-function s:Bmsk(args)
+function s:Make(args)
     echo a:args
     cscope kill -1
     compiler bmsk
-    execute 'Make ' . a:args
+    execute 'make!' a:args g:makeopts
     CscopeConnect
     clist
 endfunction

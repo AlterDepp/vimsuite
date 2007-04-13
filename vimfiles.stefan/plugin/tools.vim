@@ -25,7 +25,7 @@ let g:projectFile = fnamemodify($VIMRUNTIME . '/../projects.txt', ':p')
 " SetProject
 " ----------
 if (v:version > 602)
-    command -complete=customlist,GetAllMakefiles -nargs=? SetProject call s:SetProject('<args>')
+    command -complete=customlist,GetAllMakefiles -nargs=? SetProject call SetProject('<args>')
 else
     command -nargs=1 SetProject call SetProject('<args>')
 endif
@@ -84,7 +84,7 @@ endfunction
 
 " Find makefile and set some options
 " ----------------------------------
-function s:SetProject(makefile)
+function SetProject(makefile)
     if ((a:makefile == '') && has('browse'))
         " Browse for makefile
         if exists('g:WA')
@@ -106,13 +106,16 @@ function s:SetProject(makefile)
 
     " split file name and path
     let g:basedir = fnamemodify(makefilePath, ':p:h')
-    let g:makefileName = fnamemodify(makefilePath, ':t')
+    let makefileName = fnamemodify(makefilePath, ':t')
 
     " test if makefile is a batch-script
-    let ext = fnamemodify(g:makefileName, ':e')
+    let ext = fnamemodify(makefileName, ':e')
     if ext == 'bat'
-        let &makeprg = makefilePath . ' $*'
+        let g:makeCommand = makefilePath
+    else
+        let g:makeCommand = 'make -f ' . makefilePath
     endif
+    let &makeprg = g:makeCommand . ' $*'
 
     " set directories
     execute 'cd ' . g:basedir
@@ -138,7 +141,7 @@ function s:SetProjectVariables()
                 \ 'VIM_CSCOPEFILE',
                 \ 'GOALS',
                 \]
-    let s:Variables = s:GetMakeVars(varnames)
+    let s:Variables = GetMakeVars(varnames)
 
     echo 'Reading variables from makefile'
     echo '-------------------------------'
@@ -154,7 +157,7 @@ function s:SetProjectVariables()
             try
                 execute 'set path=' . s:Variables['VIM_PATH']
             catch
-                echoerr 'cant set path to ' . s:Variables['VIM_PATH']
+                echoerr 'cant set path to "' . s:Variables['VIM_PATH'] . '"'
                 echoerr 'check the make variable VIM_PATH'
             endtry
         else
@@ -166,7 +169,7 @@ function s:SetProjectVariables()
             try
                 execute 'set tags=' . s:Variables['VIM_TAGS']
             catch
-                echoerr 'cant set tags to ' . s:Variables['VIM_TAGS']
+                echoerr 'cant set tags to "' . s:Variables['VIM_TAGS'] . '"'
                 echoerr 'check the make variable VIM_TAGS'
             endtry
         else
@@ -178,7 +181,7 @@ function s:SetProjectVariables()
             try
                 execute 'set cscopeprg=' . s:Variables['VIM_CSCOPEPRG']
             catch
-                echoerr 'cant set cscopeprg to ' . s:Variables['VIM_CSCOPEPRG']
+                echoerr 'cant set cscopeprg to "' . s:Variables['VIM_CSCOPEPRG'] . '"'
                 echoerr 'check the make variable VIM_CSCOPEPRG'
             endtry
         else
@@ -189,7 +192,7 @@ function s:SetProjectVariables()
                 cscope kill -1
                 execute 'cscope add ' . s:Variables['VIM_CSCOPEFILE']
             catch
-                echomsg 'cant add cscope-file ' . s:Variables['VIM_CSCOPEFILE']
+                echomsg 'cant add cscope-file "' . s:Variables['VIM_CSCOPEFILE'] . '"'
                 echomsg 'check the make variable VIM_CSCOPEFILE and if file exists'
             endtry
         else
@@ -201,7 +204,7 @@ function s:SetProjectVariables()
             try
                 execute 'compiler ' . s:Variables['VIM_COMPILER']
             catch
-                echoerr 'cant set compiler to ' . s:Variables['VIM_COMPILER']
+                echoerr 'cant set compiler to "' . s:Variables['VIM_COMPILER'] . '"'
                 echoerr 'check the make variable VIM_COMPILER'
             endtry
         else
@@ -209,29 +212,30 @@ function s:SetProjectVariables()
         endif
 
     catch
-        echoerr 'Could not read variables from makefile (vim-script-error)'
+        echoerr 'Error while reading make-variables: ' . v:exception
     endtry
 
 endfunction
 
 " Get values for a list of variables as dictionary
-function! s:GetMakeVars(varNameList)
+function GetMakeVars(varNameList)
     let varlist = {}
     try
         let vars = join(a:varNameList, ' ')
-        let command = g:makefileName . ' getvar name="' . vars . '"'
+        let command = g:makeCommand . ' getvar name="' . vars . '"'
+        "echomsg command
         let output = system(command)
         let lines = split(output, "\n")
         let RE = '^\(\w\+\)=\(.*\)\s*'
         let SU = "let varlist['\\1']='\\2'"
-        "echo 'getvars:'
+        "echomsg 'getvars:'
         for line in lines
-        "    echo line
+            "echomsg line
             if match(line, RE) >= 0
                 execute substitute(line, RE, SU, '')
             endif
         endfor
-        "echo ''
+        "echomsg ''
     catch
         echoerr 'Could not read make variables'
     endtry
@@ -246,6 +250,17 @@ function! s:GetMakeVars(varNameList)
         echo '---'
     endif
     return varlist
+endfunction
+
+function GetMakeVar(varName)
+    let var = GetMakeVars([a:varName])
+    try
+        varValue = var[a:varName]
+    catch
+        varValue = ''
+        echoerr 'Could not read make-variable "' . varName . '"'
+    endtry
+    return varValue
 endfunction
 
 " ------------------------------------------
