@@ -34,16 +34,18 @@ function GetAllMakefiles(...)
     let makefilePaths = []
 
     " Get Makefiles from g:WA or ArgLead
-    let path = g:WA
-    if a:0 == 3
-        let ArgLead = a:1
-        let CmdLine = a:2
-        let CursorPos = a:3
-        if ArgLead != ''
-            let path = expand(ArgLead)
+    if exists('g:WA')
+        let path = g:WA
+        if a:0 == 3
+            let ArgLead = a:1
+            let CmdLine = a:2
+            let CursorPos = a:3
+            if ArgLead != ''
+                let path = expand(ArgLead)
+            endif
         endif
+        let makefilePaths += s:GetAllMakefilesInPath(path)
     endif
-    let makefilePaths += s:GetAllMakefilesInPath(path)
 
     if makefilePaths == []
         " Get Projects from project.txt
@@ -356,11 +358,13 @@ function s:AddAllKnownProjectsToMenu()
     endfor
 
     " Projects in g:WA
-    exec 'anoremenu '. s:VimSuiteMenuName.
-                \'&Project.-sep3-  :'
-    for makefilePath in s:GetAllMakefilesInPath(g:WA)
-        call s:AddMakefileToProjectMenu(makefilePath)
-    endfor
+    if exists('g:WA')
+        exec 'anoremenu '. s:VimSuiteMenuName.
+                    \'&Project.-sep3-  :'
+        for makefilePath in s:GetAllMakefilesInPath(g:WA)
+            call s:AddMakefileToProjectMenu(makefilePath)
+        endfor
+    endif
 endfunction
 "
 function s:InitProjectMenu()
