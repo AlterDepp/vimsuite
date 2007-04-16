@@ -23,34 +23,8 @@ command -complete=custom,GetAllBmskProjects -nargs=? SetBmskProject
             \ call s:SetBmskProject('<args>')
 
 function s:SetBmskProject(basedir)
-    if ((a:basedir == '') && has('browse'))
-        " Browse for makefile
-        if exists('g:bmskWA')
-            let l:bmskWA = g:bmskWA
-        else
-            let l:bmskWA = ''
-        endif
-
-        if exists('b:browsefilter')
-            let l:browsefilter = b:browsefilter
-        endif
-        let b:browsefilter = 
-                    \ 'Makefiles (make_fsw.bat)\tmake_fsw.bat\n' .
-                    \ 'Makefiles (makefile*)\tmakefile*\n' .
-                    \ 'All Files (*.*)\t*.*'
-        let makefile = browse(0, 'Select makefile', l:bmskWA, '')
-        if exists('l:browsefilter')
-            let b:browsefilter = l:browsefilter
-        endif
-        let basedir = fnamemodify(makefile, ':p:h')
-        let makefile = fnamemodify(makefile, ':t')
-        if ((makefile == 'make_fsw.bat') || (makefile == 'makefile.mak') || (makefile == 'makefile'))
-            let g:makeCommand = makefile
-            let &makeprg = g:makeCommand . ' $*'
-            call s:SetBmskDirs(basedir)
-        else
-            echo 'No makefile:' makefile
-        endif
+    if (a:basedir == '')
+        let makefile = ''
     else
         " set Workarea and basedir
         if (isdirectory(a:basedir))
@@ -58,19 +32,19 @@ function s:SetBmskProject(basedir)
             let makefile = fnamemodify(a:basedir . '/make_fsw.bat', ':p')
             if !filereadable(makefile)
                 let makefile = glob(a:basedir . '/*/make_fsw.bat')
-                let basedir = fnamemodify(makefile, ':p:h')
             endif
-            if (filereadable(makefile))
-                let g:makeCommand = makefile
-                let &makeprg = g:makeCommand . ' $*'
-                call s:SetBmskDirs(basedir)
-            else
-                echo 'No makefile' makefile
+            if !filereadable(makefile)
+                echoerr 'No makefile' makefile
             endif
         else
-            echo 'No directory:' a:basedir
+            echoerr 'No directory:' a:basedir
         endif
     endif
+    call SetProject(makefile)
+    let GetMakeOptsFunction = function('GetBmskMakeOpts')
+    let g:GetAllMakeGoals = function('GetAllBmskTargets')
+    let basedir = getcwd()
+    call s:SetBmskDirs(basedir)
 endfunction
 
 function GetAllBmskProjects(ArgLead, CmdLine, CursorPos)
@@ -432,7 +406,6 @@ function s:SetBmskDirs(bmskdir)
     unlet! g:Goals
     unlet! g:Programname
     unlet! g:OutDirVariante
-    unlet! g:bmsk_stand
 
     " Variablen erzeugen, damit GetMakeVar funktioniert
     if !exists('g:Muster')
@@ -482,8 +455,6 @@ function s:SetBmskDirs(bmskdir)
     let g:bmskProject    = fnamemodify(g:bmskdir, ':h:h:t')
     let g:bmsk_sw        = fnamemodify(g:bmskdir . '/sw', ':p')
     let g:bmsk_bios      = fnamemodify(g:bmskdir . '/sw/bios', ':p')
-    let g:bmsk_d         = GetDfilesDir()
-    let g:bmsk_stand     = GetStandDir()
     let g:OutDir         = GetOutDir()
     let g:OutDirVariante = GetOutDirVariante()
     let g:bmsk_ext       = '*.c *.h *.kgs *.d *.dat *.mak *.inv'
@@ -510,19 +481,10 @@ function s:SetBmskDirs(bmskdir)
     let &path = substitute(&path, '\\', '/', 'g')
     " files for tags (may not start with './', since . is the path of the
     " current file
-    let &tags = substitute(GetCTagsFile(), '^\..', '', '') . ',' . substitute(GetPTagsFile() , '^\..', '', '')
 
     " Grep Dir and Extentions
     let g:GrepDir = g:bmsk_sw
     let g:GrepFiles = '*.c *.h *.kgs'
-
-    " cscope
-    let &cscopeprg = GetCscopePrg()
-    cscope kill -1
-    let reffile = GetCscopeFile()
-    if (filereadable(reffile))
-        execute 'cscope add' reffile
-    endif
 
     call s:BmskRedrawMenu()
     call GetGoals()
@@ -553,7 +515,6 @@ function GetAllMakeVars()
     let varnames['OutDir']          = 'OUTDIR'
     let varnames['ProductDir']      = 'OUTDIR_PRODUCTS'
     let varnames['DfilesDir']       = 'OUTDIR_D_FILES'
-    let varnames['bmsk_stand']      = 'OUTDIR_STAND'
     let varnames['OutDirVariante']  = 'OUTDIR_VARIANTE'
     let varnames['CscopePrg']       = 'CSCOPE'
     let varnames['CscopeFile']      = 'CSCOPEFILE'
@@ -616,33 +577,6 @@ function GetProductDir()
     return g:ProductDir
 endfunction
 
-" ---------------------
-function GetDfilesDir()
-" ---------------------
-    if !exists('g:DfilesDir')
-        let g:DfilesDir = GetMakeVar('D_FILES_DIR')
-        if (g:DfilesDir == '')
-            let g:DfilesDir = GetMakeVar('OUTDIR_D_FILES')
-        endif
-        if (g:DfilesDir != '')
-            let g:DfilesDir = fnamemodify(g:DfilesDir, ':p')
-        endif
-    endif
-    return g:DfilesDir
-endfunction
-
-" --------------------
-function GetStandDir()
-" --------------------
-    if !exists('g:bmsk_stand')
-        let g:bmsk_stand = GetMakeVar('OUTDIR_STAND')
-    endif
-    if (g:bmsk_stand != '')
-        let g:bmsk_stand = fnamemodify(g:bmsk_stand, ':p')
-    endif
-    return g:bmsk_stand
-endfunction
-
 " --------------------------
 function GetOutDirVariante()
 " --------------------------
@@ -655,61 +589,13 @@ function GetOutDirVariante()
     return g:OutDirVariante
 endfunction
 
-" ----------------------
-function GetCscopePrg()
-" ----------------------
-    if !exists('g:CscopePrg')
-        let g:CscopePrg = GetMakeVar('CSCOPE')
-    endif
-    if (g:CscopePrg != '')
-        let g:CscopePrg = fnamemodify(g:CscopePrg, ':p')
-    endif
-    return g:CscopePrg
-endfunction
-
-" ----------------------
-function GetCscopeFile()
-" ----------------------
-    if !exists('g:CscopeFile')
-        let g:CscopeFile = GetMakeVar('CSCOPEFILE')
-    endif
-    if (g:CscopeFile != '')
-        let g:CscopeFile = fnamemodify(g:CscopeFile, ':p')
-    endif
-    return g:CscopeFile
-endfunction
-
-" ---------------------
-function GetCTagsFile()
-" ---------------------
-    if !exists('g:CTagsFile')
-        let g:CTagsFile = GetMakeVar('CTAGFILE')
-    endif
-    if (g:CTagsFile != '')
-        let g:CTagsFile = fnamemodify(g:CTagsFile, ':p')
-    endif
-    return g:CTagsFile
-endfunction
-
-" ---------------------
-function GetPTagsFile()
-" ---------------------
-    if !exists('g:PTagsFile')
-        let g:PTagsFile = GetMakeVar('PTAGFILE')
-    endif
-    if (g:PTagsFile != '')
-        let g:PTagsFile = fnamemodify(g:PTagsFile, ':p')
-    endif
-    return g:PTagsFile
-endfunction
-
 " -----------------
 function GetGoals()
 " -----------------
     if !exists('g:Goals')
         let g:Goals = GetMakeVar('GOALS')
     endif
-    return g:Goals
+    return split(g:Goals)
 endfunction
 
 " -----------------------
@@ -739,14 +625,6 @@ command CleanSRCfile %s/^#\t\(\(r\d\{1,2\}\t\)\|\(not allocated\)\)\t\(\(\$\$\d\
 " tags
 " ----
 
-command CscopeConnect call s:CscopeConnect()
-function s:CscopeConnect()
-    let reffile = GetCscopeFile()
-    if (filereadable(reffile))
-        execute 'cscope add' reffile
-    endif
-endfunction
-
 " significant characters in tags
 set taglength=0
 set notagrelative
@@ -759,23 +637,48 @@ command -nargs=? GrepBmsk call GrepFull(GetBmskSwDir(), '*.c *.h *.kgs', '<args>
 " ----------------
 " Make and compile
 " ----------------
-"command -complete=custom,GetAllBmskTargets -nargs=* Make call s:Make('<args>')
-command -complete=custom,GetAllBmskTargets -nargs=* Bmsk call s:Make('<args>')
-command -complete=custom,GetAllBmskTargets -nargs=* BmskDoku call s:BmskDoku('<args>')
-command -nargs=* Clean compiler bmsk | Clean <args>
-command -nargs=* CleanAll compiler bmsk | CleanAll <args>
-command -nargs=* LintOld Bmsk <args> lint file=%:p
-command -nargs=* Lint Bmsk <args> %:t:r.lint
-command -complete=customlist,GetAllBmskSWStand -nargs=1 BmskAll call s:BmskAll('<args>')
+command -complete=customlist,GetAllBmskTargets -nargs=* Bmsk Make <args>
+command -complete=customlist,GetAllBmskTargets -nargs=* BmskDoku call s:BmskDoku('<args>')
+command -nargs=* Lint Make <args> %:t:r.lint
 
-" Programmstand compilieren
-function s:Make(args)
-    echo a:args
-    cscope kill -1
-    compiler bmsk
-    execute 'make!' a:args g:makeopts
-    CscopeConnect
-    clist
+" make options
+function GetBmskMakeOpts()
+    let makeopts = ''
+    if (g:Motor != '')
+        let makeopts = makeopts . ' Motor=' . g:Motor
+    endif
+    if (g:Muster != '')
+        let makeopts = makeopts . ' Muster=' . g:Muster
+    endif
+    if (g:Egas != '')
+        let makeopts = makeopts . ' Egas=' . g:Egas
+    endif
+    if (g:Xlint != '')
+        let makeopts = makeopts . ' DIAB_LINT_OPTION=' . g:Xlint
+    endif
+    if (g:SW_Stand != '')
+        let makeopts = makeopts . ' Stand=' . g:SW_Stand
+    endif
+    return makeopts
+endfunction
+
+" reformat i-file
+command ReformatIFile call Reformat_IFile()
+function Reformat_IFile() abort
+    let cName = expand('%:t:r') . '.c'
+    let CR = '\<CR>'
+    DelAllMultipleEmptyLines
+    " do not wrap over end of file
+    setlocal nowrapscan
+    " go to top of file
+    execute 'normal gg'
+    " do unil error
+    while 1
+        " delete until line of c-file
+        execute 'normal d/\c^# \d\+ ".*\(' . cName . '\)' . CR
+        " go to line of include-file
+        execute  'normal /\c^# \d\+ ".*\(' . cName . '\)\@<!"' . CR
+    endwhile
 endfunction
 
 " Dokumentation erzeugen (Verwenden des LaTeX errorparsers)
@@ -825,44 +728,43 @@ function GetAllBmskSWStand(ArgLead, CmdLine, CursorPos)
 endfunction
 
 " Alle Make-Targets als Text Liste
-function GetAllBmskTargets(ArgLead, CmdLine, CursorPos)
+function GetAllBmskTargets(...)
     let goals = GetGoals()
-    if goals == ''
-        let targets = 'Programmstand'
-        let targets = targets . "\n" . 'clean'
-        let targets = targets . "\n" . 'cleanall'
-        let targets = targets . "\n" . 'cleanProducts'
-        let targets = targets . "\n" . 'allTest'
-        let targets = targets . "\n" . 'allEntwickler'
-        let targets = targets . "\n" . 'allSerie'
-        let targets = targets . "\n" . 'patch_a2l'
-        let targets = targets . "\n" . 'check_memory'
-        let targets = targets . "\n" . 'create_csv'
-        let targets = targets . "\n" . 'create_arcus_csv'
-        let targets = targets . "\n" . 'import_arcus_csv'
-        let targets = targets . "\n" . 'boschsig'
-        let targets = targets . "\n" . 'archivate'
-        let targets = targets . "\n" . 'lint file=' . expand('%:p')
-        let targets = targets . "\n" . 'tags'
-        let targets = targets . "\n" . 'ctags'
-        let targets = targets . "\n" . 'ptags'
-        let targets = targets . "\n" . 'cscope'
-        let targets = targets . "\n" . 'ccm_products_checkout CCM=' . g:ccm
-        let targets = targets . "\n" . 'help'
+    if goals == []
+        let goals += ['Programmstand']
+        let goals += ['clean']
+        let goals += ['cleanall']
+        let goals += ['cleanProducts']
+        let goals += ['allTest']
+        let goals += ['allEntwickler']
+        let goals += ['allSerie']
+        let goals += ['patch_a2l']
+        let goals += ['check_memory']
+        let goals += ['create_csv']
+        let goals += ['create_arcus_csv']
+        let goals += ['import_arcus_csv']
+        let goals += ['boschsig']
+        let goals += ['archivate']
+        let goals += ['lint file=' . expand('%:p')]
+        let goals += ['tags']
+        let goals += ['ctags']
+        let goals += ['ptags']
+        let goals += ['cscope']
+        let goals += ['ccm_products_checkout CCM=' . g:ccm]
+        let goals += ['help']
     else
-        let targets = substitute(goals, '\s\+', '\n', 'g')
-        let targets = targets . "\n" . expand('%:t:r') . '.obj'
-        let targets = targets . "\n" . expand('%:t:r') . '.i'
-        let targets = targets . "\n" . expand('%:t:r') . '.src'
-        let targets = targets . "\n" . expand('%:t:r') . '.lint'
-        let targets = targets . "\n" . 'FORCE_PROGID=no'
-        let targets = targets . "\n" . 'MAKE_DBG=2'
-        let targets = targets . "\n" . 'EXTRA_C_FLAGS='
-        let targets = targets . "\n" . 'DIAB_OPTIMIZE='
-        let targets = targets . "\n" . 'MAIN_MAKEFILES='
-        let targets = targets . "\n" . 'ALL_EXIT='
+        let goals += [expand('%:t:r') . '.obj']
+        let goals += [expand('%:t:r') . '.i']
+        let goals += [expand('%:t:r') . '.src']
+        let goals += [expand('%:t:r') . '.lint']
+        let goals += ['FORCE_PROGID=no']
+        let goals += ['MAKE_DBG=2']
+        let goals += ['EXTRA_C_FLAGS=']
+        let goals += ['DIAB_OPTIMIZE=']
+        let goals += ['MAIN_MAKEFILES=']
+        let goals += ['ALL_EXIT=']
     endif
-    return targets
+    return goals
 endfunction
 
 " -----------------------------------

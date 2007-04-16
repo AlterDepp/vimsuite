@@ -205,16 +205,6 @@ set spelllang=de
 set spellfile=$VIM/myspell.add
 let &spellfile=&spellfile . ',' . g:vimfiles . '/spell/bmsk.add'
 
-" -------------
-" other Plugins
-" -------------
-
-" GetLatestVimScripts
-let $http_proxy='http://qx13468:tinaist1@proxy.muc:8080'
-let g:GetLatestVimScripts_wget= "c:/tools/wget/wget.exe"
-let g:GetLatestVimScripts_mv= "move"
-"let $HOME=g:vimsuite
-
 if exists('g:debug')
     if (g:debug > 0)
         echo 'loaded vimrc'

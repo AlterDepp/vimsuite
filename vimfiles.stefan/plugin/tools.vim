@@ -211,6 +211,8 @@ function s:SetProjectVariables()
             echomsg 'set the make-variable VIM_COMPILER to the compiler plugin you want to use'
         endif
 
+    catch /E716/ " Schlüssel nicht vorhanden
+        echomsg v:exception
     catch
         echoerr 'Error while reading make-variables: ' . v:exception
     endtry
@@ -226,8 +228,15 @@ function GetMakeVars(varNameList)
         "echomsg command
         let output = system(command)
         let lines = split(output, "\n")
-        let RE = '^\(\w\+\)=\(.*\)\s*'
-        let SU = "let varlist['\\1']='\\2'"
+        if len(lines) == 1
+            " make output: value
+            let RE = '\(.*\)'
+            let SU = "let varlist['" . vars . "']='\\1'"
+        else
+            " make output: var=value
+            let RE = '^\(\w\+\)=\(.*\)\s*'
+            let SU = "let varlist['\\1']='\\2'"
+        endif
         "echomsg 'getvars:'
         for line in lines
             "echomsg line
@@ -237,11 +246,11 @@ function GetMakeVars(varNameList)
         endfor
         "echomsg ''
     catch
-        echoerr 'Could not read make variables'
+        echomsg 'Could not read make variables'
     endtry
 
     if varlist == {}
-        echoerr 'Could not read any variables from makefile'
+        echomsg 'Could not read any variables from makefile'
         echo 'Command:' command
         echo 'Make output is:'
         for line in lines
@@ -255,10 +264,10 @@ endfunction
 function GetMakeVar(varName)
     let var = GetMakeVars([a:varName])
     try
-        varValue = var[a:varName]
+        let varValue = var[a:varName]
     catch
-        varValue = ''
-        echoerr 'Could not read make-variable "' . varName . '"'
+        let varValue = ''
+        echomsg 'Could not read make-variable "' . a:varName . '"'
     endtry
     return varValue
 endfunction
@@ -266,8 +275,13 @@ endfunction
 " ------------------------------------------
 " special make-command for target-completion
 " ------------------------------------------
+" Command
 command -complete=customlist,GetAllMakeGoals -nargs=* Make call s:Make('<args>')
+" Targets
 function GetAllMakeGoals(...)
+    return g:GetAllMakeGoals()
+endfunction
+function s:GetDefaultMakeGoals(...)
     " evaluate make-goals
     if s:Variables['GOALS'] != ''
         try
@@ -281,14 +295,40 @@ function GetAllMakeGoals(...)
         echomsg 'set the make-variable VIM_COMPILER to the compiler plugin you want to use'
     endif
 endfunction
+let g:GetAllMakeGoals = function('s:GetDefaultMakeGoals')
+" Options
+function GetDefaultMakeOpts()
+    return ''
+endfunction
+let g:GetMakeOptsFunction = function("GetDefaultMakeOpts")
 function s:Make(args)
+    echo a:args
     cscope kill -1
-    execute ':make ' . a:args
-    try
-        execute 'cscope add ' . s:Variables['VIM_CSCOPEFILE']
-    endtry
+    let makeopts = g:GetMakeOptsFunction()
+    execute ':make ' . a:args . makeopts
+    call s:CscopeConnect()
+    clist
 endfunction
 
+
+" -----------------
+" CSCOPE-Connection
+" -----------------
+command CscopeConnect call s:CscopeConnect()
+function s:CscopeConnect()
+    try
+        let cscopefile = s:Variables['VIM_CSCOPEFILE']
+        if filereadable(cscopefile)
+            execute 'cscope add ' . cscopefile
+        elseif cscopefile == ''
+            echomsg 'cscope: Could not connect: Make-variable "VIM_CSCOPEFILE" is empty'
+        else
+            echomsg 'cscope: Could not connect: File ' . cscopefile . ' does not exist'
+        endif
+    catch /E716/ " Schlüssel nicht vorhanden
+        echomsg 'cscope: Could not connect: Make-variable "VIM_CSCOPEFILE" is empty'
+    endtry
+endfunction
 
 " ------------------
 " Draw Vimsuite-Menu
@@ -847,6 +887,25 @@ let g:DirDiffExcludes = '*.log,*.pyc,.svn,_ccmwaid.inf,.static_wa,out,tags,cscop
 
 " options for Vimball
 let g:vimball_home = expand(g:vimsuite . '/vimfiles')
+
+" GetLatestVimScripts
+command GetLatestVimScriptsThroughProxy call s:GetLatestVimScriptsThroughProxy()
+function s:GetLatestVimScriptsThroughProxy()
+    " Get Proxy data
+    let proxy = input('Proxy: ', 'proxy.muc:8080')
+    let user = input('User: ', 'qx13468')
+    let password = inputsecret('Password: ')
+    let $http_proxy = 'http://' . user . ':' . password . '@' . proxy
+    " Set HOME for autoinstall
+    let home = $HOME
+    let $HOME=g:vimsuite
+    " Get the scripts
+    GetLatestVimScripts
+    " reset HOME
+    let $HOME = home
+endfunction
+let g:GetLatestVimScripts_wget= "c:/tools/wget/wget.exe"
+let g:GetLatestVimScripts_mv= "move"
 
 " merge
 command -nargs=+ Merge call Merge(<args>)
