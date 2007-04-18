@@ -10,7 +10,7 @@ setlocal softtabstop=4
 setlocal formatoptions=croq
 
 " vimfiles sollen immer im unix-Format gespeichert werden
-if filereadable('%')
+if filewritable(expand('%'))
     setlocal fileformat=unix
 endif
 

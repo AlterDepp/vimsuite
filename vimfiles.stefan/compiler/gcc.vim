@@ -34,6 +34,7 @@ setlocal errorformat+=%C\ \ \ \ %m
 " Tools
 " -----
 setlocal errorformat+=%+G%.%#.exe:\ %m
+setlocal errorformat+=%+G%.%#.exe[%*\\d]:\ ***\ %m
 
 " Error format from other programs: ...: ...
 "setlocal errorformat+=%+G%f:\ %m

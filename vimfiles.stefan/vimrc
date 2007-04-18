@@ -1,5 +1,4 @@
 " Setzen des Runtimepath, in dem die Vimfiles gesucht werden:
-let &runtimepath = $VIMRUNTIME
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.latex'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/HTML'

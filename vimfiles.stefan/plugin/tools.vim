@@ -469,17 +469,17 @@ function s:RedrawMenu()
     call s:RedrawSessionMenu()
     " Compile
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.30 '.s:VimSuiteMenuName.
-                \'&Compile.&Build<tab>:make'.
-                \'   :make<CR>'
+                \'&Compile.&Build<tab>:Make'.
+                \'   :Make<CR>'
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.30 '.s:VimSuiteMenuName.
-                \'&Compile.&Lint<tab>:make\ lint'.
-                \'   :make lint<CR>'
+                \'&Compile.&Lint<tab>:Make\ lint'.
+                \'   :Make lint<CR>'
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.30 '.s:VimSuiteMenuName.
-                \'&Compile.&Clean<tab>:make\ clean'.
-                \'   :make clean<CR>'
+                \'&Compile.&Clean<tab>:Make\ clean'.
+                \'   :Make clean<CR>'
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.30 '.s:VimSuiteMenuName.
-                \'&Compile.&Run<tab>:make\ run'.
-                \'   :make run<CR>'
+                \'&Compile.&Run<tab>:Make\ run'.
+                \'   :Make run<CR>'
 "        exec 'anoremenu '.s:VimSuiteMenuLocation.'.30 '. s:VimSuiteMenuName.
 "                    \'&Compile.-sep-  :'
     " Search
@@ -501,8 +501,8 @@ function s:RedrawMenu()
                 \'&Search.List\ &CTags<tab>:tselect'.
                 \'   :tselect /<C-R><C-W><CR>'
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.40 '.s:VimSuiteMenuName.
-                \'&Search.Update\ c&tags<tab>:make\ tags'.
-                \'   :make tags<CR>'
+                \'&Search.Update\ c&tags<tab>:Make\ tags'.
+                \'   :Make tags<CR>'
     " Edit
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.50 '.s:VimSuiteMenuName.
                 \'&Edit.&Comment\ out/in<tab>^k'.

@@ -19,6 +19,7 @@ function s:ReportRev(Rev)
         echo 'Tags für BMS-X'
         echo 'Doxygen Toolkit'
         echo 'Update VimScripts'
+        echo 'das Verzeichnis vimfiles kann ohne Anpassung verwendet werden'
     elseif a:Rev >= '128'
         echo 'Neu seit Rev: 128'
         echo 'Vimsuite für BMS-X verbessert'

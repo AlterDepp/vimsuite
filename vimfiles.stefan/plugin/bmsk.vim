@@ -119,8 +119,8 @@ function s:BmskRedrawMenu()
                     \'   :SetSWStand<CR>'
         " Compile
         exec 'anoremenu .30.10 '.s:BMSKmenuname.
-                    \'&Compile.&Build<tab>:Bmsk'.
-                    \'   :Bmsk<CR>'
+                    \'&Compile.&Build<tab>:Make'.
+                    \'   :Make<CR>'
         exec 'anoremenu ..20 '.s:BMSKmenuname.
                     \'&Compile.&Alle\ Teststände<tab>:BmskAll\ Test'.
                     \'   :BmskAll Test<CR>'
@@ -128,17 +128,17 @@ function s:BmskRedrawMenu()
                     \'&Compile.&Lint<tab>:Lint'.
                     \'   :Lint<CR>'
         exec 'anoremenu ..35 '.s:BMSKmenuname.
-                    \'&Compile.&Doku\ erstellen<tab>:Bmsk\ doku'.
-                    \'   :Bmsk doku<CR>'
+                    \'&Compile.&Doku\ erstellen<tab>:Make\ doku'.
+                    \'   :Make doku<CR>'
         exec 'anoremenu ..36 '.s:BMSKmenuname.
                     \'&Compile.&Einzeldoku\ erstellen<tab>:BmskDoku\ doku\ funktionen="\.\.\."'.
                     \'   :BmskDoku<CR>'
         exec 'anoremenu ..40 '.s:BMSKmenuname.
-                    \'&Compile.&Clean<tab>:Bmsk\ clean'.
-                    \'   :Bmsk clean<CR>'
+                    \'&Compile.&Clean<tab>:Make\ clean'.
+                    \'   :Make clean<CR>'
         exec 'anoremenu ..45 '.s:BMSKmenuname.
-                    \'&Compile.&Clean\ all<tab>:Bmsk\ distclean'.
-                    \'   :Bmsk distclean<CR>'
+                    \'&Compile.&Clean\ all<tab>:Make\ distclean'.
+                    \'   :Make distclean<CR>'
         exec 'anoremenu ..50 '. s:BMSKmenuname.
                     \'&Compile.-sep-  :'
         exec 'anoremenu ..60 '.s:BMSKmenuname.
@@ -196,11 +196,11 @@ function s:BmskRedrawMenu()
                     \'&Search.List\ &CTags<tab>:tselect'.
                     \'   :tselect /<C-R><C-W><CR>'
         exec 'anoremenu ..50 '.s:BMSKmenuname.
-                    \'&Search.Update\ c&tags<tab>:Bmsk\ ctags'.
-                    \'   :Bmsk ctags<CR>'
+                    \'&Search.Update\ c&tags<tab>:Make\ ctags'.
+                    \'   :Make ctags<CR>'
         exec 'anoremenu ..60 '.s:BMSKmenuname.
-                    \'&Search.Update\ C&scope<tab>:Bmsk\ cscope'.
-                    \'   :Bmsk cscope<CR>'
+                    \'&Search.Update\ C&scope<tab>:Make\ cscope'.
+                    \'   :Make cscope<CR>'
         exec 'anoremenu ..70 '.s:BMSKmenuname.
                     \'&Search.Disconnect\ C&scope<tab>:cscope\ kill\ -1'.
                     \'   :cscope kill -1<CR>'
@@ -719,7 +719,7 @@ function s:BmskAll(Stand)
     if (a:Stand != '') && (g:SW_Stand != a:Stand)
         call SetSWStand(a:Stand)
     endif
-    execute 'Bmsk all' . g:SW_Stand
+    execute 'Make all' . g:SW_Stand
 endfunction
 
 " Alle Software-Stände als VimList
@@ -869,7 +869,7 @@ command TaskReport call s:TaskReport()
 function s:TaskReport()
     let b:browsefilter = 'Textfiles \t*.txt\n'
     let file = browse(1, 'Select File for Task Report', 'c:', g:bmskProject . '.txt')
-    execute 'Bmsk ccm_task_report file=' . fnamemodify(file, ':p')
+    execute 'Make ccm_task_report file=' . fnamemodify(file, ':p')
 endfunction
 
 " ------------------------------------------
