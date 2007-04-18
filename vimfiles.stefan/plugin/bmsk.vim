@@ -640,6 +640,7 @@ command -nargs=? GrepBmsk call GrepFull(GetBmskSwDir(), '*.c *.h *.kgs', '<args>
 command -complete=customlist,GetAllBmskTargets -nargs=* Bmsk Make <args>
 command -complete=customlist,GetAllBmskTargets -nargs=* BmskDoku call s:BmskDoku('<args>')
 command -nargs=* Lint Make <args> %:t:r.lint
+command -complete=customlist,GetAllBmskSWStand -nargs=1 BmskAll call s:BmskAll('<args>')
 
 " make options
 function GetBmskMakeOpts()
