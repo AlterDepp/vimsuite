@@ -1,0 +1,63 @@
+" vim: filetype=vim
+
+" ========
+" Settings
+" ========
+compiler $VIM_COMPILER
+set path=$VIM_PATH
+set tags=$VIM_TAGS
+set cscopeprg=$VIM_CSCOPEPRG
+let s:cscopefile = $VIM_CSCOPEFILE
+let s:makegoals = $VIM_MAKEGOALS
+let s:makeopts = $VIM_MAKEOPTS
+
+if exists('s:did_projectplugin')
+    finish
+endif
+let s:did_projectplugin='bmsk'
+
+" ====
+" Make
+" ====
+function s:GetMakeOptions()
+    return ''
+endfunction
+
+function GetAllMakeCompletions(...)
+    return join(s:makegoals + s:makeopts, "\n")
+endfunction
+
+command -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>')
+function s:Make(args)
+    echo a:args
+    CscopeDisconnect
+    execute 'make ' . a:args .' '. s:GetMakeOptions()
+    CscopeConnect
+    clist
+endfunction
+
+" -----------------
+" CSCOPE-Connection
+" -----------------
+command CscopeConnect call s:CscopeConnect(s:cscopefile)
+function s:CscopeConnect(cscopefile)
+    if filereadable(a:cscopefile)
+        execute 'cscope add ' . a:cscopefile
+    else
+        echomsg 'cscope: Could not connect: File ' . a:cscopefile . ' does not exist'
+    endif
+endfunction
+
+command CscopeDisconnect call s:CscopeDisconnect()
+function s:CscopeDisconnect()
+    cscope kill -1
+endfunction
+
+" ================
+" Start of session
+" ================
+function s:ProjectOnStart()
+    CscopeConnect
+endfunction
+
+call s:ProjectOnStart()

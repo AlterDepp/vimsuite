@@ -19,12 +19,36 @@ let s:BMSKmenuname = '&BMSK.'
 " Set Project
 " -----------
 command -complete=dir -nargs=1 SetBmskWA let g:bmskWA = '<args>'
-command -complete=custom,GetAllBmskProjects -nargs=? SetBmskProject
+command! -complete=custom,GetAllBmskProjects -nargs=? SetBmskProject
             \ call s:SetBmskProject('<args>')
 
 function s:SetBmskProject(basedir)
-    if (a:basedir == '')
-        let makefile = ''
+    if ((a:basedir == '') && has('browse'))
+        " Browse for makefile
+        if exists('g:bmskWA')
+            let l:bmskWA = g:bmskWA
+        else
+            let l:bmskWA = ''
+        endif
+
+        if exists('b:browsefilter')
+            let l:browsefilter = b:browsefilter
+        endif
+        let b:browsefilter = 
+                    \ 'Makefiles (make_fsw.bat)\tmake_fsw.bat\n' .
+                    \ 'Makefiles (makefile*)\tmakefile*\n' .
+                    \ 'All Files (*.*)\t*.*'
+        let makefile = browse(0, 'Select makefile', l:bmskWA, '')
+        if exists('l:browsefilter')
+            let b:browsefilter = l:browsefilter
+        endif
+        let basedir = fnamemodify(makefile, ':p:h')
+        let makefile = fnamemodify(makefile, ':t')
+        if ((makefile == 'make_fsw.bat') || (makefile == 'makefile.mak') || (makefile == 'makefile'))
+            call s:SetBmskDirs(basedir)
+        else
+            echo 'No makefile:' makefile
+        endif
     else
         " set Workarea and basedir
         if (isdirectory(a:basedir))
@@ -32,19 +56,17 @@ function s:SetBmskProject(basedir)
             let makefile = fnamemodify(a:basedir . '/make_fsw.bat', ':p')
             if !filereadable(makefile)
                 let makefile = glob(a:basedir . '/*/make_fsw.bat')
+                let basedir = fnamemodify(makefile, ':p:h')
             endif
-            if !filereadable(makefile)
-                echoerr 'No makefile' makefile
+            if (filereadable(makefile))
+                call s:SetBmskDirs(basedir)
+            else
+                echo 'No makefile' makefile
             endif
         else
-            echoerr 'No directory:' a:basedir
+            echo 'No directory:' a:basedir
         endif
     endif
-    call SetProject(makefile)
-    let GetMakeOptsFunction = function('GetBmskMakeOpts')
-    let g:GetAllMakeGoals = function('GetAllBmskTargets')
-    let basedir = getcwd()
-    call s:SetBmskDirs(basedir)
 endfunction
 
 function GetAllBmskProjects(ArgLead, CmdLine, CursorPos)
@@ -122,8 +144,8 @@ function s:BmskRedrawMenu()
                     \'&Compile.&Build<tab>:Make'.
                     \'   :Make<CR>'
         exec 'anoremenu ..20 '.s:BMSKmenuname.
-                    \'&Compile.&Alle\ Teststände<tab>:BmskAll\ Test'.
-                    \'   :BmskAll Test<CR>'
+                    \'&Compile.&Alle\ Teststände<tab>:MakeAll\ Test'.
+                    \'   :MakeAll Test<CR>'
         exec 'anoremenu ..30 '.s:BMSKmenuname.
                     \'&Compile.&Lint<tab>:Lint'.
                     \'   :Lint<CR>'
@@ -131,8 +153,8 @@ function s:BmskRedrawMenu()
                     \'&Compile.&Doku\ erstellen<tab>:Make\ doku'.
                     \'   :Make doku<CR>'
         exec 'anoremenu ..36 '.s:BMSKmenuname.
-                    \'&Compile.&Einzeldoku\ erstellen<tab>:BmskDoku\ doku\ funktionen="\.\.\."'.
-                    \'   :BmskDoku<CR>'
+                    \'&Compile.&Einzeldoku\ erstellen<tab>:MakeDoku\ doku\ funktionen="\.\.\."'.
+                    \'   :MakeDoku<CR>'
         exec 'anoremenu ..40 '.s:BMSKmenuname.
                     \'&Compile.&Clean<tab>:Make\ clean'.
                     \'   :Make clean<CR>'
@@ -206,11 +228,11 @@ function s:BmskRedrawMenu()
                     \'   :cscope kill -1<CR>'
         " BuildManager
         exec 'anoremenu .60.10 '.s:BMSKmenuname.
-                    \'&BuildManager.&Entwicklerstand<tab>:BmskAll\ Entwickler'.
-                    \'   :BmskAll Entwickler<CR>'
+                    \'&BuildManager.&Entwicklerstand<tab>:MakeAll\ Entwickler'.
+                    \'   :MakeAll Entwickler<CR>'
         exec 'anoremenu ..20 '.s:BMSKmenuname.
-                    \'&BuildManager.&Serienstand<tab>:BmskAll\ Serie'.
-                    \'   :BmskAll Serie<CR>'
+                    \'&BuildManager.&Serienstand<tab>:MakeAll\ Serie'.
+                    \'   :MakeAll Serie<CR>'
         exec 'anoremenu ..30 '.s:BMSKmenuname.
                     \'&BuildManager.&Deliver\ Products<tab>:CopyProgrammstand'.
                     \'   :CopyProgrammstand<CR>'
@@ -406,6 +428,7 @@ function s:SetBmskDirs(bmskdir)
     unlet! g:Goals
     unlet! g:Programname
     unlet! g:OutDirVariante
+    unlet! g:bmsk_stand
 
     " Variablen erzeugen, damit GetMakeVar funktioniert
     if !exists('g:Muster')
@@ -429,7 +452,9 @@ function s:SetBmskDirs(bmskdir)
 
     " cd to bmskdir
     execute 'cd ' . g:bmskdir
-    compiler bmsk
+
+    " Make
+    call s:SetBmskCompiler()
 
     " Default-Werte aus Make übernehmen
     call GetAllMakeVars()
@@ -455,6 +480,8 @@ function s:SetBmskDirs(bmskdir)
     let g:bmskProject    = fnamemodify(g:bmskdir, ':h:h:t')
     let g:bmsk_sw        = fnamemodify(g:bmskdir . '/sw', ':p')
     let g:bmsk_bios      = fnamemodify(g:bmskdir . '/sw/bios', ':p')
+    let g:bmsk_d         = GetDfilesDir()
+    let g:bmsk_stand     = GetStandDir()
     let g:OutDir         = GetOutDir()
     let g:OutDirVariante = GetOutDirVariante()
     let g:bmsk_ext       = '*.c *.h *.kgs *.d *.dat *.mak *.inv'
@@ -481,10 +508,19 @@ function s:SetBmskDirs(bmskdir)
     let &path = substitute(&path, '\\', '/', 'g')
     " files for tags (may not start with './', since . is the path of the
     " current file
+    let &tags = substitute(GetCTagsFile(), '^\..', '', '') . ',' . substitute(GetPTagsFile() , '^\..', '', '')
 
     " Grep Dir and Extentions
     let g:GrepDir = g:bmsk_sw
     let g:GrepFiles = '*.c *.h *.kgs'
+
+    " cscope
+    let &cscopeprg = GetCscopePrg()
+    cscope kill -1
+    let reffile = GetCscopeFile()
+    if (filereadable(reffile))
+        execute 'cscope add' reffile
+    endif
 
     call s:BmskRedrawMenu()
     call GetGoals()
@@ -497,6 +533,110 @@ function s:SetBmskDirs(bmskdir)
     let &titlestring = '%t - (%-F) - %=BMSK: %{g:bmskProject}'
                 \ . ' Motor: %{g:Motor} Muster: %{g:Muster} Egas: %{g:Egas} SW-Stand: %{g:SW_Stand}'
 
+endfunction
+
+function s:SetBmskCompiler()
+    set errorformat=
+    " tex-errorformat laden
+    let b:forceRedoTexCompiler = 'yes'
+    let g:Tex_ShowallLines = 1
+    "execute 'source ' . expand(g:vimfiles . '/compiler/tex.vim')
+
+    let g:makeCommand = g:bmskdir . 'make_fsw.bat'
+    let &makeprg = g:makeCommand . ' $*'
+    let &shellpipe = '| ' . g:tee
+    set makeef=
+
+    " -------------------------------------
+    " Diab-Data-Compiler, Assembler, Linker
+    " -------------------------------------
+    " dcc_info, dcc_warning, dcc_error, dcc_fatal
+    setlocal errorformat+=\"%f\"\\,\ line\ %l:\ %t%.%#\ \(dcc:%n\):%m
+    " dcc_fatal
+    setlocal errorformat+=\"%f\"\\,\ line\ %l:\ %tatal\ error\ \(dcc:%n\):%m
+    setlocal errorformat+=%tatal\ error\ \(dcc:%n\):%m
+    " das_error
+    setlocal errorformat+=\"%f\"\\,\ line\ %l:\ %t[a-z]:%m
+    " dld_error
+    setlocal errorformat+=d%td:%m
+    setlocal errorformat+=d%td.EXE:%m
+    " -------
+    " PC-Lint
+    " -------
+    setlocal errorformat+=\"%f\"\\,\ line\ %l:\ %t%.%#\ \(pclint:%n\):%m
+    setlocal errorformat+=%t%.%#\ \(pclint:%n\):%m
+    " -------
+    " SP-Lint
+    " -------
+    "setlocal errorformat+=%f\(%l,%c\):\ %m
+    setlocal errorformat+=%A%f\(%l\):\ %m
+    setlocal errorformat+=%A%f\(%l\):
+    setlocal errorformat+=%A%f\(%l\\,%c\):\ %m
+    setlocal errorformat+=%A%f\(%l\\,%c\):
+    setlocal errorformat+=%C\ \ \ \ %m
+    " --------
+    " GNU-Make
+    " --------
+    setlocal errorformat+=%f:%l:\ %m
+    setlocal errorformat+=%f:%l:%t%.%#:\ %m
+    setlocal errorformat+=%+G%.%#make.exe:\ %m
+    setlocal errorformat+=%+G%.%#make%.%#.sh:\ %m
+    setlocal errorformat+=%+G%.%#mkdir.exe:\ %m
+    setlocal errorformat+=%+G%.%#cp.exe:\ %m
+    setlocal errorformat+=%+G%.%#rm.exe:\ %m
+    " ---------
+    " BMSK make
+    " ---------
+    setlocal errorformat+=bmsk:\ %m
+    " ------------
+    " python error
+    " ------------
+    setlocal errorformat+=%+G%.%#python.exe:\ %m
+    "setlocal errorformat+=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+    " -----
+    " DAMOS
+    " -----
+    " Damos error
+    setlocal errorformat +=%PDAM-S-INPUTFILEOPENED\ %f%*\\s
+    setlocal errorformat +=%PDAM-S-OUTPUTFILEOPENED\ %f%*\\s
+    setlocal errorformat +=%QDAM-S-FILECLOSED\ %f%*\\s
+    "setlocal errorformat +=%PDAM-S-OSP-OPENING-SEQ-OSP\ %f%*\\s
+    setlocal errorformat +=%QDAM-S-OSP-CLOSE\ %f%*\\s
+    " ignore 'DAM-W-KONS-SW-IGNORED'
+    setlocal errorformat+=%-O%.%#DAM-W-KONS-SW-IGNORED
+    " Damos Info-Feld
+    "setlocal errorformat +=%-I\|\ DAM-I-%m,
+    "            \%-Z+-%#
+    " Damos Warning- oder Error-Feld
+    " DAM-W-...
+    setlocal errorformat +=%A\ %#\|\ DAM-%t-%m,
+                \%C\ %#\|\%*\\sZeile\ %l%m,
+                \%C\ %#\|\%*\\sZeile\ %f:\ %l%m,
+                \%C\ %#\|\ %#%m,
+                \%-Z\ %#+-%#
+    " Damos: Kenngrößen, die in mehr als einer SG-Funktion definiert sind:
+    "        Kgs: ... Fkt: ...
+    setlocal errorformat +=%+WKenngrößen%m
+    setlocal errorformat +=%+WKgs:%m
+    " Damos: Ram-Größen, die in einer SG-Funktion enthalten sind,
+    "        aber nicht im OSp existieren:
+    "        Ram: ... Fkt: ...
+    setlocal errorformat +=%+WRam-Größen%m,
+                \%+Zaber%m
+    " Damos: Lokale Ram-Größen, die referenziert werden:
+    "        Ram: ... Fkt: ...
+    setlocal errorformat +=%+WLokale\ Ram-Größen%m
+    setlocal errorformat +=%+WRam:%m
+    "
+    setlocal errorformat +=%W%\\%#%#DAM-S-KGR-PLS-EXCEEDED%m:%*\\s,
+                \%CDAM-S-KGR-PLS-EXCEEDED%m,
+                \%-Z+-%#
+    " ignore uninterresting lines
+    " ---------------------------
+    " ignore 'ignoring option ...'
+    setlocal errorformat+=%-Oignoring\ option%.%#
+    " ignore 'file: 123: #error ...'
+    setlocal errorformat+=%-O%*\\S\ %*\\d:\ #%.%#
 endfunction
 
 " make backups
@@ -515,6 +655,7 @@ function GetAllMakeVars()
     let varnames['OutDir']          = 'OUTDIR'
     let varnames['ProductDir']      = 'OUTDIR_PRODUCTS'
     let varnames['DfilesDir']       = 'OUTDIR_D_FILES'
+    let varnames['bmsk_stand']      = 'OUTDIR_STAND'
     let varnames['OutDirVariante']  = 'OUTDIR_VARIANTE'
     let varnames['CscopePrg']       = 'CSCOPE'
     let varnames['CscopeFile']      = 'CSCOPEFILE'
@@ -577,6 +718,33 @@ function GetProductDir()
     return g:ProductDir
 endfunction
 
+" ---------------------
+function GetDfilesDir()
+" ---------------------
+    if !exists('g:DfilesDir')
+        let g:DfilesDir = GetMakeVar('D_FILES_DIR')
+        if (g:DfilesDir == '')
+            let g:DfilesDir = GetMakeVar('OUTDIR_D_FILES')
+        endif
+        if (g:DfilesDir != '')
+            let g:DfilesDir = fnamemodify(g:DfilesDir, ':p')
+        endif
+    endif
+    return g:DfilesDir
+endfunction
+
+" --------------------
+function GetStandDir()
+" --------------------
+    if !exists('g:bmsk_stand')
+        let g:bmsk_stand = GetMakeVar('OUTDIR_STAND')
+    endif
+    if (g:bmsk_stand != '')
+        let g:bmsk_stand = fnamemodify(g:bmsk_stand, ':p')
+    endif
+    return g:bmsk_stand
+endfunction
+
 " --------------------------
 function GetOutDirVariante()
 " --------------------------
@@ -589,13 +757,61 @@ function GetOutDirVariante()
     return g:OutDirVariante
 endfunction
 
+" ----------------------
+function GetCscopePrg()
+" ----------------------
+    if !exists('g:CscopePrg')
+        let g:CscopePrg = GetMakeVar('CSCOPE')
+    endif
+    if (g:CscopePrg != '')
+        let g:CscopePrg = fnamemodify(g:CscopePrg, ':p')
+    endif
+    return g:CscopePrg
+endfunction
+
+" ----------------------
+function GetCscopeFile()
+" ----------------------
+    if !exists('g:CscopeFile')
+        let g:CscopeFile = GetMakeVar('CSCOPEFILE')
+    endif
+    if (g:CscopeFile != '')
+        let g:CscopeFile = fnamemodify(g:CscopeFile, ':p')
+    endif
+    return g:CscopeFile
+endfunction
+
+" ---------------------
+function GetCTagsFile()
+" ---------------------
+    if !exists('g:CTagsFile')
+        let g:CTagsFile = GetMakeVar('CTAGFILE')
+    endif
+    if (g:CTagsFile != '')
+        let g:CTagsFile = fnamemodify(g:CTagsFile, ':p')
+    endif
+    return g:CTagsFile
+endfunction
+
+" ---------------------
+function GetPTagsFile()
+" ---------------------
+    if !exists('g:PTagsFile')
+        let g:PTagsFile = GetMakeVar('PTAGFILE')
+    endif
+    if (g:PTagsFile != '')
+        let g:PTagsFile = fnamemodify(g:PTagsFile, ':p')
+    endif
+    return g:PTagsFile
+endfunction
+
 " -----------------
 function GetGoals()
 " -----------------
     if !exists('g:Goals')
         let g:Goals = GetMakeVar('GOALS')
     endif
-    return split(g:Goals)
+    return g:Goals
 endfunction
 
 " -----------------------
@@ -625,6 +841,14 @@ command CleanSRCfile %s/^#\t\(\(r\d\{1,2\}\t\)\|\(not allocated\)\)\t\(\(\$\$\d\
 " tags
 " ----
 
+command CscopeConnect call s:CscopeConnect()
+function s:CscopeConnect()
+    let reffile = GetCscopeFile()
+    if (filereadable(reffile))
+        execute 'cscope add' reffile
+    endif
+endfunction
+
 " significant characters in tags
 set taglength=0
 set notagrelative
@@ -637,13 +861,22 @@ command -nargs=? GrepBmsk call GrepFull(GetBmskSwDir(), '*.c *.h *.kgs', '<args>
 " ----------------
 " Make and compile
 " ----------------
-command -complete=customlist,GetAllBmskTargets -nargs=* Bmsk Make <args>
-command -complete=customlist,GetAllBmskTargets -nargs=* BmskDoku call s:BmskDoku('<args>')
+command -complete=custom,GetAllBmskTargets -nargs=* Make call s:Make('<args>')
+command -complete=custom,GetAllBmskTargets -nargs=* MakeDoku call s:MakeDoku('<args>')
 command -nargs=* Lint Make <args> %:t:r.lint
-command -complete=customlist,GetAllBmskSWStand -nargs=1 BmskAll call s:BmskAll('<args>')
+command -complete=customlist,GetAllBmskSWStand -nargs=1 MakeAll call s:MakeAll('<args>')
 
-" make options
-function GetBmskMakeOpts()
+" Programmstand compilieren
+function s:Make(args)
+    echo a:args
+    cscope kill -1
+    call s:SetBmskCompiler()
+    execute 'make! ' . a:args .' '. s:GetMakeOptions()
+    CscopeConnect
+    clist
+endfunction
+
+function s:GetMakeOptions()
     let makeopts = ''
     if (g:Motor != '')
         let makeopts = makeopts . ' Motor=' . g:Motor
@@ -663,27 +896,8 @@ function GetBmskMakeOpts()
     return makeopts
 endfunction
 
-" reformat i-file
-command ReformatIFile call Reformat_IFile()
-function Reformat_IFile() abort
-    let cName = expand('%:t:r') . '.c'
-    let CR = '\<CR>'
-    DelAllMultipleEmptyLines
-    " do not wrap over end of file
-    setlocal nowrapscan
-    " go to top of file
-    execute 'normal gg'
-    " do unil error
-    while 1
-        " delete until line of c-file
-        execute 'normal d/\c^# \d\+ ".*\(' . cName . '\)' . CR
-        " go to line of include-file
-        execute  'normal /\c^# \d\+ ".*\(' . cName . '\)\@<!"' . CR
-    endwhile
-endfunction
-
 " Dokumentation erzeugen (Verwenden des LaTeX errorparsers)
-function s:BmskDoku(args)
+function s:MakeDoku(args)
     echo a:args
     let command = 'Make ' . a:args . ' '
     if match(a:args, '\(^\|\s\)\w\+\($\|\s\+\)') < 0
@@ -706,7 +920,7 @@ function s:BmskDoku(args)
 
     cscope kill -1
     compiler tex
-    let &makeprg = g:makeprg . ' $*'
+    let &makeprg = g:makeCommand . ' $*'
     let latexflags = '-interaction=nonstopmode'
     execute command . ' LATEXFLAGS=' . latexflags
     CscopeConnect
@@ -714,7 +928,7 @@ function s:BmskDoku(args)
 endfunction
 
 " Erzeugen aller Programmstände
-function s:BmskAll(Stand)
+function s:MakeAll(Stand)
     " Software Stand gegebenenfalls einstellen
     if (a:Stand != '') && (g:SW_Stand != a:Stand)
         call SetSWStand(a:Stand)
@@ -729,43 +943,44 @@ function GetAllBmskSWStand(ArgLead, CmdLine, CursorPos)
 endfunction
 
 " Alle Make-Targets als Text Liste
-function GetAllBmskTargets(...)
+function GetAllBmskTargets(ArgLead, CmdLine, CursorPos)
     let goals = GetGoals()
-    if goals == []
-        let goals += ['Programmstand']
-        let goals += ['clean']
-        let goals += ['cleanall']
-        let goals += ['cleanProducts']
-        let goals += ['allTest']
-        let goals += ['allEntwickler']
-        let goals += ['allSerie']
-        let goals += ['patch_a2l']
-        let goals += ['check_memory']
-        let goals += ['create_csv']
-        let goals += ['create_arcus_csv']
-        let goals += ['import_arcus_csv']
-        let goals += ['boschsig']
-        let goals += ['archivate']
-        let goals += ['lint file=' . expand('%:p')]
-        let goals += ['tags']
-        let goals += ['ctags']
-        let goals += ['ptags']
-        let goals += ['cscope']
-        let goals += ['ccm_products_checkout CCM=' . g:ccm]
-        let goals += ['help']
+    if goals == ''
+        let targets = 'Programmstand'
+        let targets = targets . "\n" . 'clean'
+        let targets = targets . "\n" . 'cleanall'
+        let targets = targets . "\n" . 'cleanProducts'
+        let targets = targets . "\n" . 'allTest'
+        let targets = targets . "\n" . 'allEntwickler'
+        let targets = targets . "\n" . 'allSerie'
+        let targets = targets . "\n" . 'patch_a2l'
+        let targets = targets . "\n" . 'check_memory'
+        let targets = targets . "\n" . 'create_csv'
+        let targets = targets . "\n" . 'create_arcus_csv'
+        let targets = targets . "\n" . 'import_arcus_csv'
+        let targets = targets . "\n" . 'boschsig'
+        let targets = targets . "\n" . 'archivate'
+        let targets = targets . "\n" . 'lint file=' . expand('%:p')
+        let targets = targets . "\n" . 'tags'
+        let targets = targets . "\n" . 'ctags'
+        let targets = targets . "\n" . 'ptags'
+        let targets = targets . "\n" . 'cscope'
+        let targets = targets . "\n" . 'ccm_products_checkout CCM=' . g:ccm
+        let targets = targets . "\n" . 'help'
     else
-        let goals += [expand('%:t:r') . '.obj']
-        let goals += [expand('%:t:r') . '.i']
-        let goals += [expand('%:t:r') . '.src']
-        let goals += [expand('%:t:r') . '.lint']
-        let goals += ['FORCE_PROGID=no']
-        let goals += ['MAKE_DBG=2']
-        let goals += ['EXTRA_C_FLAGS=']
-        let goals += ['DIAB_OPTIMIZE=']
-        let goals += ['MAIN_MAKEFILES=']
-        let goals += ['ALL_EXIT=']
+        let targets = substitute(goals, '\s\+', '\n', 'g')
+        let targets = targets . "\n" . expand('%:t:r') . '.obj'
+        let targets = targets . "\n" . expand('%:t:r') . '.i'
+        let targets = targets . "\n" . expand('%:t:r') . '.src'
+        let targets = targets . "\n" . expand('%:t:r') . '.lint'
+        let targets = targets . "\n" . 'FORCE_PROGID=no'
+        let targets = targets . "\n" . 'MAKE_DBG=2'
+        let targets = targets . "\n" . 'EXTRA_C_FLAGS='
+        let targets = targets . "\n" . 'DIAB_OPTIMIZE='
+        let targets = targets . "\n" . 'MAIN_MAKEFILES='
+        let targets = targets . "\n" . 'ALL_EXIT='
     endif
-    return goals
+    return targets
 endfunction
 
 " -----------------------------------
@@ -773,7 +988,7 @@ endfunction
 " -----------------------------------
 command PatchA2L call s:A2L_EXTENTION()
 function s:A2L_EXTENTION()
-    execute 'compiler bmsk'
+    call s:SetBmskCompiler()
     execute '!start make_fsw.bat patch_a2l ' . g:makeopts . ' & pause'
 endfunction
 

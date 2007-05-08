@@ -16,5 +16,6 @@ ScriptID SourceID Filename
 948  2878 Scons Compiler plugin
 1709 6421 Scons Syntax file
 1772 6973 DAMOS.zip DAMOS tools (von Stefan)
-987 6978 DoxygenToolkit.vim
+987  6978 DoxygenToolkit.vim
 1397 6887 xml.vim
+1290 5190 LogiPat

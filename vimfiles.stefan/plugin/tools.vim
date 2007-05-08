@@ -24,11 +24,12 @@ let g:projectFile = fnamemodify($VIMRUNTIME . '/../projects.txt', ':p')
 " ----------
 " SetProject
 " ----------
-if (v:version > 602)
-    command -complete=customlist,GetAllMakefiles -nargs=? SetProject call SetProject('<args>')
-else
-    command -nargs=1 SetProject call SetProject('<args>')
-endif
+command -complete=customlist,GetAllMakefiles -nargs=? SetProject call s:SetProject('<args>')
+" only for backward compatibility
+command -nargs=? SetBmskProject
+            \ execute 'source ' . g:vimfiles . '/tools/bmsk.vim'
+            \ | SetBmskProject <args>
+
 "function GetAllMakefiles(ArgLead, CmdLine, CursorPos)
 function GetAllMakefiles(...)
     let makefilePaths = []
@@ -86,7 +87,7 @@ endfunction
 
 " Find makefile and set some options
 " ----------------------------------
-function SetProject(makefile)
+function s:SetProject(makefile)
     if ((a:makefile == '') && has('browse'))
         " Browse for makefile
         if exists('g:WA')
@@ -129,19 +130,15 @@ function SetProject(makefile)
     " search path
     set path&
 
-    call s:SetProjectVariables()
+    call s:GetProjectVariables()
+    call s:EvalProjectVariables()
 
 endfunction
 
-" Set Project Specific Variables
-function s:SetProjectVariables()
+" Get Project Specific Variables
+function s:GetProjectVariables()
     let varnames = [
-                \ 'VIM_COMPILER',
-                \ 'VIM_PATH',
-                \ 'VIM_TAGS',
-                \ 'VIM_CSCOPEPRG',
-                \ 'VIM_CSCOPEFILE',
-                \ 'GOALS',
+                \ 'VIM_CONFIGFILE',
                 \]
     let s:Variables = GetMakeVars(varnames)
 
@@ -152,73 +149,33 @@ function s:SetProjectVariables()
     endfor
     echo '-------------------------------'
     echo ''
+endfunction
 
+" Evaluate Project Specific Variables
+function s:EvalProjectVariables()
     try
         " evaluate path variable
-        if s:Variables['VIM_PATH'] != ''
+        if s:Variables['VIM_CONFIGFILE'] != ''
+            if !filereadable(s:Variables['VIM_CONFIGFILE'])
+                " try to create config-file
+                make vim-config
+            endif
             try
-                execute 'set path=' . s:Variables['VIM_PATH']
+                execute 'source ' . s:Variables['VIM_CONFIGFILE']
             catch
-                echoerr 'cant set path to "' . s:Variables['VIM_PATH'] . '"'
-                echoerr 'check the make variable VIM_PATH'
+                echoerr 'cant source "' . s:Variables['VIM_CONFIGFILE'] . '"'
+                echoerr 'check the make variable VIM_CONFIGFILE'
             endtry
         else
-            echomsg 'set the make-variable VIM_PATH to what you want to be set to path'
+            echomsg 'set the make-variable VIM_CONFIGFILE to the project-config file for vim'
+            echomsg 'For old BMSK-Projects try :SetBmskProject'
         endif
-
-        " evaluate tags
-        if s:Variables['VIM_TAGS'] != ''
-            try
-                execute 'set tags=' . s:Variables['VIM_TAGS']
-            catch
-                echoerr 'cant set tags to "' . s:Variables['VIM_TAGS'] . '"'
-                echoerr 'check the make variable VIM_TAGS'
-            endtry
-        else
-            echomsg 'set the make-variable VIM_TAGS to what you want to be set to tags'
-        endif
-
-        " evaluate cscope
-        if s:Variables['VIM_CSCOPEPRG'] != ''
-            try
-                execute 'set cscopeprg=' . s:Variables['VIM_CSCOPEPRG']
-            catch
-                echoerr 'cant set cscopeprg to "' . s:Variables['VIM_CSCOPEPRG'] . '"'
-                echoerr 'check the make variable VIM_CSCOPEPRG'
-            endtry
-        else
-            echomsg 'set the make-variable VIM_CSCOPEPRG to what you want to be set to cscopeprg'
-        endif
-        if s:Variables['VIM_CSCOPEFILE'] != ''
-            try
-                cscope kill -1
-                execute 'cscope add ' . s:Variables['VIM_CSCOPEFILE']
-            catch
-                echomsg 'cant add cscope-file "' . s:Variables['VIM_CSCOPEFILE'] . '"'
-                echomsg 'check the make variable VIM_CSCOPEFILE and if file exists'
-            endtry
-        else
-            echomsg 'set the make-variable VIM_CSCOPEFILE if you want to add a cscope-database'
-        endif
-
-        " evaluate compiler
-        if s:Variables['VIM_COMPILER'] != ''
-            try
-                execute 'compiler ' . s:Variables['VIM_COMPILER']
-            catch
-                echoerr 'cant set compiler to "' . s:Variables['VIM_COMPILER'] . '"'
-                echoerr 'check the make variable VIM_COMPILER'
-            endtry
-        else
-            echomsg 'set the make-variable VIM_COMPILER to the compiler plugin you want to use'
-        endif
-
     catch /E716/ " Schlüssel nicht vorhanden
         echomsg v:exception
+        echomsg 'For old BMSK-Projects try :SetBmskProject'
     catch
         echoerr 'Error while reading make-variables: ' . v:exception
     endtry
-
 endfunction
 
 " Get values for a list of variables as dictionary
@@ -230,7 +187,7 @@ function GetMakeVars(varNameList)
         "echomsg command
         let output = system(command)
         let lines = split(output, "\n")
-        if len(lines) == 1
+        if len(lines) == 1 && len(a:varNameList) == 1 && match(lines[0], '=') < 0
             " make output: value
             let RE = '\(.*\)'
             let SU = "let varlist['" . vars . "']='\\1'"
@@ -243,7 +200,9 @@ function GetMakeVars(varNameList)
         for line in lines
             "echomsg line
             if match(line, RE) >= 0
-                execute substitute(line, RE, SU, '')
+                let command = substitute(line, RE, SU, '')
+                "echomsg command
+                execute command
             endif
         endfor
         "echomsg ''
@@ -274,63 +233,6 @@ function GetMakeVar(varName)
     return varValue
 endfunction
 
-" ------------------------------------------
-" special make-command for target-completion
-" ------------------------------------------
-" Command
-command -complete=customlist,GetAllMakeGoals -nargs=* Make call s:Make('<args>')
-" Targets
-function GetAllMakeGoals(...)
-    return g:GetAllMakeGoals()
-endfunction
-function s:GetDefaultMakeGoals(...)
-    " evaluate make-goals
-    if s:Variables['GOALS'] != ''
-        try
-            let goals = split(s:Variables['GOALS'])
-            return goals
-        catch
-            echoerr 'cant set goals to ' . s:Variables['GOALS']
-            echoerr 'check the make variable GOALS'
-        endtry
-    else
-        echomsg 'set the make-variable VIM_COMPILER to the compiler plugin you want to use'
-    endif
-endfunction
-let g:GetAllMakeGoals = function('s:GetDefaultMakeGoals')
-" Options
-function GetDefaultMakeOpts()
-    return ''
-endfunction
-let g:GetMakeOptsFunction = function("GetDefaultMakeOpts")
-function s:Make(args)
-    echo a:args
-    cscope kill -1
-    let makeopts = g:GetMakeOptsFunction()
-    execute ':make ' . a:args . makeopts
-    call s:CscopeConnect()
-    clist
-endfunction
-
-
-" -----------------
-" CSCOPE-Connection
-" -----------------
-command CscopeConnect call s:CscopeConnect()
-function s:CscopeConnect()
-    try
-        let cscopefile = s:Variables['VIM_CSCOPEFILE']
-        if filereadable(cscopefile)
-            execute 'cscope add ' . cscopefile
-        elseif cscopefile == ''
-            echomsg 'cscope: Could not connect: Make-variable "VIM_CSCOPEFILE" is empty'
-        else
-            echomsg 'cscope: Could not connect: File ' . cscopefile . ' does not exist'
-        endif
-    catch /E716/ " Schlüssel nicht vorhanden
-        echomsg 'cscope: Could not connect: Make-variable "VIM_CSCOPEFILE" is empty'
-    endtry
-endfunction
 
 " ------------------
 " Draw Vimsuite-Menu
@@ -452,7 +354,7 @@ function s:DelSessions()
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.20 '.s:VimSuiteMenuName.
                 \'&Session.&Save<tab>:SessionSave'.
                 \'   :SessionSave<CR>'
-    exec 'anoremenu '.s:VimSuiteMenuLocation.'.20 '.s:VimSuiteMenuName.
+    exec 'anoremenu '.s:VimSuiteMenuLocation.'.30 '.s:VimSuiteMenuName.
                 \'&Session.Save\ &As<tab>:SessionSave'.
                 \'   :let v:this_session = ""<CR>:SessionSave<CR>'
 endfunction

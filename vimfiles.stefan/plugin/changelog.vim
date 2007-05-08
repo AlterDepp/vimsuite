@@ -144,7 +144,7 @@ function s:ReportRev(Rev)
 endfunction
 
 " uncomment next line to get changelog for the last version
-execute 'call s:ReportRev(' . g:VimFilesRevision . ')'
+"execute 'call s:ReportRev(' . g:VimFilesRevision . ')'
 
 " comment changelog after first usage
 silent! new <sfile>
