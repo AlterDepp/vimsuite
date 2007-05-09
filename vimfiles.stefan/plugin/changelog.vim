@@ -14,7 +14,11 @@ if exists('nochangelog')
 endif
 
 function s:ReportRev(Rev)
-    if a:Rev >= '129'
+    if a:Rev >= '139'
+        echo 'Neu seit Rev: 129'
+        echo 'Projekt laden über project.vim'
+        echo 'Einstellungen bleiben gespeichert'
+    elseif a:Rev >= '129'
         echo 'Neu seit Rev: 129'
         echo 'Tags für BMS-X'
         echo 'Doxygen Toolkit'
@@ -144,7 +148,7 @@ function s:ReportRev(Rev)
 endfunction
 
 " uncomment next line to get changelog for the last version
-"execute 'call s:ReportRev(' . g:VimFilesRevision . ')'
+execute 'call s:ReportRev(' . g:VimFilesRevision . ')'
 
 " comment changelog after first usage
 silent! new <sfile>

@@ -12,26 +12,27 @@ if !exists("basedir")
     let g:basedir = getcwd()
 endif
 
-let s:makefileNames = [
-            \ 'makefile',
+let s:projectFileNames = [
+            \  'makefile',
             \  'Makefile',
             \  'makefile.mak',
             \  'Makefile.mak',
             \  'make.bat',
-            \  'make_fsw.bat']
-let g:projectFile = fnamemodify($VIMRUNTIME . '/../projects.txt', ':p')
+            \  'make_fsw.bat',
+            \  'project.vim']
+let g:projectsFile = fnamemodify($VIMRUNTIME . '/../projects.txt', ':p')
 
 " ----------
 " SetProject
 " ----------
-command -complete=customlist,GetAllMakefiles -nargs=? SetProject call s:SetProject('<args>')
+command -complete=customlist,GetAllProjectFiles -nargs=? SetProject call s:SetProject('<args>')
 " only for backward compatibility
 command -nargs=? SetBmskProject
             \ execute 'source ' . g:vimfiles . '/tools/bmsk.vim'
             \ | SetBmskProject <args>
 
-"function GetAllMakefiles(ArgLead, CmdLine, CursorPos)
-function GetAllMakefiles(...)
+"function GetAllProjectFiles(ArgLead, CmdLine, CursorPos)
+function GetAllProjectFiles(...)
     let makefilePaths = []
 
     " Get Makefiles from g:WA or ArgLead
@@ -45,29 +46,29 @@ function GetAllMakefiles(...)
                 let path = expand(ArgLead)
             endif
         endif
-        let makefilePaths += s:GetAllMakefilesInPath(path)
+        let makefilePaths += s:GetAllProjectFilesInPath(path)
     endif
 
     if makefilePaths == []
         " Get Projects from project.txt
-        let projectPaths = s:GetProjectPaths(g:projectFile)
+        let projectPaths = s:GetProjectPaths(g:projectsFile)
         for projectPath in projectPaths
-            let makefilePaths += s:GetAllMakefilesInPath(projectPath)
+            let makefilePaths += s:GetAllProjectFilesInPath(projectPath)
         endfor
     endif
 
     return makefilePaths
 endfunction
 
-" Get all Makefiles defined in s:makefileNames contained in path
-function s:GetAllMakefilesInPath(path)
+" Get all Makefiles defined in s:projectFileNames contained in path
+function s:GetAllProjectFilesInPath(path)
     let files = []
     if isdirectory(a:path)
         let path = a:path
     else
         let path = a:path . '*'
     endif
-    for makefileName in s:makefileNames
+    for makefileName in s:projectFileNames
         let pathlist = path . ',' . path . '/*,' . path . '/*/*'
         let newfiles = split(globpath(pathlist, makefileName))
         let files += newfiles
@@ -77,46 +78,59 @@ function s:GetAllMakefilesInPath(path)
 endfunction
 
 " Get Project-Paths from project.txt
-function s:GetProjectPaths(projectFile)
+function s:GetProjectPaths(projectsFile)
     let paths = []
-    if filereadable(a:projectFile)
-        let paths = split(system('more ' . a:projectFile))
+    if filereadable(a:projectsFile)
+        let paths = split(system('more ' . a:projectsFile))
     endif
     return paths
 endfunction
 
-" Find makefile and set some options
-" ----------------------------------
-function s:SetProject(makefile)
-    if ((a:makefile == '') && has('browse'))
-        " Browse for makefile
+" Find projectfile and set some options
+" -------------------------------------
+function s:SetProject(projectfile)
+    if ((a:projectfile == '') && has('browse'))
+        " Browse for projectfile
         if exists('g:WA')
             let l:WA = g:WA
         else
             let l:WA = ''
         endif
 
-        let makefilePath = fnamemodify(browse(0, 'Select makefile', l:WA, ''), ':p')
+        let b:browsefilter =
+                    \   "All Project Files\t" . join(s:projectFileNames, ';') . "\n"
+                    \ . "Vim-Files\t*.vim\n"
+                    \ . "Batch-Files\t*.bat\n"
+                    \ . "Makefiles\tmakefile;*.mak\n"
+                    \ . "All\ Files\t*\n"
+        let projectfilePath = fnamemodify(browse(0, 'Select projectfile', l:WA, ''), ':p')
+        if !filereadable(a:projectfile)
+            " Cancel
+            return
+        endif
     else
         " set Workarea and basedir
-        if filereadable(a:makefile)
-            let makefilePath = fnamemodify(a:makefile, ':p')
+        if filereadable(a:projectfile)
+            let projectfilePath = fnamemodify(a:projectfile, ':p')
         else
-            echoerr 'No makefile' a:makefile
+            echoerr 'No projectfile' a:projectfile
             return
         endif
     endif
 
     " split file name and path
-    let g:basedir = fnamemodify(makefilePath, ':p:h')
-    let makefileName = fnamemodify(makefilePath, ':t')
+    let g:basedir = fnamemodify(projectfilePath, ':p:h')
+    let projectfileName = fnamemodify(projectfilePath, ':t')
 
-    " test if makefile is a batch-script
-    let ext = fnamemodify(makefileName, ':e')
-    if ext == 'bat'
-        let g:makeCommand = makefilePath
+    " test if projectfile is a batch-script
+    let ext = fnamemodify(projectfileName, ':e')
+    if ext == 'vim'
+        execute 'source ' . projectfilePath
+        return
+    elseif ext == 'bat'
+        let g:makeCommand = projectfilePath
     else
-        let g:makeCommand = 'make -f ' . makefilePath
+        let g:makeCommand = 'make -f ' . projectfilePath
     endif
     let &makeprg = g:makeCommand . ' $*'
 
@@ -138,7 +152,7 @@ endfunction
 " Get Project Specific Variables
 function s:GetProjectVariables()
     let varnames = [
-                \ 'VIM_CONFIGFILE',
+                \ 'VIM_PROJECTFILE',
                 \]
     let s:Variables = GetMakeVars(varnames)
 
@@ -155,19 +169,19 @@ endfunction
 function s:EvalProjectVariables()
     try
         " evaluate path variable
-        if s:Variables['VIM_CONFIGFILE'] != ''
-            if !filereadable(s:Variables['VIM_CONFIGFILE'])
+        if s:Variables['VIM_PROJECTFILE'] != ''
+            if !filereadable(s:Variables['VIM_PROJECTFILE'])
                 " try to create config-file
                 make vim-config
             endif
             try
-                execute 'source ' . s:Variables['VIM_CONFIGFILE']
+                execute 'source ' . s:Variables['VIM_PROJECTFILE']
             catch
-                echoerr 'cant source "' . s:Variables['VIM_CONFIGFILE'] . '"'
-                echoerr 'check the make variable VIM_CONFIGFILE'
+                echoerr 'cant source "' . s:Variables['VIM_PROJECTFILE'] . '"'
+                echoerr 'check the make variable VIM_PROJECTFILE'
             endtry
         else
-            echomsg 'set the make-variable VIM_CONFIGFILE to the project-config file for vim'
+            echomsg 'set the make-variable VIM_PROJECTFILE to the project-config file for vim'
             echomsg 'For old BMSK-Projects try :SetBmskProject'
         endif
     catch /E716/ " Schlüssel nicht vorhanden
@@ -240,41 +254,50 @@ endfunction
 let s:VimSuiteMenuLocation = 70
 let s:VimSuiteMenuName = '&VimSuite.'
 
-function s:AddMakefileToProjectMenu(makefilePath)
-    exec 'anoremenu '.s:VimSuiteMenuLocation.'.10 '.s:VimSuiteMenuName.'&Project.'
-                \ . escape(a:makefilePath, '.\') . '<tab>'.
-                \'    :SetProject ' . a:makefilePath . '<CR>'
+function s:AddFileToProjectMenu(makefilePath, submenu, priority)
+    exec 'anoremenu '
+                \ . s:VimSuiteMenuLocation
+                \ . a:priority' '
+                \ . s:VimSuiteMenuName.'&Project'
+                \ . a:submenu . '.'
+                \ . escape(a:makefilePath, '.\') . '<tab>'
+                \ . '    :SetProject ' . a:makefilePath . '<CR>'
 endfunction
 "
 function s:AddAllKnownProjectsToMenu()
     " Projects in project.txt
-    exec 'anoremenu '. s:VimSuiteMenuName.
+    exec 'anoremenu ..50 '. s:VimSuiteMenuName.
                 \'&Project.-sep2-  :'
-    let projectPaths = s:GetProjectPaths(g:projectFile)
+    let projectPaths = s:GetProjectPaths(g:projectsFile)
     let makefilePaths = []
     for projectPath in projectPaths
-        let makefilePaths += s:GetAllMakefilesInPath(projectPath)
+        let makefilePaths += s:GetAllProjectFilesInPath(projectPath)
     endfor
     for makefilePath in makefilePaths
-        call s:AddMakefileToProjectMenu(makefilePath)
+        call s:AddFileToProjectMenu(makefilePath, '.Makefiles\ in\ project\.txt', '..60')
     endfor
 
     " Projects in g:WA
     if exists('g:WA')
-        exec 'anoremenu '. s:VimSuiteMenuName.
-                    \'&Project.-sep3-  :'
-        for makefilePath in s:GetAllMakefilesInPath(g:WA)
-            call s:AddMakefileToProjectMenu(makefilePath)
+        for makefilePath in s:GetAllProjectFilesInPath(g:WA)
+            if fnamemodify(makefilePath, ':e') == 'vim'
+                let submenu = ''
+                let prio = '..30'
+            else
+                let submenu = '.Makefiles\ in\ WA'
+                let prio = '..70'
+            endif
+            call s:AddFileToProjectMenu(makefilePath, submenu, prio)
         endfor
     endif
 endfunction
 "
 function s:InitProjectMenu()
     exec 'silent! aunmenu '.s:VimSuiteMenuName.'&Project'
-    exec 'anoremenu '.s:VimSuiteMenuLocation.'.10 '.s:VimSuiteMenuName.
-                \'&Project.&Browse\ for\ makefile<tab>:SetProject'.
+    exec 'anoremenu '.s:VimSuiteMenuLocation.'.10.10 '.s:VimSuiteMenuName.
+                \'&Project.&Browse\ for\ projectfile<tab>:SetProject'.
                 \'   :SetProject<CR>'
-    exec 'anoremenu ..25 '. s:VimSuiteMenuName.
+    exec 'anoremenu ..20 '. s:VimSuiteMenuName.
                 \'&Project.-sep1-  :'
 endfunction
 "
