@@ -430,7 +430,7 @@ function s:SetBmskDirs(bmskdir)
     unlet! g:OutDirVariante
     unlet! g:bmsk_stand
 
-    " Variablen erzeugen, damit GetMakeVar funktioniert
+    " Variablen erzeugen, damit s:GetMakeVar funktioniert
     if !exists('g:Muster')
         let g:Muster = ''
     endif
@@ -460,19 +460,19 @@ function s:SetBmskDirs(bmskdir)
     call GetAllMakeVars()
 
     if g:Muster == ''
-        let g:Muster = GetMakeVar('Muster')
+        let g:Muster = s:GetMakeVar('Muster')
     endif
     if g:Egas == ''
-        let g:Egas = GetMakeVar('Egas')
+        let g:Egas = s:GetMakeVar('Egas')
     endif
     if g:Motor == ''
-        let g:Motor = GetMakeVar('Motor')
+        let g:Motor = s:GetMakeVar('Motor')
     endif
     if g:SW_Stand == ''
-        let g:SW_Stand = GetMakeVar('Stand')
+        let g:SW_Stand = s:GetMakeVar('Stand')
     endif
     if g:Xlint == ''
-        let g:Xlint = GetMakeVar('DIAB_LINT_OPTION')
+        let g:Xlint = s:GetMakeVar('DIAB_LINT_OPTION')
     endif
 
     " bmsk dirs
@@ -643,6 +643,61 @@ endfunction
 set backup              " keep a backup file
 set backupext=~
 
+" Get values for a list of variables as dictionary
+function s:GetMakeVars(varNameList)
+    let varlist = {}
+    try
+        let vars = join(a:varNameList, ' ')
+        let command = g:makeCommand . ' ' . s:GetMakeOptions() . ' getvar name="' . vars . '"'
+        "echomsg command
+        let output = system(command)
+        let lines = split(output, "\n")
+        if len(lines) == 1 && len(a:varNameList) == 1 && match(lines[0], '=') < 0
+            " make output: value
+            let RE = '\(.*\)'
+            let SU = "let varlist['" . vars . "']='\\1'"
+        else
+            " make output: var=value
+            let RE = '^\(\w\+\)=\(.*\)\s*'
+            let SU = "let varlist['\\1']='\\2'"
+        endif
+        "echomsg 'getvars:'
+        for line in lines
+            "echomsg line
+            if match(line, RE) >= 0
+                let command = substitute(line, RE, SU, '')
+                "echomsg command
+                execute command
+            endif
+        endfor
+        "echomsg ''
+    catch
+        echomsg 'Could not read make variables'
+    endtry
+
+    if varlist == {}
+        echomsg 'Could not read any variables from makefile'
+        echo 'Command:' command
+        echo 'Make output is:'
+        for line in lines
+            echo line
+        endfor
+        echo '---'
+    endif
+    return varlist
+endfunction
+
+function s:GetMakeVar(varName)
+    let var = s:GetMakeVars([a:varName])
+    try
+        let varValue = var[a:varName]
+    catch
+        let varValue = ''
+        echomsg 'Could not read make-variable "' . a:varName . '"'
+    endtry
+    return varValue
+endfunction
+
 "-------------------------
 function GetAllMakeVars()
 "-------------------------
@@ -663,7 +718,7 @@ function GetAllMakeVars()
     let varnames['PTagsFile']       = 'PTAGFILE'
     let varnames['Goals']           = 'GOALS'
     let varnames['Programname']     = 'PROGRAMNAME'
-    let varlist = GetMakeVars(values(varnames))
+    let varlist = s:GetMakeVars(values(varnames))
     for var in items(varnames)
         if has_key(varlist, var[1])
             let g:{var[0]} = varlist[var[1]]
@@ -695,7 +750,7 @@ endfunction
 function GetOutDir()
 " ------------------
     if !exists('g:OutDir')
-        let g:OutDir = GetMakeVar('OUTDIR')
+        let g:OutDir = s:GetMakeVar('OUTDIR')
     endif
     if (g:OutDir != '')
         let g:OutDir = fnamemodify(g:OutDir, ':p')
@@ -707,9 +762,9 @@ endfunction
 function GetProductDir()
 " ----------------------
     if !exists('g:ProductDir')
-        let g:ProductDir = GetMakeVar('DELIVERY_PATH')
+        let g:ProductDir = s:GetMakeVar('DELIVERY_PATH')
         if (g:ProductDir == '')
-            let g:ProductDir = GetMakeVar('OUTDIR_PRODUCTS')
+            let g:ProductDir = s:GetMakeVar('OUTDIR_PRODUCTS')
         endif
     endif
     if (g:ProductDir != '')
@@ -722,9 +777,9 @@ endfunction
 function GetDfilesDir()
 " ---------------------
     if !exists('g:DfilesDir')
-        let g:DfilesDir = GetMakeVar('D_FILES_DIR')
+        let g:DfilesDir = s:GetMakeVar('D_FILES_DIR')
         if (g:DfilesDir == '')
-            let g:DfilesDir = GetMakeVar('OUTDIR_D_FILES')
+            let g:DfilesDir = s:GetMakeVar('OUTDIR_D_FILES')
         endif
         if (g:DfilesDir != '')
             let g:DfilesDir = fnamemodify(g:DfilesDir, ':p')
@@ -737,7 +792,7 @@ endfunction
 function GetStandDir()
 " --------------------
     if !exists('g:bmsk_stand')
-        let g:bmsk_stand = GetMakeVar('OUTDIR_STAND')
+        let g:bmsk_stand = s:GetMakeVar('OUTDIR_STAND')
     endif
     if (g:bmsk_stand != '')
         let g:bmsk_stand = fnamemodify(g:bmsk_stand, ':p')
@@ -749,7 +804,7 @@ endfunction
 function GetOutDirVariante()
 " --------------------------
     if !exists('g:OutDirVariante')
-        let g:OutDirVariante = GetMakeVar('OUTDIR_VARIANTE')
+        let g:OutDirVariante = s:GetMakeVar('OUTDIR_VARIANTE')
     endif
     if (g:OutDirVariante != '')
         let g:OutDirVariante = fnamemodify(g:OutDirVariante, ':p')
@@ -761,7 +816,7 @@ endfunction
 function GetCscopePrg()
 " ----------------------
     if !exists('g:CscopePrg')
-        let g:CscopePrg = GetMakeVar('CSCOPE')
+        let g:CscopePrg = s:GetMakeVar('CSCOPE')
     endif
     if (g:CscopePrg != '')
         let g:CscopePrg = fnamemodify(g:CscopePrg, ':p')
@@ -773,7 +828,7 @@ endfunction
 function GetCscopeFile()
 " ----------------------
     if !exists('g:CscopeFile')
-        let g:CscopeFile = GetMakeVar('CSCOPEFILE')
+        let g:CscopeFile = s:GetMakeVar('CSCOPEFILE')
     endif
     if (g:CscopeFile != '')
         let g:CscopeFile = fnamemodify(g:CscopeFile, ':p')
@@ -785,7 +840,7 @@ endfunction
 function GetCTagsFile()
 " ---------------------
     if !exists('g:CTagsFile')
-        let g:CTagsFile = GetMakeVar('CTAGFILE')
+        let g:CTagsFile = s:GetMakeVar('CTAGFILE')
     endif
     if (g:CTagsFile != '')
         let g:CTagsFile = fnamemodify(g:CTagsFile, ':p')
@@ -797,7 +852,7 @@ endfunction
 function GetPTagsFile()
 " ---------------------
     if !exists('g:PTagsFile')
-        let g:PTagsFile = GetMakeVar('PTAGFILE')
+        let g:PTagsFile = s:GetMakeVar('PTAGFILE')
     endif
     if (g:PTagsFile != '')
         let g:PTagsFile = fnamemodify(g:PTagsFile, ':p')
@@ -809,7 +864,7 @@ endfunction
 function GetGoals()
 " -----------------
     if !exists('g:Goals')
-        let g:Goals = GetMakeVar('GOALS')
+        let g:Goals = s:GetMakeVar('GOALS')
     endif
     return g:Goals
 endfunction
@@ -818,7 +873,7 @@ endfunction
 function GetProgramname()
 " -----------------------
     if !exists('g:Programname')
-        let g:Programname = GetMakeVar('PROGRAMNAME')
+        let g:Programname = s:GetMakeVar('PROGRAMNAME')
     endif
     return g:Programname
 endfunction
@@ -989,7 +1044,7 @@ endfunction
 command PatchA2L call s:A2L_EXTENTION()
 function s:A2L_EXTENTION()
     call s:SetBmskCompiler()
-    execute '!start make_fsw.bat patch_a2l ' . g:makeopts . ' & pause'
+    execute '!start make_fsw.bat patch_a2l ' . s:GetMakeOptions() . ' & pause'
 endfunction
 
 " -------------------------------------
