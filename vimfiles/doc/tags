@@ -1315,6 +1315,7 @@ g:netrw_rmdir_cmd	pi_netrw.txt	/*g:netrw_rmdir_cmd*
 g:netrw_rmf_cmd	pi_netrw.txt	/*g:netrw_rmf_cmd*
 g:netrw_rsync_cmd	pi_netrw.txt	/*g:netrw_rsync_cmd*
 g:netrw_scp_cmd	pi_netrw.txt	/*g:netrw_scp_cmd*
+g:netrw_scpport	pi_netrw.txt	/*g:netrw_scpport*
 g:netrw_sftp_cmd	pi_netrw.txt	/*g:netrw_sftp_cmd*
 g:netrw_shq	pi_netrw.txt	/*g:netrw_shq*
 g:netrw_sort_by	pi_netrw.txt	/*g:netrw_sort_by*
@@ -1322,12 +1323,16 @@ g:netrw_sort_direction	pi_netrw.txt	/*g:netrw_sort_direction*
 g:netrw_sort_sequence	pi_netrw.txt	/*g:netrw_sort_sequence*
 g:netrw_ssh_browse_reject	pi_netrw.txt	/*g:netrw_ssh_browse_reject*
 g:netrw_ssh_cmd	pi_netrw.txt	/*g:netrw_ssh_cmd*
+g:netrw_sshport	pi_netrw.txt	/*g:netrw_sshport*
 g:netrw_timefmt	pi_netrw.txt	/*g:netrw_timefmt*
 g:netrw_uid	pi_netrw.txt	/*g:netrw_uid*
+g:netrw_use_errorwindow	pi_netrw.txt	/*g:netrw_use_errorwindow*
 g:netrw_use_noswf	pi_netrw.txt	/*g:netrw_use_noswf*
 g:netrw_use_nt_rcp	pi_netrw.txt	/*g:netrw_use_nt_rcp*
 g:netrw_win95ftp	pi_netrw.txt	/*g:netrw_win95ftp*
 g:netrw_winsize	pi_netrw.txt	/*g:netrw_winsize*
+g:tcommentMapLeader1	tComment.txt	/*g:tcommentMapLeader1*
+g:tcommentMapLeader2	tComment.txt	/*g:tcommentMapLeader2*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
 g:visincr_datedivset	visincr.txt	/*g:visincr_datedivset*
 getlatestvimscripts-install	pi_getscript.txt	/*getlatestvimscripts-install*
