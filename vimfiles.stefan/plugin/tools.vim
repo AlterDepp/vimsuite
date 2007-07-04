@@ -13,13 +13,13 @@ if !exists("basedir")
 endif
 
 let s:projectFileNames = [
+            \  'project.vim',
             \  'makefile',
             \  'Makefile',
             \  'makefile.mak',
             \  'Makefile.mak',
             \  'make.bat',
-            \  'make_fsw.bat',
-            \  'project.vim']
+            \  'make_fsw.bat']
 let g:projectsFile = fnamemodify($VIMRUNTIME . '/../projects.txt', ':p')
 
 " ----------

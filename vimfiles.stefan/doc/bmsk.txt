@@ -20,6 +20,9 @@ Das Verwenden von Sessions empfielt sich zusätzlich (siehe|VimSuite|).
                                                              *:SetBmskProject*
 :SetBmskProject [Pfad]           Setzen der Einstellungen für ein BMSK-Projekt
 
+Dieser Befehl sollte nur noch für alte Projekte verwendet werden, die noch 
+keine project.vim Datei enthalten.
+
 Mit dem Befehl|:SetBmskProject|können alle Einstellungen für ein
 BMSK-Projekt vorgenommen werden. Es wird in das Verzeichnis .../bmsk
 gewechselt und alle Tools werden mit dem neuen Pfad ausgeführt. Ausserdem wird
@@ -74,8 +77,8 @@ HTML-Dokumentation
 
 ==============================================================================
 *BMSK.3*   Compilieren
-                                                                       *:Bmsk*
-:Bmsk                                           Compilieren des BMSK-Projektes
+								       *:Make*
+:Make                                           Compilieren des BMSK-Projektes
 
 Alle gängigen Optionen können über die Tab-Erweiterung ausgewählt werden.
 
@@ -84,8 +87,8 @@ Alle gängigen Optionen können über die Tab-Erweiterung ausgewählt werden.
 
 Dieser Befehl kann auch über 'Bmsk lint file=%:p' erreicht werden
 
-                                                                   *:BmskDoku*
-:BmskDoku                                  Erzeugen einer Doku im BMSK-Projekt
+								   *:MakeDoku*
+:MakeDoku                                  Erzeugen einer Doku im BMSK-Projekt
 
 Es wird|Bmsk|ein der Fehlerparser aus der|LaTeX-Suite|verwendet.  Dadurch sind 
 auch normale LaTeX-Warnings zu sehen. Diese müssen jedoch nicht alle beseitigt 

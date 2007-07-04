@@ -1,1 +1,1 @@
-c:\tools\vim\vim71\gvim.exe -c "DirDiff %1 %2"
+c:\tools\vim\vim71\gvim.exe -c "DirDiff %2 %1"
