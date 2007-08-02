@@ -18,6 +18,7 @@ function s:ReportRev(Rev)
         echo 'Neu seit Rev: 129'
         echo 'Projekt laden über project.vim'
         echo 'Einstellungen bleiben gespeichert'
+        echo 'Session wird im Projekt gespeichert, wenn g:sessionfile von project.vim gesetzt wird'
     elseif a:Rev >= '129'
         echo 'Neu seit Rev: 129'
         echo 'Tags für BMS-X'

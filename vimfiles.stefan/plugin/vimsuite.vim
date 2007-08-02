@@ -122,30 +122,48 @@ function s:SetProject(projectfile)
     let g:basedir = fnamemodify(projectfilePath, ':p:h')
     let projectfileName = fnamemodify(projectfilePath, ':t')
 
-    " test if projectfile is a batch-script
     let ext = fnamemodify(projectfileName, ':e')
     if ext == 'vim'
-        execute 'source ' . projectfilePath
-        return
-    elseif ext == 'bat'
-        let g:makeCommand = projectfilePath
+        " Projectfile is a vimscript. Execute and end
+        try
+            execute 'source ' . projectfilePath
+        catch
+            echom v:exception
+        endtry
     else
-        let g:makeCommand = 'make -f ' . projectfilePath
+        " Projectfile is a makefile or a batchfile
+        if ext == 'bat'
+            let g:makeCommand = projectfilePath
+        else
+            let g:makeCommand = 'make -f ' . projectfilePath
+        endif
+        let &makeprg = g:makeCommand . ' $*'
+
+        " set directories
+        execute 'cd ' . g:basedir
+        " cd path
+        let &cdpath = g:basedir
+        " browse-dir
+        set browsedir=buffer
+
+        " search path
+        set path&
+
+        call s:GetProjectVariables()
+        call s:EvalProjectVariables()
     endif
-    let &makeprg = g:makeCommand . ' $*'
 
-    " set directories
-    execute 'cd ' . g:basedir
-    " cd path
-    let &cdpath = g:basedir
-    " browse-dir
-    set browsedir=buffer
-
-    " search path
-    set path&
-
-    call s:GetProjectVariables()
-    call s:EvalProjectVariables()
+    if exists('g:sessionfile')
+        " Vim-Session load
+        try
+            execute 'source' g:sessionfile
+        catch /^Vim\%((\a\+)\)\=:E484/ " file not found
+        catch " other error
+            echom 'Fehler in' g:sessionfile ':' v:exception
+        endtry
+        " Vim-Session autowrite
+        autocmd VimLeavePre * execute 'mksession!' g:sessionfile
+    endif
 
 endfunction
 
