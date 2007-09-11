@@ -43,6 +43,8 @@ let b:commentstring = "\/\/"
 "setlocal comments=sO:*\ -,mO:\ \ \ ,exO:*/,s1:/*,mb:\ ,ex:*/
 setlocal cpoptions-=C
 
+" spell check
+setlocal spell
 
 " Grep options
 let b:GrepFiles = '*.c *.h'

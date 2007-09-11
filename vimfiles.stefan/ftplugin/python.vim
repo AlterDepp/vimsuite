@@ -1,7 +1,7 @@
 " Stefans python-file plugin
 
-" don't use spaces for tabs
-setlocal noexpandtab
+" use spaces for tabs
+setlocal expandtab
 setlocal tabstop=4
 setlocal shiftwidth=4
 setlocal formatoptions=croq

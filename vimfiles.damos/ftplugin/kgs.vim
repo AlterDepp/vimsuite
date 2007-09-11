@@ -36,6 +36,9 @@ setlocal formatexpr=KgsFormat()
 " ----------
 let b:commentstring = "\/\/"
 
+" spell check
+setlocal spell
+
 " Grep options
 let b:GrepFiles = '*.kgs'
 

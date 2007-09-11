@@ -913,4 +913,14 @@ function Insert_Header(file)
     endwhile
 endfunction
 
+" -------
+" Outlook
+" -------
+
+command OutlookBugfix call s:OutlookBugfix()
+function s:OutlookBugfix()
+    silent execute ':%s$^\(\%([^,]*,\)\{55}\)"\/o[^,]*\"\(,"EX","[^(]*(\)\([^)]*\)\()",\)$\1"\3"\2\3\4$c'
+    silent execute ':%s$^\(\%([^,]*,\)\{47}\)"\/o[^,]*\"\(,"EX","[^(]*(\)\([^)]*\)\()",\)$\1"\3"\2\3\4$c'
+endfunction
+
 EchoDebug 'loaded tools.vim'
