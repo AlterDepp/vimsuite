@@ -1,6 +1,6 @@
 " netrwPlugin.vim: Handles file transfer and remote directory listing across a network
 "            PLUGIN SECTION
-" Date:		Jan 05, 2007
+" Date:		Aug 09, 2007
 " Maintainer:	Charles E Campbell, Jr <NdrOchip@ScampbellPfamily.AbizM-NOSPAM>
 " GetLatestVimScripts: 1075 1 :AutoInstall: netrw.vim
 " Copyright:    Copyright (C) 1999-2005 Charles E. Campbell, Jr. {{{1
@@ -64,11 +64,10 @@ augroup Network
 augroup END
 
 " Commands: :Nread, :Nwrite, :NetUserPass {{{2
-com! -count=1 -nargs=*	Nread		call netrw#NetSavePosn()<bar>call netrw#NetRead(<count>,<f-args>)<bar>call netrw#NetRestorePosn()
-com! -range=% -nargs=*	Nwrite		call netrw#NetSavePosn()<bar><line1>,<line2>call netrw#NetWrite(<f-args>)<bar>call netrw#NetRestorePosn()
+com! -count=1 -nargs=*	Nread		call netrw#NetrwSavePosn()<bar>call netrw#NetRead(<count>,<f-args>)<bar>call netrw#NetrwRestorePosn()
+com! -range=% -nargs=*	Nwrite		call netrw#NetrwSavePosn()<bar><line1>,<line2>call netrw#NetWrite(<f-args>)<bar>call netrw#NetrwRestorePosn()
 com! -nargs=*		NetUserPass	call NetUserPass(<f-args>)
-com! -nargs=+           Ncopy           call netrw#NetObtain(<f-args>)
-com! -nargs=*	        Nsource		call netrw#NetSavePosn()<bar>call netrw#NetSource(<f-args>)<bar>call netrw#NetRestorePosn()
+com! -nargs=*	        Nsource		call netrw#NetrwSavePosn()<bar>call netrw#NetSource(<f-args>)<bar>call netrw#NetrwRestorePosn()
 
 " Commands: :Explore, :Sexplore, Hexplore, Vexplore {{{2
 com! -nargs=* -bar -bang -count=0 -complete=dir	Explore		call netrw#Explore(<count>,0,0+<bang>0,<q-args>)
@@ -80,7 +79,8 @@ com! -nargs=* -bar -bang			Nexplore	call netrw#Explore(-1,0,0,<q-args>)
 com! -nargs=* -bar -bang			Pexplore	call netrw#Explore(-2,0,0,<q-args>)
 
 " Commands: NetrwSettings {{{2
-com! -nargs=0 NetrwSettings :call netrwSettings#NetrwSettings()
+com! -nargs=0	NetrwSettings	call netrwSettings#NetrwSettings()
+com! -bang	NetrwClean	call netrw#NetrwClean(<bang>0)
 
 " Maps:
 if !exists("g:netrw_nogx") && maparg('g','n') == ""

@@ -14,6 +14,10 @@ if exists('nochangelog')
 endif
 
 function s:ReportRev(Rev)
+    if a:Rev >= '145'
+        echo 'Neu seit Rev: 145'
+        echo 'BlockDiff: Markieren -> BlockDiff -> Markieren -> BlockDiff -> neuer Tab'
+        echo 'Gsub: global substitute'
     if a:Rev >= '139'
         echo 'Neu seit Rev: 129'
         echo 'Projekt laden über project.vim'

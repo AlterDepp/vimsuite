@@ -13,6 +13,7 @@ syntax keyword kgsDefinitions   fkt_bezeichner kgs_bezeichner ram_bezeichner
 syntax keyword kgsDefinitions   ram_groesse lok_ram_groesse kennwert kennlinie
 syntax keyword kgsDefinitions   gruppenkennlinie gruppenkennfeld gruppenstuetzstellen
 syntax keyword kgsDefinitions   kennfeld kennwerteblock systemkonstante festkennlinie
+syntax keyword kgsDefinitions   kenngroessen_gruppe ramgroessen_gruppe
 syntax keyword kgsRefgroessen   ref_ram_groesse ref_kenngroesse
 syntax keyword kgsKomponents    umrechnung codesyntax datentyp adressierschema
 syntax keyword kgsKomponents    bitanzahl element_anzahl bitbasis_typ bitposition

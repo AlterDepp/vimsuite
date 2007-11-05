@@ -25,13 +25,20 @@ syn keyword damosFunction  einstelleSprache oeffneOSp liesBezeichner oeffnePV
 syn keyword damosFunction  liesAdressDatei anlegeDatenstand
 syn keyword damosFunction  liesKonservierung speichere schreibeHexDatei
 syn keyword damosFunction  schreibeASAP_AgIAsw
-syn keyword damosFunction  kdoOTypCheck ausfuehreTrans pruefeAutoRam
+syn keyword damosFunction  kdoOTypCheck ausfuehre ausfuehreTrans pruefeAutoRam
 syn keyword damosFunction  pruefeFktKonsistenz schreibeFhlListAusFktKonsPruef
 syn keyword damosFunction  oeffneQuellDatenstand fuelleAusTestwerte
 syn keyword damosFunction  definiereSGGrAuswahl anlegeAsw entferneAsw schneideAsw
 syn keyword damosFunction  schliesseAsw setzeUmfang schreibeDatenquelle
 syn keyword damosFunction  schreibeFktIncludeAbh anlegeOSp importiereObjekte
-syn keyword damosFunction  schliesseOSp
+syn keyword damosFunction  anlegeProjekt anlegePV liesDefBase
+syn keyword damosFunction  schliesseOSp schliesseQuellDatenstand
+syn keyword damosFunction  anzeigeVarKod liefereName
+syn keyword damosFunction  pruefeAblKonsistenz pruefeBezeichnerListe
+syn keyword damosFunction  pruefeRefInfo pruefeSpeicherbereiche
+syn keyword damosFunction  pruefeMinPMaxP pruefeVarKod vater
+syn keyword damosFunction  schreibeFhlListAusBezKonsPruef schreibeFktIncludeAsw
+
 syn keyword damosCommand   exit Dam DAMOS quellDst
 
 syn match   damosSeperator        "[<>,:]"

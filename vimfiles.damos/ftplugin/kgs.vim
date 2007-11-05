@@ -29,7 +29,7 @@ setlocal expandtab
 "set cindent
 setlocal cinoptions=*200,)100,(s,w1
 let &l:shiftwidth = tabwidth
-setlocal formatoptions=croq
+setlocal formatoptions=wan2croql
 setlocal formatexpr=KgsFormat()
 
 " commenting
