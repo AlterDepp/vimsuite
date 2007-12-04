@@ -5,9 +5,21 @@ syntax keyword cType    tuint8 tsint8 tuint16 tsint16 tuint32 tsint32 tuint64 ts
 syntax keyword cType    DfpType SfpType SfpErrorType LWrd LInt
 syntax keyword cType    TickType
 syntax keyword Special  ATOMIC BEGIN_ATOMIC END_ATOMIC
-"syntax match   cTodo     "!\s*IST_LIEBL.*[^*/]"
-syntax match   cTodo    "\(!\s*IST_LIEBL.*\>\)\ze\s*\*/"
+
+" debug
 syntax match   cTodo    "\(debug\)"
+
+" Lint-Komments and #ifdef's
+" Flexelint-Comment
+syntax match   cLint    "\(\/\/\)\(lint.*\)"
+syntax match   cLint    "\(\/\*\)\(lint\_.\{-}\)\(\*\/\)"
+" Splint-Comment
+syntax match   cLint    "\/\*@\_.\{-}@\*\/"
+" #ifdef _lint or #ifndef _lint
+syntax match   cLint    "\(#\s*ifn\?def\s\+_lint\)"
+
+hi def link cLint		Todo
+
 syntax keyword cConstant TRUE FALSE
 
 syntax region myFold start="{" end="}" transparent fold

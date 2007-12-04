@@ -164,7 +164,7 @@ nnoremap <S-CR> <C-T>
 " find next error
 nnoremap <C-N> :cn<CR>
 " go back to previous edited file
-nnoremap gb :edit #<CR>
+nnoremap gb :call GotoLastFile()<CR>
 
 " -----------
 " come and go

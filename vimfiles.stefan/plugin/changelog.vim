@@ -14,11 +14,14 @@ if exists('nochangelog')
 endif
 
 function s:ReportRev(Rev)
-    if a:Rev >= '145'
+    if a:Rev >= '148'
+    elseif a:Rev >= '145'
         echo 'Neu seit Rev: 145'
         echo 'BlockDiff: Markieren -> BlockDiff -> Markieren -> BlockDiff -> neuer Tab'
         echo 'Gsub: global substitute'
-    if a:Rev >= '139'
+        echo 'gb funktioniert jetzt anders (= <c-o> bis zum letzten file)'
+        echo 'syntax Highliting für Lint-Kommentare'
+    elseif a:Rev >= '139'
         echo 'Neu seit Rev: 129'
         echo 'Projekt laden über project.vim'
         echo 'Einstellungen bleiben gespeichert'

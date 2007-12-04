@@ -34,6 +34,16 @@ function EchoDebug(text)
     endif
 endfunction
 
+" Go back in jumplist to an older file
+function! GotoLastFile()
+    let actfilename = expand('%')
+    let filename = actfilename
+    while filename == actfilename
+        execute "normal \<C-O>"
+        let filename = expand('%')
+    endwhile
+endfunction
+
 "command -nargs=1 PathNormpath call PathNormpath('<fargs>')
 "function PathNormpath(string)
 "    if (v:version > 602)
