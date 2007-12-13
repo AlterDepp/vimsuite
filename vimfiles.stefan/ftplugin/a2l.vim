@@ -11,3 +11,7 @@ let b:commentstring = '//'
 
 " Grep options
 "let b:GrepFiles = '*.py'
+
+" matchit.vim
+let b:match_words = '/begin\>:/end\>'
+

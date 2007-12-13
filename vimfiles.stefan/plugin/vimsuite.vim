@@ -693,6 +693,25 @@ function FindDeclaration()
 endfunction
 
 " indent a wordNum to position
+command -range -nargs=+ IndentWordNum call IndentWords(<f-args>, <line1>, <line2>)
+" handle range
+function IndentWords(wordNum, pos, fromline, toline)
+    let cursorLine = line(".")
+    let cursorCol = col(".")
+    if (a:fromline > 1)
+        call cursor(a:fromline-1, 255)
+    else
+        call cursor(a:fromline, 1)
+    endif
+    let line_nr = a:fromline
+    while (line_nr <= a:toline)
+        call cursor(line_nr, 1)
+        call IndentWordNum(a:wordNum, a:pos)
+        let line_nr = line_nr + 1
+    endwhile
+    call cursor(cursorLine, cursorCol)
+endfunction
+" handle one line
 function IndentWordNum(wordNum, pos)
     " store cursor postion
     let cursorLine = line(".")

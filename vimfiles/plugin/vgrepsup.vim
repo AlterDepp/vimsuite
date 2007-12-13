@@ -1,9 +1,10 @@
 " Author: Michael Geddes ( vimmer at frog.wheelycreek.net )
 "
 " Created for zimnyx on IRC
-" Version:0.2
+" Version:0.3
 "
-" Do a global search replace on a directory.
+" Gsub Do a global search replace on a directory.
+" Bsub Do a buffer search replace.
 " 
 "
 " Copyright: Copyright me. Feel free to use, share, modify & distribute the
@@ -28,7 +29,16 @@ fun! GlobSearchReplace( fileglob, sub, rep, flag)
   endwhile
   return countup
 endfun
-fun! s:CallGlobReplace(str)
+
+fun! BufSearchReplace( fileglob, sub, rep, flag)
+  if a:fileglob != ''
+    echoerr 'Filter not supported'
+  else
+    exe 'bufdo %s/'.escape(a:sub, '/').'/'.escape(a:rep,'/').'/'.a:flag
+  end
+endfun
+
+fun! s:CallGlobReplace(func, str)
   if strlen(a:str) == 0 
     echoerr 'Usage: /sub/rep/flags files'
     return 0
@@ -57,7 +67,7 @@ fun! s:CallGlobReplace(str)
     let idx+=1
   endwhile
   if argidx == 2
-    echo ' argidx=2'
+    "echo ' argidx=2'
     let idx+=1
     while idx < strlen(str)
       if str[idx]=~'\s'
@@ -69,8 +79,10 @@ fun! s:CallGlobReplace(str)
     endwhile
     let argfileglob=str[idx : ]
   endif
-  call GlobSearchReplace( argfileglob, arg0, arg1, argflags)
+  exe 'call '.a:func.'( argfileglob, arg0, arg1, argflags)'
+  " call GlobSearchReplace( argfileglob, arg0, arg1, argflags)
 endfun
 
-com! -nargs=1  Gsub  :call s:CallGlobReplace(<q-args>)
+com! -nargs=1  Gsub  :call s:CallGlobReplace('GlobSearchReplace', <q-args>)
+com! -nargs=1  Bsub  :call s:CallGlobReplace('BufSearchReplace', <q-args>)
 

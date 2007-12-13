@@ -15,6 +15,9 @@ endif
 
 function s:ReportRev(Rev)
     if a:Rev >= '148'
+        echo 'Neu seit Rev: 148'
+        echo 'BlockDiff: Commands ergänzt'
+        echo 'Matchit: syntax für a2l'
     elseif a:Rev >= '145'
         echo 'Neu seit Rev: 145'
         echo 'BlockDiff: Markieren -> BlockDiff -> Markieren -> BlockDiff -> neuer Tab'

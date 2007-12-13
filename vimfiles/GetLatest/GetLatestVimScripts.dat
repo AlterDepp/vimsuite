@@ -1,6 +1,6 @@
 ScriptID SourceID Filename
 --------------------------
-1075 7738 netrw.vim
+1075 8042 netrw.vim
 1502 7078 vimball.vim
 1008 3118 srec.vim (ftplugin)
 1009 3119 srec.vim (syntax file)
@@ -22,7 +22,9 @@ ScriptID SourceID Filename
 1462 5612 dtd2xml
 1046 4249 Lusty Explorer
 2043 7805 VimPdb (debugging python)
-1776 7810 Vimgrep Replace
-2048 7815 BlockDiff
+1776 7902 Vimgrep Replace
+2048 7817 BlockDiff
+39   7637 matchit.vim
+2092 8041 reloaded.vim (matrix colorscheme)
 642  7080 getscript.vim
 642  7080 :AutoInstall: GetLatestVimScripts.vim
