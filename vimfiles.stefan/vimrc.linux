@@ -27,8 +27,7 @@ let g:noccmmenu = 1
 if has('gui')
 
     " set Font
-    "set guifont=Fixedsys
-    "set guifont=Terminal:h6
+    set guifont=Andale\ Mono\ 8
     "set guifontwide=
 
     " Set standards for GUI
