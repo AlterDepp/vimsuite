@@ -1,6 +1,6 @@
 ScriptID SourceID Filename
 --------------------------
-1075 8351 netrw.vim
+1075 8501 netrw.vim
 1502 7078 vimball.vim
 1008 3118 srec.vim (ftplugin)
 1009 3119 srec.vim (syntax file)
@@ -30,3 +30,4 @@ ScriptID SourceID Filename
 294  8407 Align.vim
 642  8136 getscript.vim
 642  8136 :AutoInstall: GetLatestVimScripts.vim
+1066 7618 :AutoInstall: cecutil.vim

@@ -155,6 +155,25 @@ b:match_wholeBR	matchit.txt	/*b:match_wholeBR*
 b:match_word	matchit.txt	/*b:match_word*
 b:match_words	matchit.txt	/*b:match_words*
 b:netrw_lastfile	pi_netrw.txt	/*b:netrw_lastfile*
+cecutil	cecutil.txt	/*cecutil*
+cecutil-cmd	cecutil.txt	/*cecutil-cmd*
+cecutil-contents	cecutil.txt	/*cecutil-contents*
+cecutil-copyright	cecutil.txt	/*cecutil-copyright*
+cecutil-destroymark	cecutil.txt	/*cecutil-destroymark*
+cecutil-history	cecutil.txt	/*cecutil-history*
+cecutil-map	cecutil.txt	/*cecutil-map*
+cecutil-maps	cecutil.txt	/*cecutil-maps*
+cecutil-marks	cecutil.txt	/*cecutil-marks*
+cecutil-position	cecutil.txt	/*cecutil-position*
+cecutil-posn	cecutil.txt	/*cecutil-posn*
+cecutil-restoremark	cecutil.txt	/*cecutil-restoremark*
+cecutil-restorewinposn	cecutil.txt	/*cecutil-restorewinposn*
+cecutil-rwp	cecutil.txt	/*cecutil-rwp*
+cecutil-savemark	cecutil.txt	/*cecutil-savemark*
+cecutil-saveusermaps	cecutil.txt	/*cecutil-saveusermaps*
+cecutil-savewinposn	cecutil.txt	/*cecutil-savewinposn*
+cecutil-swp	cecutil.txt	/*cecutil-swp*
+cecutil.txt	cecutil.txt	/*cecutil.txt*
 crefvim	crefvim.txt	/*crefvim*
 crefvim.txt	crefvim.txt	/*crefvim.txt*
 crefvimdoc	crefvimdoc.txt	/*crefvimdoc*
@@ -1394,6 +1413,7 @@ g:netrw_alto	pi_netrw.txt	/*g:netrw_alto*
 g:netrw_altv	pi_netrw.txt	/*g:netrw_altv*
 g:netrw_browse_split	pi_netrw.txt	/*g:netrw_browse_split*
 g:netrw_browsex_viewer	pi_netrw.txt	/*g:netrw_browsex_viewer*
+g:netrw_cd_escape	pi_netrw.txt	/*g:netrw_cd_escape*
 g:netrw_compress	pi_netrw.txt	/*g:netrw_compress*
 g:netrw_cygwin	pi_netrw.txt	/*g:netrw_cygwin*
 g:netrw_dav_cmd	pi_netrw.txt	/*g:netrw_dav_cmd*
@@ -1401,6 +1421,7 @@ g:netrw_decompress	pi_netrw.txt	/*g:netrw_decompress*
 g:netrw_extracmd	pi_netrw.txt	/*g:netrw_extracmd*
 g:netrw_fastbrowse	pi_netrw.txt	/*g:netrw_fastbrowse*
 g:netrw_fetch_cmd	pi_netrw.txt	/*g:netrw_fetch_cmd*
+g:netrw_fname_escape	pi_netrw.txt	/*g:netrw_fname_escape*
 g:netrw_ftp	pi_netrw.txt	/*g:netrw_ftp*
 g:netrw_ftp_browse_reject	pi_netrw.txt	/*g:netrw_ftp_browse_reject*
 g:netrw_ftp_cmd	pi_netrw.txt	/*g:netrw_ftp_cmd*
@@ -1408,6 +1429,7 @@ g:netrw_ftp_list_cmd	pi_netrw.txt	/*g:netrw_ftp_list_cmd*
 g:netrw_ftp_sizelist_cmd	pi_netrw.txt	/*g:netrw_ftp_sizelist_cmd*
 g:netrw_ftp_timelist_cmd	pi_netrw.txt	/*g:netrw_ftp_timelist_cmd*
 g:netrw_ftpmode	pi_netrw.txt	/*g:netrw_ftpmode*
+g:netrw_glob_escape	pi_netrw.txt	/*g:netrw_glob_escape*
 g:netrw_hide	pi_netrw.txt	/*g:netrw_hide*
 g:netrw_http_cmd	pi_netrw.txt	/*g:netrw_http_cmd*
 g:netrw_ignorenetrc	pi_netrw.txt	/*g:netrw_ignorenetrc*
@@ -1443,6 +1465,7 @@ g:netrw_ssh_browse_reject	pi_netrw.txt	/*g:netrw_ssh_browse_reject*
 g:netrw_ssh_cmd	pi_netrw.txt	/*g:netrw_ssh_cmd*
 g:netrw_sshport	pi_netrw.txt	/*g:netrw_sshport*
 g:netrw_timefmt	pi_netrw.txt	/*g:netrw_timefmt*
+g:netrw_tmpfile_escape	pi_netrw.txt	/*g:netrw_tmpfile_escape*
 g:netrw_uid	pi_netrw.txt	/*g:netrw_uid*
 g:netrw_use_errorwindow	pi_netrw.txt	/*g:netrw_use_errorwindow*
 g:netrw_use_noswf	pi_netrw.txt	/*g:netrw_use_noswf*
@@ -1463,6 +1486,7 @@ getscript-data	pi_getscript.txt	/*getscript-data*
 getscript-history	pi_getscript.txt	/*getscript-history*
 getscript-plugins	pi_getscript.txt	/*getscript-plugins*
 getscript-start	pi_getscript.txt	/*getscript-start*
+global_markfilelist	pi_netrw.txt	/*global_markfilelist*
 glvs	pi_getscript.txt	/*glvs*
 glvs-alg	pi_getscript.txt	/*glvs-alg*
 glvs-algorithm	pi_getscript.txt	/*glvs-algorithm*
@@ -1477,6 +1501,7 @@ glvs-options	pi_getscript.txt	/*glvs-options*
 glvs-plugins	pi_getscript.txt	/*glvs-plugins*
 glvs-usage	pi_getscript.txt	/*glvs-usage*
 http	pi_netrw.txt	/*http*
+local_markfilelist	pi_netrw.txt	/*local_markfilelist*
 logipat	LogiPat.txt	/*logipat*
 logipat-arg	LogiPat.txt	/*logipat-arg*
 logipat-caveat	LogiPat.txt	/*logipat-caveat*
@@ -1489,6 +1514,7 @@ logipat-manual	LogiPat.txt	/*logipat-manual*
 logipat-operators	LogiPat.txt	/*logipat-operators*
 logipat-pattern	LogiPat.txt	/*logipat-pattern*
 logipat.txt	LogiPat.txt	/*logipat.txt*
+markfilelist	pi_netrw.txt	/*markfilelist*
 matchit	matchit.txt	/*matchit*
 matchit-%	matchit.txt	/*matchit-%*
 matchit-\1	matchit.txt	/*matchit-\\1*
