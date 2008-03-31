@@ -185,20 +185,23 @@ let s:licenseTag = s:licenseTag . "along with this program; if not, write to the
 let s:licenseTag = s:licenseTag . "Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\<enter>"
 
 " Common standard constants
+if !exists("g:DoxygenToolkit_commandTag")
+	let g:DoxygenToolkit_commandTag = "@"
+endif
 if !exists("g:DoxygenToolkit_briefTag_pre")
-	let g:DoxygenToolkit_briefTag_pre = "@brief "
+	let g:DoxygenToolkit_briefTag_pre = g:DoxygenToolkit_commandTag . "brief "
 endif
 if !exists("g:DoxygenToolkit_briefTag_post")
 	let g:DoxygenToolkit_briefTag_post = ""
 endif
 if !exists("g:DoxygenToolkit_paramTag_pre")
-	let g:DoxygenToolkit_paramTag_pre = "@param "
+	let g:DoxygenToolkit_paramTag_pre = g:DoxygenToolkit_commandTag . "param "
 endif
 if !exists("g:DoxygenToolkit_paramTag_post")
 	let g:DoxygenToolkit_paramTag_post = " "
 endif
 if !exists("g:DoxygenToolkit_returnTag")
-	let g:DoxygenToolkit_returnTag = "@return "
+	let g:DoxygenToolkit_returnTag = g:DoxygenToolkit_commandTag . "return "
 endif
 if !exists("g:DoxygenToolkit_blockHeader")
 	let g:DoxygenToolkit_blockHeader = ""
@@ -210,22 +213,25 @@ if !exists("g:DoxygenToolkit_licenseTag")
 	let g:DoxygenToolkit_licenseTag = s:licenseTag
 endif
 if !exists("g:DoxygenToolkit_fileTag")
-	let g:DoxygenToolkit_fileTag = "@file "
+	let g:DoxygenToolkit_fileTag = g:DoxygenToolkit_commandTag . "file "
 endif
 if !exists("g:DoxygenToolkit_authorTag")
-	let g:DoxygenToolkit_authorTag = "@author "
+	let g:DoxygenToolkit_authorTag = g:DoxygenToolkit_commandTag . "author "
 endif
 if !exists("g:DoxygenToolkit_dateTag")
-	let g:DoxygenToolkit_dateTag = "@date "
+	let g:DoxygenToolkit_dateTag = g:DoxygenToolkit_commandTag . "date "
+endif
+if !exists("g:DoxygenToolkit_dateFormat")
+	let g:DoxygenToolkit_dateFormat = "%Y-%m-%d "
 endif
 if !exists("g:DoxygenToolkit_undocTag")
 	let g:DoxygenToolkit_undocTag = "DOX_SKIP_BLOCK"
 endif
 if !exists("g:DoxygenToolkit_blockTag")
-	let g:DoxygenToolkit_blockTag = "@name "
+	let g:DoxygenToolkit_blockTag = g:DoxygenToolkit_commandTag . "name "
 endif
 if !exists("g:DoxygenToolkit_classTag")
-	let g:DoxygenToolkit_classTag = "@class "
+	let g:DoxygenToolkit_classTag = g:DoxygenToolkit_commandTag . "class "
 endif
 
 if !exists("g:DoxygenToolkit_cinoptions")
@@ -254,6 +260,18 @@ else
 	let g:DoxygenToolkit_commentType = "C"
 endif
 
+if !exists("g:DoxygenToolkit_descriptionTag ")
+    let g:DoxygenToolkit_descriptionTag        = "Description"
+endif
+
+if !exists("g:DoxygenToolkit_attentionTag ")
+    let g:DoxygenToolkit_attentionTag          = g:DoxygenToolkit_commandTag . "attention "
+endif
+
+if !exists("g:DoxygenToolkit_saTag ")
+    let g:DoxygenToolkit_saTag          = g:DoxygenToolkit_commandTag . "sa "
+endif
+
 if !exists("g:DoxygenToolkit_ignoreForReturn")
 	let g:DoxygenToolkit_ignoreForReturn = "inline static virtual void"
 else
@@ -268,6 +286,31 @@ endif
 " Add name of function after pre brief tag if you want
 if !exists("g:DoxygenToolkit_briefTag_funcName")
 	let g:DoxygenToolkit_briefTag_funcName = "no"
+endif
+
+" Add name of function after pre brief tag if you want
+"if !exists("g:DoxygenToolkit_briefTag_funcName")
+"	let g:DoxygenToolkit_briefTag_funcName = "no"
+"endif
+
+" Add description to DoxAuthor if you want
+if !exists("g:DoxygenToolkit_author_description")
+    let g:DoxygenToolkit_author_description = "no"
+endif
+
+" Add description to Dox if you want
+if !exists("g:DoxygenToolkit_dox_description")
+    let g:DoxygenToolkit_dox_description = "no"
+endif
+
+" Add attention to Dox if you want
+if !exists("g:DoxygenToolkit_dox_attention")
+    let g:DoxygenToolkit_dox_attention = "no"
+endif
+
+" Add sa to Dox if you want
+if !exists("g:DoxygenToolkit_dox_sa")
+    let g:DoxygenToolkit_dox_sa = "yes"
 endif
 
 
@@ -349,6 +392,7 @@ function! <SID>DoxygenCommentFunc()
 		endif
 	endif
 	mark d
+
 	if ( g:DoxygenToolkit_endCommentTag != "" )
 		exec "normal o" . g:DoxygenToolkit_endCommentTag
 	endif
@@ -406,6 +450,13 @@ function! <SID>DoxygenCommentFunc()
 	" Now can add brief post tag
 	exec "normal A" . g:DoxygenToolkit_briefTag_post
 
+	" Add description
+	if g:DoxygenToolkit_dox_description == "yes"
+	    exec "normal o" . g:DoxygenToolkit_interCommentTag
+	    exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_descriptionTag
+	endif
+	mark e
+
 	" Add return tag if function do not return void
 	let l:beginArgPos = match(l:lineBuffer, l:argBegin)
 	let l:beginP = 0	" Name can start at the beginning of l:lineBuffer, it is usually between whitespaces or space and parenthesis
@@ -437,8 +488,19 @@ function! <SID>DoxygenCommentFunc()
 		exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_returnTag
 	endif
 
+	" Add attention
+	if g:DoxygenToolkit_dox_attention == "yes"
+	    exec "normal o" . g:DoxygenToolkit_interCommentTag
+	    exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_attentionTag
+	endif
+
+	" Add sa
+	if g:DoxygenToolkit_dox_sa == "yes"
+	    exec "normal o"  . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_saTag
+	endif
+
 	" Looking for argument name in line buffer
-	exec "normal `d"
+	exec "normal `e"
 	let l:argList = 0    " ==0 -> no argument, !=0 -> at least one arg
 
 	let l:beginP = 0
@@ -493,7 +555,7 @@ function! <SID>DoxygenCommentFunc()
 
 	" Add blank line if necessary
 	if ( l:argList != 0 )
-		exec "normal `do" . g:DoxygenToolkit_interCommentTag
+		exec "normal `eo" . g:DoxygenToolkit_interCommentTag
 	endif
 
 	" move the cursor to the correct position (after brief tag)
@@ -561,8 +623,12 @@ function! <SID>DoxygenAuthorFunc()
 	exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_briefTag_pre
 	mark d
 	exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_authorTag . g:DoxygenToolkit_authorName
-	let l:date = strftime("%Y-%m-%d")
+	let l:date = strftime(g:DoxygenToolkit_dateFormat)
 	exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_dateTag . l:date
+	if ( g:DoxygenToolkit_author_description == "yes" )
+	    exec "normal o" . g:DoxygenToolkit_interCommentTag
+	    exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_descriptionTag
+	endif
 	if ( g:DoxygenToolkit_endCommentTag == "" )
 		exec "normal o" . g:DoxygenToolkit_interCommentTag
 	else
@@ -619,8 +685,8 @@ function! <SID>DoxygenBlockFunc()
 	exec "normal o" . g:DoxygenToolkit_startCommentTag
 	exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_blockTag
 	mark d
-	exec "normal o" . g:DoxygenToolkit_interCommentTag . "@{ " . g:DoxygenToolkit_endCommentTag
-	exec "normal o" . g:DoxygenToolkit_startCommentTag . " @} " . g:DoxygenToolkit_endCommentTag
+	exec "normal o" . g:DoxygenToolkit_interCommentTag . g:DoxygenToolkit_commandTag . "{ " . g:DoxygenToolkit_endCommentTag
+	exec "normal o" . g:DoxygenToolkit_startCommentTag . " " . g:DoxygenToolkit_commandTag . "} " . g:DoxygenToolkit_endCommentTag
 	exec "normal `d"
 	
 	" Restore standard comment expension

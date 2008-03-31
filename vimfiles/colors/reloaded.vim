@@ -10,18 +10,17 @@ if exists("syntax_on")
 endif
 let g:colors_name="reloaded"
 
-        hi LineNr       term=bold gui=bold guifg=White guibg=DarkGray
         hi Normal       ctermfg=Green ctermbg=Black
         hi Normal       guifg=Green guibg=Black
-        hi NonText      ctermfg=DarkGray  ctermbg=Black
-        hi NonText      guifg=DarkGray  guibg=Black
+        hi NonText      ctermfg=DarkGreen  ctermbg=Black
+        hi NonText      guifg=DarkGreen  guibg=Black
 
         hi Statement    ctermfg=Green      ctermbg=Black
         hi Statement    guifg=Green      guibg=Black
         hi Comment      ctermfg=DarkGreen  ctermbg=Black cterm=bold term=bold
         hi Comment      guifg=DarkGreen  guibg=Black gui=bold term=bold
-        hi Constant     ctermfg=Black  ctermbg=Green
-        hi Constant     guifg=Black  guibg=Green
+        hi Constant     ctermfg=Green  ctermbg=DarkGreen
+        hi Constant     guifg=Green  guibg=DarkGreen
         hi Identifier   ctermfg=Green      ctermbg=Black
         hi Identifier   guifg=Green      guibg=Black
         hi Type         ctermfg=Green ctermbg=Black
@@ -48,19 +47,24 @@ let g:colors_name="reloaded"
         hi WarningMsg   guifg=Yellow    guibg=Black
         hi VertSplit    ctermfg=White     ctermbg=Black
         hi VertSplit    guifg=White     guibg=Black
-        hi Directory    ctermfg=Green      ctermbg=DarkBlue
-        hi Directory    guifg=Green      guibg=DarkBlue
+        hi Directory    ctermfg=DarkGreen      ctermbg=Black
+        hi Directory    guifg=DarkGreen      guibg=Black
         hi Visual       ctermfg=White     ctermbg=DarkGray cterm=underline term=none
         hi Visual       guifg=White     guibg=DarkGray gui=underline term=none
         hi Title        ctermfg=White     ctermbg=DarkBlue
         hi Title        guifg=White     guibg=DarkBlue
 
-        hi StatusLine   term=bold cterm=bold,underline ctermfg=White ctermbg=Black
-        hi StatusLine   term=bold gui=bold,underline guifg=White guibg=Black
+        hi StatusLine   term=bold cterm=bold,underline ctermfg=Green ctermbg=Black
+        hi StatusLine   term=bold gui=bold,underline guifg=Green guibg=Black
         hi StatusLineNC term=bold cterm=bold,underline ctermfg=Gray  ctermbg=Black
         hi StatusLineNC term=bold gui=bold,underline guifg=Gray  guibg=Black
-        hi LineNr       term=bold cterm=bold ctermfg=White ctermbg=DarkGray
-        hi LineNr       term=bold gui=bold guifg=White guibg=DarkGray
+        hi LineNr       term=bold cterm=bold ctermfg=Black ctermbg=DarkGreen
+        hi LineNr       term=bold gui=bold guifg=Black guibg=DarkGreen
+        hi SpecialKey	guifg=DarkGreen guibg=Black      
+        hi SpecialKey	ctermfg=DarkGreen ctermbg=Black      
 
-        hi cursorline   ctermbg=White
-        hi cursorline   guibg=DarkGray
+        hi cursorline   guifg=Black guibg=DarkGreen
+        hi cursorline   ctermfg=Black ctermbg=DarkGreen
+        hi cursorcolumn guifg=Black guibg=Green
+        hi cursorcolumn ctermfg=Black ctermbg=Green
+
