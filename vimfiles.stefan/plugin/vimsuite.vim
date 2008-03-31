@@ -913,23 +913,23 @@ command -nargs=* Python execute(':wa | cd ' . GetBmskDir()) | echo system(g:pyth
 " ---------
 command InsertCHeader call Insert_Header('file_c.tpl')
 command InsertHHeader call Insert_Header('file_h.tpl')
+command InsertKGSHeader call Insert_Header('file_kgs.tpl')
 command InsertFHeader call Insert_Header('funct.tpl')
 command InsertHTMLHeader call Insert_Header('html.tpl')
 function Insert_Header(file)
     let file = g:vimfiles . '/templates/' . a:file
     execute ':read ' . file
+    " expand template
     let l:filename = expand('%:t')
     execute ':%s/%filename/' . l:filename . '/e'
     let l:basename = substitute(expand('%:t:r'), '.*', '\U\0', '')
     execute ':%s/%basename/' . l:basename . '/e'
-    let l:author = 'IST_LIEBL'
-    execute ':%s/%author/' . l:author . '/e'
-    while search('%date', '') > 0
-        "execute 'normal /%date'
-        execute ':d'
-        execute ':HistoryComment'
-        execute 'normal jdd'
-    endwhile
+    let l:date = strftime("%d.%m.%Y")
+    execute ':%s/%date/' . l:date . '/e'
+    if !exists("g:DoxygenToolkit_authorName")
+        let g:DoxygenToolkit_authorName = input("Enter name of the author (gernarally yours...) : ")
+    endif
+    execute ':%s/%author/' . g:DoxygenToolkit_authorName . '/e'
 endfunction
 
 " -------

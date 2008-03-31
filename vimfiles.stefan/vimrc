@@ -209,3 +209,56 @@ if exists('g:debug')
         echo 'loaded vimrc'
     endif
 endif
+
+" --------------
+" DoxygenToolkit
+" --------------
+let g:DoxygenToolkit_commandTag             = "\\"
+"let g:DoxygenToolkit_authorName            = "Stefan Liebl"
+
+let g:DoxygenToolkit_briefTag_pre          = g:DoxygenToolkit_commandTag . "brief    "
+"let g:DoxygenToolkit_briefTag_post         = ""
+let g:DoxygenToolkit_paramTag_pre          = g:DoxygenToolkit_commandTag . "param    "
+"let g:DoxygenToolkit_paramTag_post         = " "
+let g:DoxygenToolkit_returnTag             = g:DoxygenToolkit_commandTag . "return   "
+"let g:DoxygenToolkit_blockHeader           = ""
+"let g:DoxygenToolkit_blockFooter           = ""
+"let g:DoxygenToolkit_licenseTag            = s:licenseTag
+let g:DoxygenToolkit_fileTag               = g:DoxygenToolkit_commandTag . "file     "
+let g:DoxygenToolkit_authorTag             = g:DoxygenToolkit_commandTag . "author   "
+let g:DoxygenToolkit_dateTag               = g:DoxygenToolkit_commandTag . "date     "
+let g:DoxygenToolkit_dateFormat            = "%d.%m.%Y"
+"let g:DoxygenToolkit_undocTag              = "DOX_SKIP_BLOCK"
+let g:DoxygenToolkit_blockTag              = g:DoxygenToolkit_commandTag . "name     "
+let g:DoxygenToolkit_classTag              = g:DoxygenToolkit_commandTag . "class    "
+"let g:DoxygenToolkit_cinoptions            = "c1C1"
+let g:DoxygenToolkit_startCommentTag       = "/****************************************************************//*!"
+
+let g:DoxygenToolkit_startCommentBlock     = "/*! "
+"let g:DoxygenToolkit_interCommentTag       = "* "
+let g:DoxygenToolkit_endCommentTag         = "********************************************************************/"
+"let g:DoxygenToolkit_endCommentBlock       = " */"
+let g:DoxygenToolkit_descriptionTag        = "Beschreibung"
+let g:DoxygenToolkit_attentionTag          = g:DoxygenToolkit_commandTag . "attention "
+let g:DoxygenToolkit_saTag                 = g:DoxygenToolkit_commandTag . "sa        "
+
+"let g:DoxygenToolkit_ignoreForReturn       = "inline static virtual void"
+
+" Maximum number of lines to check for function parameters
+"let g:DoxygenToolkit_maxFunctionProtoLines = 10
+
+" Add name of function after pre brief tag if you want
+"let g:DoxygenToolkit_briefTag_funcName     = "no"
+
+" Add description to DoxAuthor if you want
+let g:DoxygenToolkit_author_description = "yes"
+
+" Add description to Dox if you want
+let g:DoxygenToolkit_dox_description = "yes"
+
+" Add attention to Dox if you want
+let g:DoxygenToolkit_dox_attention = "yes"
+
+" Add sa to Dox if you want
+let g:DoxygenToolkit_dox_sa = "yes"
+

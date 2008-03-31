@@ -132,10 +132,8 @@ function s:SVNdiff(input)
     endif
 
     if filereadable(filename)
-        " goto upper right window
-        wincmd k
-        wincmd l
-        execute 'edit ' . filename
+        " open file in new tab
+        execute 'tabnew ' . filename
         " store filetype
         let filetype = &filetype
         " open headrevision
