@@ -1,11 +1,11 @@
 " Setzen des Runtimepath, in dem die Vimfiles gesucht werden:
+let &runtimepath = &runtimepath . ',' . g:vimfiles
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.latex'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/HTML'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.damos'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.cvim'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.vjde'
-let &runtimepath = &runtimepath . ',' . g:vimfiles
 
 " Laden weiterer Einstellungen:
 if has("win32")

@@ -61,6 +61,7 @@ SRHiGrp	SrchRplcHiGrp.txt	/*SRHiGrp*
 SRSearch	SrchRplcHiGrp.txt	/*SRSearch*
 SrchRplcHiGrp.txt	SrchRplcHiGrp.txt	/*SrchRplcHiGrp.txt*
 TCommentDefineType()	tComment.txt	/*TCommentDefineType()*
+VimPdb.txt	VimPdb.txt	/*VimPdb.txt*
 Vimball-copyright	pi_vimball.txt	/*Vimball-copyright*
 [%	matchit.txt	/*[%*
 ]%	matchit.txt	/*]%*
