@@ -14,6 +14,10 @@
 " Initialization code
 "
 "
+if !has('python')
+    map <buffer> <silent> <F5> :echoerr 'No python -> no debugger ...'<CR>
+    finish
+endif
 
 let current_dir = expand("<sfile>:h")
 python import sys
