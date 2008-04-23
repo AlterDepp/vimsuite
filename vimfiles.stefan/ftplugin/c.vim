@@ -49,6 +49,9 @@ setlocal spell
 " Grep options
 let b:GrepFiles = '*.c *.h'
 
+" matchit.vim
+let b:match_words = '\<lint\s\+-save\>:\<lint\s\+-restore\>'
+
 " Adding spaces where needed
 " --------------------------
 let s:nonOperator = '[^=!+-\*/<>]'

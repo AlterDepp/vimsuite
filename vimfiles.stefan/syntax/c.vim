@@ -26,8 +26,8 @@ syntax region myFold start="{" end="}" transparent fold
 syntax region if0Fold start="^\s*#\s*if\s\+0\+\>" end="^\s*#\s*endif" fold containedin=cPreCondit
 let c_no_if0 = 1
 syntax sync fromstart
-set foldmethod=syntax
-set nofoldenable
+"set foldmethod=syntax
+"set nofoldenable
 
 " Folds for #ifdef
 command! -nargs=0 FoldDefine call FoldDefine(<args>)
