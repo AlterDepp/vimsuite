@@ -10,7 +10,7 @@
 |BMSK.7|   DAMOS-Tools
 
 ==============================================================================
-*BMSK.1* Auswählen des Projektes                    *Projekt* *Project* *BMSK*
+*BMSK.1* Auswählen des Projektes                                        *BMSK*
 
 Ein BMSK-Projekt bezieht sich nicht auf eine VIM-Session, sondern nur auf den
 Build-Prozess des BMSK-Projektes. Mit dem Auswählen eines Projektes werden nur

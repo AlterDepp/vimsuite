@@ -1,7 +1,5 @@
 :BMSK-cscope	bmsk.txt	/*:BMSK-cscope*
 :BMSK-ctags	bmsk.txt	/*:BMSK-ctags*
-:Bmsk	bmsk.txt	/*:Bmsk*
-:BmskDoku	bmsk.txt	/*:BmskDoku*
 :BuffersUpdate	bmsk.txt	/*:BuffersUpdate*
 :CCMchangeable	ccm.txt	/*:CCMchangeable*
 :CCMcheckout	ccm.txt	/*:CCMcheckout*
@@ -17,6 +15,8 @@
 :GrepBmsk	bmsk.txt	/*:GrepBmsk*
 :InsertCHeader	vimsuite.txt	/*:InsertCHeader*
 :Lint	bmsk.txt	/*:Lint*
+:Make	bmsk.txt	/*:Make*
+:MakeDoku	bmsk.txt	/*:MakeDoku*
 :MarkLongLines	vimsuite.txt	/*:MarkLongLines*
 :MarkLongLinesOff	vimsuite.txt	/*:MarkLongLinesOff*
 :RENAMEoutput	bmsk.txt	/*:RENAMEoutput*
@@ -34,6 +34,7 @@
 :SetEgas	bmsk.txt	/*:SetEgas*
 :SetMotorvariante	bmsk.txt	/*:SetMotorvariante*
 :SetMuster	bmsk.txt	/*:SetMuster*
+:SetProject	vimsuite.txt	/*:SetProject*
 :SetSWStand	bmsk.txt	/*:SetSWStand*
 :SetXlint	bmsk.txt	/*:SetXlint*
 :SyntaxShowGroup	vimsuite.txt	/*:SyntaxShowGroup*
@@ -61,8 +62,8 @@ DelAllTrailingWhitespace	vimsuite.txt	/*DelAllTrailingWhitespace*
 DirDiff	vimsuite.txt	/*DirDiff*
 GrepDir	vimsuite.txt	/*GrepDir*
 GrepFiles	vimsuite.txt	/*GrepFiles*
-Project	bmsk.txt	/*Project*
-Projekt	bmsk.txt	/*Projekt*
+Project	vimsuite.txt	/*Project*
+Projekt	vimsuite.txt	/*Projekt*
 Reformat	vimsuite.txt	/*Reformat*
 SVN	svn.txt	/*SVN*
 SVNstudio	svn.txt	/*SVNstudio*
@@ -72,7 +73,10 @@ Synergy/CM	ccm.txt	/*Synergy\/CM*
 VimSuite	vimsuite.txt	/*VimSuite*
 VimSuiteEinstellungen	vimsuite.txt	/*VimSuiteEinstellungen*
 VimSuiteInstallation	vimsuite.txt	/*VimSuiteInstallation*
+VimSuiteProject	vimsuite.txt	/*VimSuiteProject*
+VimSuiteProjekt	vimsuite.txt	/*VimSuiteProjekt*
 VimSuiteTools	vimsuite.txt	/*VimSuiteTools*
+Workarea	vimsuite.txt	/*Workarea*
 b:GrepDir	vimsuite.txt	/*b:GrepDir*
 b:GrepFiles	vimsuite.txt	/*b:GrepFiles*
 b:commentstring	vimsuite.txt	/*b:commentstring*
@@ -83,6 +87,7 @@ ccm.txt	ccm.txt	/*ccm.txt*
 cscope_macros	vimsuite.txt	/*cscope_macros*
 g:GrepDir	vimsuite.txt	/*g:GrepDir*
 g:GrepFiles	vimsuite.txt	/*g:GrepFiles*
+g:WA	vimsuite.txt	/*g:WA*
 projects.txt	bmsk.txt	/*projects.txt*
 svn	svn.txt	/*svn*
 svn.txt	svn.txt	/*svn.txt*
@@ -92,4 +97,5 @@ vimsuite.1	vimsuite.txt	/*vimsuite.1*
 vimsuite.2	vimsuite.txt	/*vimsuite.2*
 vimsuite.3	vimsuite.txt	/*vimsuite.3*
 vimsuite.4	vimsuite.txt	/*vimsuite.4*
+vimsuite.5	vimsuite.txt	/*vimsuite.5*
 vimsuite.txt	vimsuite.txt	/*vimsuite.txt*
