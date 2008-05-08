@@ -10,6 +10,7 @@ let g:diff        = expand($VIMRUNTIME . '/diff ')
 let g:svn         = expand('svn ')
 let g:cvs         = expand('cvs ')
 let g:cp          = expand('copy ')
+let g:mv          = expand('move ')
 let g:rm          = expand('del ')
 let g:rm_f        = expand('del ') . '/Q '
 let g:mkdir       = expand('mkdir ')
