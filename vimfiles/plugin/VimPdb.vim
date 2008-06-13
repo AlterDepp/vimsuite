@@ -14,15 +14,15 @@
 " Initialization code
 "
 "
-if !has('python')
+try
+    let current_dir = expand("<sfile>:h")
+    python import sys
+    exe 'python sys.path.insert(0, r"' . current_dir . '")'
+    python import VimPdb
+catch
     map <buffer> <silent> <F5> :echoerr 'No python -> no debugger ...'<CR>
     finish
-endif
-
-let current_dir = expand("<sfile>:h")
-python import sys
-exe 'python sys.path.insert(0, r"' . current_dir . '")'
-python import VimPdb
+endtry
 
 
 function! PdbInitialize()
