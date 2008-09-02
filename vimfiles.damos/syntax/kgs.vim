@@ -18,12 +18,11 @@ syntax keyword kgsDefinitions   kenngroessen_gruppe ramgroessen_gruppe
 syntax keyword kgsRefgroessen   ref_ram_groesse ref_kenngroesse
 syntax keyword kgsKomponents    umrechnung codesyntax datentyp adressierschema
 syntax keyword kgsKomponents    bitanzahl element_anzahl bitbasis_typ bitposition
-syntax keyword kgsKomponents    bitbasis_name init_wert init_wertp minp_w maxp_w
-syntax keyword kgsKomponents    ablageschema umrechnung anzahl min_w max_w
-syntax keyword kgsKomponents    test_wert test_wertp test_wert_text nicht_im_eprom
+syntax keyword kgsKomponents    bitbasis_name init_wertp minp_w maxp_w
+syntax keyword kgsKomponents    ablageschema umrechnung anzahl
+syntax keyword kgsKomponents    test_wertp test_wert_text nicht_im_eprom
 syntax keyword kgsKomponents    eingangsgroesse_x eingangsgroesse_y ergebnisgroesse
 syntax keyword kgsKomponents    anzahl_stuetzstellen_x anzahl_stuetzstellen_y
-syntax keyword kgsKomponents    test_stuetzstellen_x test_stuetzstellen_y
 syntax keyword kgsKomponents    anzahl_test_stuetzstellen_x anzahl_test_stuetzstellen_y
 syntax keyword kgsKomponents    gruppenstuetzstellen_x gruppenstuetzstellen_y
 syntax keyword kgsKomponents    minp_x minp_y maxp_x maxp_y
@@ -31,9 +30,13 @@ syntax keyword kgsKomponents    shift_x offset_x shift_y offset_y
 syntax keyword kgsKomponents    test_stuetzstellenp_x test_stuetzstellenp_y
 syntax keyword kgsKomponents    nicht_applizierbar
 syntax keyword kgsKomponents    deutsch
+syntax keyword kgsDeprecated    min_w min_x min_y max_w max_x max_y init_wert test_wert
+syntax keyword kgsDeprecated    test_stuetzstellen_x test_stuetzstellen_y
+syntax keyword kgsDeprecated    kopfdaten_applizierbar
 
 
 highlight def link kgsFunctions Function
 highlight def link kgsDefinitions Function
 highlight def link kgsRefgroessen Function
 highlight def link kgsKomponents Type
+highlight def link kgsDeprecated ToDo

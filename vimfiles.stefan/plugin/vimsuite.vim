@@ -509,6 +509,16 @@ function FindFile()
     execute ':find ' basename
 endfunction
 
+" Open multiple files
+command -nargs=+ -complete=file EditFiles call EditFiles('<args>')
+function EditFiles(wildcards)
+    for wildcard in split(a:wildcards)
+        for file in split(expand(wildcard))
+            execute('edit ' . file)
+        endfor
+    endfor
+endfunction
+
 " don't use :grep
 let &grepprg='echo extern grep is not supported. Use vimgrep'
 

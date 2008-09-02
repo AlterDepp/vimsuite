@@ -24,7 +24,7 @@ syn keyword damosFunction  begrenzeFehlerausgabe unterdrueckeBeaFort
 syn keyword damosFunction  einstelleSprache oeffneOSp liesBezeichner oeffnePV
 syn keyword damosFunction  liesAdressDatei anlegeDatenstand
 syn keyword damosFunction  liesKonservierung speichere schreibeHexDatei
-syn keyword damosFunction  schreibeASAP_AgIAsw
+syn keyword damosFunction  schreibeASAP_AgIAsw liesHexDatei
 syn keyword damosFunction  kdoOTypCheck ausfuehre ausfuehreTrans pruefeAutoRam
 syn keyword damosFunction  pruefeFktKonsistenz schreibeFhlListAusFktKonsPruef
 syn keyword damosFunction  oeffneQuellDatenstand fuelleAusTestwerte
@@ -36,10 +36,14 @@ syn keyword damosFunction  schliesseOSp schliesseQuellDatenstand
 syn keyword damosFunction  anzeigeVarKod liefereName
 syn keyword damosFunction  pruefeAblKonsistenz pruefeBezeichnerListe
 syn keyword damosFunction  pruefeRefInfo pruefeSpeicherbereiche
-syn keyword damosFunction  pruefeMinPMaxP pruefeVarKod vater
+syn keyword damosFunction  pruefeMinPMaxP pruefeVarKod vater sohn
 syn keyword damosFunction  schreibeFhlListAusBezKonsPruef schreibeFktIncludeAsw
+syn keyword damosFunction  exportiereObjekte anlegeEprom schliesseEprom anlegeProgrammstand
+syn keyword damosFunction  oeffneDatenstand schliesseDatenstand fuelleKompAdr
+syn keyword damosFunction  setzeBezeichnerFormat oeffneEprom schreibeASAP
+syn keyword damosFunction  setzeDokuTyp schreibeDokument schliessePV
 
-syn keyword damosCommand   exit Dam DAMOS quellDst
+syn keyword damosCommand   exit Dam DAMOS quellDst IF ENDIF
 
 syn match   damosSeperator        "[<>,:]"
 
