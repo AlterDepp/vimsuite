@@ -627,7 +627,12 @@ function ReformatIndent (fromline,toline)
     let line_nr = a:fromline
     while (line_nr <= a:toline)
         let line = getline(line_nr)
-        if (match(line,'^' . b:commentstring)>=0)
+        if !exists("b:commentstring")
+            let commentstring = b:commentstring
+        else
+            let commentstring = '#'
+        endif
+        if (match(line,'^' . commentstring)>=0)
             let line = '@' . line
 "            echo line
             call setline(line_nr, line)
@@ -637,7 +642,7 @@ function ReformatIndent (fromline,toline)
     " indent all lines
     execute 'normal ' . a:fromline . 'G=' . a:toline . 'G'
     " reindent commented lines
-    let substCmd = 's?^\s*@' . b:commentstring . '?' . b:commentstring . '?'
+    let substCmd = 's?^\s*@' . commentstring . '?' . commentstring . '?'
     silent! execute a:fromline . ','  . a:toline . substCmd
     " go back to mark
     call cursor(cursorLine, cursorCol)
