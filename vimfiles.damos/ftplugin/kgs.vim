@@ -204,7 +204,7 @@ endfunction
 
 function s:GetPolynom(umrechnung)
     let umr = {}
-    let p = [0]
+    let p = [0] " dummy
     let OspLine = s:GetOspLine(a:umrechnung)
     if match(OspLine, 'Poly') >= 0
         let p += [s:GetOspPoly('1', OspLine)]
@@ -305,13 +305,10 @@ function s:GetKgsTestWertp()
     let umrechnung = @0
     echo 'umrechnung:' umrechnung
     let OspLine = s:GetOspLine(umrechnung)
-    call cursor(startLineNr, 0)
-    if match(OspLine, 'Poly') >= 0
-        let p1Val = s:GetOspPoly('1', OspLine)
-        let p2Val = s:GetOspPoly('2', OspLine)
-        let p3Val = s:GetOspPoly('3', OspLine)
-        let p4Val = s:GetOspPoly('4', OspLine)
-        let p5Val = s:GetOspPoly('5', OspLine)
+    let umr = s:GetPolynom(umrechnung)
+    if umr != {}
+        let Mas = umr['Mas']
+        let p = umr['p']
         " test_wert lesen
         call cursor(startLineNr, 0)
         call search('test_wert', 'W')
@@ -320,9 +317,7 @@ function s:GetKgsTestWertp()
                 execute 'normal yiw'
                 let test_wert = @0
                 " Poynom
-                echo 'P1:' p1Val 'P2:' p2Val 'P3:' p3Val 'P4:' p4Val 'P5:' p5Val
-                let phys = s:GetOspPolyPhysValue(
-                            \test_wert, p)
+                let phys = s:GetOspPolyPhysValue(test_wert, p)
                 echo 'test_wert:' test_wert 'umrechnung:' umrechnung 'Phys:' phys
             endif
         endwhile
