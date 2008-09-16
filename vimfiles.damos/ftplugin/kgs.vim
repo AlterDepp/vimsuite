@@ -139,28 +139,28 @@ function s:GetOspMas(OspLine)
     return mas
 endfunction
 
-function s:GetOspPolyPhysValue(int, p1, p2, p3, p4, p5)
+function s:GetOspPolyPhysValue(int, p)
     "        P2 - (int - P5) * P4
     " phys = --------------------
     "        (int - P5) * P3 - P1
     "
-"    echo 'P1: ' a:p1 ' P2:' a:p2 ' P3:' a:p3 ' P4:' a:p4 ' P5:' a:p5
-    let polynom = '(' . a:p2 . ' - ((' . a:int . ' - ' . a:p5 . ') * '
-                \ . a:p4 .  ')) / (((' . a:int . ' - ' . a:p5 . ') * '
-                \ . a:p3 . ') - ' . a:p1 . ')'
+"    echo 'P1: ' a:p[1] ' P2:' a:p[2] ' P3:' a:p[3] ' P4:' a:p[4] ' P5:' a:p[5]
+    let polynom = '(' . a:p[2] . ' - ((' . a:int . ' - ' . a:p[5] . ') * '
+                \ . a:p[4] .  ')) / (((' . a:int . ' - ' . a:p[5] . ') * '
+                \ . a:p[3] . ') - ' . a:p[1] . ')'
 "    echo polynom
     let phys = Eval(polynom)
     return phys
 endfunction
 
-function s:GetOspPolyIntValue(phys, p1, p2, p3, p4, p5)
+function s:GetOspPolyIntValue(phys, p)
     "        P1 * phys + P2
     " int  = -------------- + P5
     "        P3 * phys + P4
     "
-"    echo 'P1: ' a:p1 ' P2:' a:p2 ' P3:' a:p3 ' P4:' a:p4 ' P5:' a:p5
-    let polynom = '((((' . a:p1 . ' * ' . a:phys . ') + ' . a:p2 . ') / (('
-                \ .  a:p3 . ' * ' . a:phys . ') + ' . a:p4 . ')) + ' . a:p5 . ')'
+"    echo 'P1: ' a:p[1] ' P2:' a:p[2] ' P3:' a:p[3] ' P4:' a:p[4] ' P5:' a:p[5]
+    let polynom = '((((' . a:p[1] . ' * ' . a:phys . ') + ' . a:p[2] . ') / (('
+                \ .  a:p[3] . ' * ' . a:phys . ') + ' . a:p[4] . ')) + ' . a:p[5] . ')'
 "    echo polynom
     let float = Eval(polynom)
     let int = ToInt(float)
@@ -172,19 +172,12 @@ function s:GetOspPhysValue(int)
     execute 'normal yiw'
     let umrechnung = @0
     echo 'umrechnung:' umrechnung
-    let OspLine = s:GetOspLine(umrechnung)
-    if match(OspLine, 'Poly') >= 0
-        let p1Val = s:GetOspPoly('1', OspLine)
-        let p2Val = s:GetOspPoly('2', OspLine)
-        let p3Val = s:GetOspPoly('3', OspLine)
-        let p4Val = s:GetOspPoly('4', OspLine)
-        let p5Val = s:GetOspPoly('5', OspLine)
-        let mas = s:GetOspMas(OspLine)
-        " Poynom
-        echo 'umrechnung:' umrechnung
-        echo 'P1:' p1Val 'P2:' p2Val 'P3:' p3Val 'P4:' p4Val 'P5:' p5Val
-        let phys = s:GetOspPolyPhysValue(a:int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo 'Int:' a:int 'Phys:' phys mas
+    let umr = s:GetPolynom(umrechnung)
+    if umr != {}
+        let Mas = umr['Mas']
+        let p = umr['p']
+        let phys = s:GetOspPolyPhysValue(a:int, p)
+        echo 'Int:' a:int 'Phys:' phys Mas
     else
         echo 'kein Polynom'
         return
@@ -196,24 +189,36 @@ function s:GetOspIntValue(phys)
     execute 'normal yiw'
     let umrechnung = @0
     echo 'umrechnung:' umrechnung
-    let OspLine = s:GetOspLine(umrechnung)
-    if match(OspLine, 'Poly') >= 0
-        let p1Val = s:GetOspPoly('1', OspLine)
-        let p2Val = s:GetOspPoly('2', OspLine)
-        let p3Val = s:GetOspPoly('3', OspLine)
-        let p4Val = s:GetOspPoly('4', OspLine)
-        let p5Val = s:GetOspPoly('5', OspLine)
-        let mas = s:GetOspMas(OspLine)
-        " Poynom
-        echo 'umrechnung:' umrechnung
-        echo 'P1:' p1Val 'P2:' p2Val 'P3:' p3Val 'P4:' p4Val 'P5:' p5Val
-        let int = s:GetOspPolyIntValue(a:phys, p1Val, p2Val, p3Val, p4Val, p5Val)
+    let umr = s:GetPolynom(umrechnung)
+    if umr != {}
+        let Mas = umr['Mas']
+        let p = umr['p']
+        let int = s:GetOspPolyIntValue(a:phys, p)
         let hex = ToHex(int, 0)
-        echo 'Phys:' a:phys mas 'Int:' int 'Hex:' hex
+        echo 'Phys:' a:phys Mas 'Int:' int 'Hex:' hex
     else
         echo 'kein Polynom'
         return
     endif
+endfunction
+
+function s:GetPolynom(umrechnung)
+    let umr = {}
+    let p = [0]
+    let OspLine = s:GetOspLine(a:umrechnung)
+    if match(OspLine, 'Poly') >= 0
+        let p += [s:GetOspPoly('1', OspLine)]
+        let p += [s:GetOspPoly('2', OspLine)]
+        let p += [s:GetOspPoly('3', OspLine)]
+        let p += [s:GetOspPoly('4', OspLine)]
+        let p += [s:GetOspPoly('5', OspLine)]
+        let umr['Mas'] = s:GetOspMas(OspLine)
+        " Poynom
+        echo 'umrechnung:' a:umrechnung
+        echo 'P1:' p[1] 'P2:' p[2] 'P3:' p[3] 'P4:' p[4] 'P5:' p[5]
+    endif
+    let umr['p'] = p
+    return umr
 endfunction
 
 command GetOspTestValues call s:GetOspTestValues()
@@ -221,61 +226,54 @@ function s:GetOspTestValues()
     execute 'normal yiw'
     let umrechnung = @0
     echo 'umrechnung:' umrechnung
-    let OspLine = s:GetOspLine(umrechnung)
-    if match(OspLine, 'Poly') >= 0
-        let p1Val = s:GetOspPoly('1', OspLine)
-        let p2Val = s:GetOspPoly('2', OspLine)
-        let p3Val = s:GetOspPoly('3', OspLine)
-        let p4Val = s:GetOspPoly('4', OspLine)
-        let p5Val = s:GetOspPoly('5', OspLine)
-        let mas = s:GetOspMas(OspLine)
-        " Poynom
-        echo 'umrechnung:' umrechnung
-        echo 'P1:' p1Val 'P2:' p2Val 'P3:' p3Val 'P4:' p4Val 'P5:' p5Val
+    let umr = s:GetPolynom(umrechnung)
+    if umr != {}
+        let Mas = umr['Mas']
+        let p = umr['p']
         let int = '0'
         let hex = ToHex(int, 8)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '1'
         let hex = ToHex(int, 8)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '127'
         let hex = ToHex(int, 8)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '-128'
         let hex = ToHex(int, 8)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '255'
         let hex = ToHex(int, 8)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '32767'
         let hex = ToHex(int, 16)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '-32768'
         let hex = ToHex(int, 16)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '65535'
         let hex = ToHex(int, 16)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '2147483647L'
         let hex = ToHex(int, 32)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '-2147483648L'
         let hex = ToHex(int, 32)
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
         let int = '4294967295L'
         let hex = '0xffffffff'
-        let phys = s:GetOspPolyPhysValue(int, p1Val, p2Val, p3Val, p4Val, p5Val)
-        echo s:formatValues(int, hex, phys, mas)
+        let phys = s:GetOspPolyPhysValue(int, p)
+        echo s:formatValues(int, hex, phys, Mas)
     else
         echo 'kein Polynom'
         return
@@ -324,7 +322,7 @@ function s:GetKgsTestWertp()
                 " Poynom
                 echo 'P1:' p1Val 'P2:' p2Val 'P3:' p3Val 'P4:' p4Val 'P5:' p5Val
                 let phys = s:GetOspPolyPhysValue(
-                            \test_wert, p1Val, p2Val, p3Val, p4Val, p5Val)
+                            \test_wert, p)
                 echo 'test_wert:' test_wert 'umrechnung:' umrechnung 'Phys:' phys
             endif
         endwhile
