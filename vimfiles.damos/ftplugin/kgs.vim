@@ -105,13 +105,6 @@ endfunction
 " Physikalischen Wert zu Testwert eines Kennwerts ermitteln
 " Cursor muss sich im .kgs-File auf dem Kennwert befinden
 " ---------------------------------------------------------
-function s:GetOspLine(umrechnungsformel)
-    execute 'tag ' a:umrechnungsformel
-    let OspLine = getline('.')
-    execute 'pop'
-    return OspLine
-endfunction
-
 function s:GetOspPoly(Nr, OspLine)
     if match(a:OspLine, 'Poly') >= 0
         let valRegEx = '[^:;]\+'
@@ -205,18 +198,27 @@ endfunction
 function s:GetPolynom(umrechnung)
     let umr = {}
     let p = [0] " dummy
-    let OspLine = s:GetOspLine(a:umrechnung)
-    if match(OspLine, 'Poly') >= 0
-        let p += [s:GetOspPoly('1', OspLine)]
-        let p += [s:GetOspPoly('2', OspLine)]
-        let p += [s:GetOspPoly('3', OspLine)]
-        let p += [s:GetOspPoly('4', OspLine)]
-        let p += [s:GetOspPoly('5', OspLine)]
-        let umr['Mas'] = s:GetOspMas(OspLine)
-        " Poynom
-        echo 'umrechnung:' a:umrechnung
-        echo 'P1:' p[1] 'P2:' p[2] 'P3:' p[3] 'P4:' p[4] 'P5:' p[5]
+    " jump to tag
+    execute 'tag ' a:umrechnung
+    let ext = fnamemodify(expand('%'), ':e')
+    if ext == 'osp'
+        let OspLine = getline('.')
+        if match(OspLine, 'Poly') >= 0
+            let p += [s:GetOspPoly('1', OspLine)]
+            let p += [s:GetOspPoly('2', OspLine)]
+            let p += [s:GetOspPoly('3', OspLine)]
+            let p += [s:GetOspPoly('4', OspLine)]
+            let p += [s:GetOspPoly('5', OspLine)]
+            let umr['Mas'] = s:GetOspMas(OspLine)
+        endif
+    else
+        echoerr 'no OSP file: ' . ext
     endif
+    " return from tag
+    execute 'pop'
+    " Poynom
+    echo 'umrechnung:' a:umrechnung
+    echo 'P1:' p[1] 'P2:' p[2] 'P3:' p[3] 'P4:' p[4] 'P5:' p[5]
     let umr['p'] = p
     return umr
 endfunction
@@ -304,7 +306,6 @@ function s:GetKgsTestWertp()
     execute 'normal wyiw'
     let umrechnung = @0
     echo 'umrechnung:' umrechnung
-    let OspLine = s:GetOspLine(umrechnung)
     let umr = s:GetPolynom(umrechnung)
     if umr != {}
         let Mas = umr['Mas']
