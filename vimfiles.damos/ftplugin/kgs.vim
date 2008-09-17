@@ -211,6 +211,40 @@ function s:GetPolynom(umrechnung)
             let p += [s:GetOspPoly('5', OspLine)]
             let umr['Mas'] = s:GetOspMas(OspLine)
         endif
+    elseif ext == 'xmo'
+        " default Values
+        let p += [0]
+        let p += [0]
+        let p += [0]
+        let p += [0]
+        let p += [0]
+        let umr['Mas'] = '-'
+
+        call search('<obj n="' . a:umrechnung . '">')
+        let XmlTags = XmlGetTag()
+"        try
+            let XmlTag = XmlTags[0]
+            if XmlTag['Attributes']['Value'] == a:umrechnung
+                let elements = XmlTag['Elements']
+                for element in elements
+                    let name = element['Name']
+                    if name == 'Mas'
+                        let umr['Mas'] = element['Elements'][0]
+                    else
+                        let nr = substitute(name, 'P\(\d\)', '\1', '')
+                        if nr != name
+                            let p[str2nr(nr)] = element['Elements'][0]
+                        else
+                            echoerr 'Unknown attribute' name
+                        endif
+                    endif
+                endfor
+            else
+                echoerr 'Error: Wrong conversion' XmlTag['Attributes']['n']
+            endif
+"        catch
+"            echoerr 'Error: couldnt parse tag'
+"        endtry
     else
         echoerr 'no OSP file: ' . ext
     endif
