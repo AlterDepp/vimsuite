@@ -1,7 +1,7 @@
 ScriptID SourceID Filename
 --------------------------
-1075 8501 netrw.vim
-1502 8515 vimball.vim
+1075 9221 netrw.vim
+1502 8743 vimball.vim
 1008 3118 srec.vim (ftplugin)
 1009 3119 srec.vim (syntax file)
 475  2535 latex-suite (install in vimfiles.latex)
@@ -10,8 +10,8 @@ ScriptID SourceID Filename
 862  2635 cscope_quickfix.vim
 51    171 cscope_macros.vim
 102  5306 DirDiff.vim
-1189 6533 matrix.vim
-1173 7588 tcomment
+1189 8687 matrix.vim
+1173 8689 tcomment
 948  2878 Scons Compiler plugin
 1709 6421 Scons Syntax file
 1772 7248 DAMOS.zip DAMOS tools (von Stefan)
@@ -28,6 +28,7 @@ ScriptID SourceID Filename
 2092 8095 reloaded.vim (matrix colorscheme)
 848  8203 SrchRplcHiGrp.vim (Search/Replace on Syntax Group)
 294  8407 Align.vim
-642  8136 getscript.vim
+479 9276 MultipleSearch
 642  8136 :AutoInstall: GetLatestVimScripts.vim
 1066 7618 :AutoInstall: cecutil.vim
+642 8136 :AutoInstall: getscript.vim
