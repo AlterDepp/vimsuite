@@ -1,4 +1,3 @@
-'go'	Align.txt	/*'go'*
 :Explore	pi_netrw.txt	/*:Explore*
 :GLVS	pi_getscript.txt	/*:GLVS*
 :GetLatestVimScripts_dat	pi_getscript.txt	/*:GetLatestVimScripts_dat*
@@ -32,7 +31,6 @@
 :RmVimball	pi_vimball.txt	/*:RmVimball*
 :Search	MultipleSearch.txt	/*:Search*
 :SearchBuffers	MultipleSearch.txt	/*:SearchBuffers*
-:Sexplore	pi_netrw.txt	/*:Sexplore*
 :TComment	tComment.txt	/*:TComment*
 :TCommentAs	tComment.txt	/*:TCommentAs*
 :TCommentBlock	tComment.txt	/*:TCommentBlock*
@@ -84,6 +82,7 @@ align-control	Align.txt	/*align-control*
 align-history	Align.txt	/*align-history*
 align-manual	Align.txt	/*align-manual*
 align-maps	Align.txt	/*align-maps*
+align-multibyte	Align.txt	/*align-multibyte*
 align-option	Align.txt	/*align-option*
 align-options	Align.txt	/*align-options*
 align-strlen	Align.txt	/*align-strlen*
@@ -1444,7 +1443,9 @@ g:netrw_ftp_timelist_cmd	pi_netrw.txt	/*g:netrw_ftp_timelist_cmd*
 g:netrw_ftpmode	pi_netrw.txt	/*g:netrw_ftpmode*
 g:netrw_glob_escape	pi_netrw.txt	/*g:netrw_glob_escape*
 g:netrw_hide	pi_netrw.txt	/*g:netrw_hide*
+g:netrw_home	pi_netrw.txt	/*g:netrw_home*
 g:netrw_http_cmd	pi_netrw.txt	/*g:netrw_http_cmd*
+g:netrw_http_xcmd	pi_netrw.txt	/*g:netrw_http_xcmd*
 g:netrw_ignorenetrc	pi_netrw.txt	/*g:netrw_ignorenetrc*
 g:netrw_keepdir	pi_netrw.txt	/*g:netrw_keepdir*
 g:netrw_list_cmd	pi_netrw.txt	/*g:netrw_list_cmd*
@@ -1492,6 +1493,7 @@ g:tcommentMapLeaderOp1	tComment.txt	/*g:tcommentMapLeaderOp1*
 g:tcommentMapLeaderOp2	tComment.txt	/*g:tcommentMapLeaderOp2*
 g:tcommentOpModeExtra	tComment.txt	/*g:tcommentOpModeExtra*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
+g:vimball_mkdir	pi_vimball.txt	/*g:vimball_mkdir*
 g:vimball_path_escape	pi_vimball.txt	/*g:vimball_path_escape*
 g:visincr_datedivset	visincr.txt	/*g:visincr_datedivset*
 getlatestvimscripts-install	pi_getscript.txt	/*getlatestvimscripts-install*
@@ -1619,6 +1621,7 @@ netrw-list	pi_netrw.txt	/*netrw-list*
 netrw-listbookmark	pi_netrw.txt	/*netrw-listbookmark*
 netrw-listhack	pi_netrw.txt	/*netrw-listhack*
 netrw-login	pi_netrw.txt	/*netrw-login*
+netrw-mB	pi_netrw.txt	/*netrw-mB*
 netrw-mT	pi_netrw.txt	/*netrw-mT*
 netrw-mb	pi_netrw.txt	/*netrw-mb*
 netrw-mc	pi_netrw.txt	/*netrw-mc*
@@ -1742,6 +1745,7 @@ vimball	pi_vimball.txt	/*vimball*
 vimball-contents	pi_vimball.txt	/*vimball-contents*
 vimball-extract	pi_vimball.txt	/*vimball-extract*
 vimball-history	pi_vimball.txt	/*vimball-history*
+vimball-intro	pi_vimball.txt	/*vimball-intro*
 vimball-manual	pi_vimball.txt	/*vimball-manual*
 viscinr-I	visincr.txt	/*viscinr-I*
 viscinr-contents	visincr.txt	/*viscinr-contents*

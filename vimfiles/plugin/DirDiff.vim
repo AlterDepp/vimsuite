@@ -1,8 +1,8 @@
 " -*- vim -*-
-" FILE: "C:\Documents and Settings\William Lee\vimfiles\plugin\DirDiff.vim" {{{
-" LAST MODIFICATION: "Wed, 22 Feb 2006 22:31:59 Central Standard Time"
+" FILE: "/home/wlee/.vim/plugin/DirDiff.vim" {{{
+" LAST MODIFICATION: "Mon, 20 Oct 2008 09:04:59 -0500 (wlee)"
 " HEADER MAINTAINED BY: N/A
-" VERSION: 1.1.1
+" VERSION: 1.1.2
 " (C) 2001-2006 by William Lee, <wl1012@yahoo.com>
 " }}}
 
@@ -70,9 +70,6 @@
 "
 "   You can set the following DirDiff variables.  You can add the following
 "   "let" lines in your .vimrc file.
-"
-"   Sets diff command:
-"       let g:DirDiffCommand = $VIMRUNTIME . "diff"
 "
 "   Sets default exclude pattern:
 "       let g:DirDiffExcludes = "CVS,*.class,*.exe,.*.swp"
@@ -153,7 +150,9 @@
 "   Salman Halim, Yosuke Kimura, and others for their suggestions
 "
 " HISTORY:
-"  1.1.1  - Added support for custom diff-command
+"  1.1.2  - Applied the patch to 1.1.0 instead of 1.0.2. Please do not use
+"           1.1.1
+"  1.1.1  - Make it work with filename with spaces. (Thanks to Atte Kojo)
 "  1.1.0  - Added support for i18n (tested on a French version for now only).
 "           Can dynamically figure out the diff strings output by diff.
 "  1.0.2  - Fixed a small typo bug in the quit function.
@@ -231,10 +230,6 @@ map <unique> <script> <Plug>DirDiffQuit    :call <SID>DirDiffQuit()<CR>
 "                          " ignore white space in diff
 "                          let g:DirDiffAddArgs = "-w" 
 "
-" You can set the diff command.  Defaults to 'diff'
-if !exists("g:DirDiffCommand")
-    let g:DirDiffCommand = "diff"
-endif
 " You can set the pattern that diff excludes.  Defaults to the CVS directory
 if !exists("g:DirDiffExcludes")
     let g:DirDiffExcludes = ""
@@ -358,7 +353,7 @@ function! <SID>DirDiff(srcA, srcB)
     let DiffBuffer = tempname()
     " We first write to that file
     " Constructs the command line
-    let cmd = "!".g:DirDiffCommand
+    let cmd = "!diff"
     let cmdarg = " -r --brief"
 
     " If variable is set, we ignore the case
@@ -540,7 +535,7 @@ function! <SID>DirDiffOpen()
         endif
         split
         wincmd k
-        silent exec "edit ".fileToOpen
+        silent exec "edit ".fnameescape(fileToOpen)
         " Fool the window saying that this is diff
         diffthis
         wincmd j
@@ -551,8 +546,8 @@ function! <SID>DirDiffOpen()
         "Open the diff windows
         split
         wincmd k
-        silent exec "edit ".fileB
-        silent exec "vert diffsplit ".fileA
+        silent exec "edit ".fnameescape(fileB)
+        silent exec "vert diffsplit ".fnameescape(fileA)
         " Go back to the diff window
         wincmd j
         " Resize the window
