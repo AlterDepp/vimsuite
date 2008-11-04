@@ -44,6 +44,18 @@ function! GotoLastFile()
     endwhile
 endfunction
 
+" inputdialog whitch updates Variable and returns result
+function VariableUpdateDialog(prompt, varName, ...)
+    execute 'let l:var=' . a:varName
+    if a:0 > 0
+        let l:var = inputdialog(a:prompt, l:var, a:1)
+    else
+        let l:var = inputdialog(a:prompt, l:var)
+    endif
+    execute 'let ' . a:varName . '= l:var'
+    return l:var
+endfunction
+
 "command -nargs=1 PathNormpath call PathNormpath('<fargs>')
 "function PathNormpath(string)
 "    if (v:version > 602)
