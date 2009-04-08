@@ -15,7 +15,11 @@ syntax keyword kgsDefinitions   gruppenkennlinie gruppenkennfeld gruppenstuetzst
 syntax keyword kgsDefinitions   kennfeld kennwerteblock systemkonstante festkennlinie
 syntax keyword kgsDefinitions   festkennfeld
 syntax keyword kgsDefinitions   kenngroessen_gruppe ramgroessen_gruppe
-syntax keyword kgsRefgroessen   ref_ram_groesse ref_kenngroesse
+syntax keyword kgsRefgroessen   ref_ram_groesse
+syntax keyword kgsRefgroessen   ref_kennwert ref_kennlinie ref_kennfeld
+syntax keyword kgsRefgroessen   ref_gruppenstuetzstellen
+syntax keyword kgsRefgroessen   ref_systemkonstante
+syntax keyword kgsRefgroessen   ref_kennwerteblock
 syntax keyword kgsKomponents    umrechnung codesyntax datentyp adressierschema
 syntax keyword kgsKomponents    bitanzahl element_anzahl bitbasis_typ bitposition
 syntax keyword kgsKomponents    bitbasis_name init_wertp minp_w maxp_w
