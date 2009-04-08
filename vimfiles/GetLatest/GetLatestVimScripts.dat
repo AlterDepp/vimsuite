@@ -1,6 +1,6 @@
 ScriptID SourceID Filename
 --------------------------
-1075 9221 netrw.vim
+1075 9389 netrw.vim
 1502 8743 vimball.vim
 1008 3118 srec.vim (ftplugin)
 1009 3119 srec.vim (syntax file)
@@ -9,7 +9,7 @@ ScriptID SourceID Filename
 670  8073 visincr.vim (Visual Increment)
 862  2635 cscope_quickfix.vim
 51    171 cscope_macros.vim
-102  5306 DirDiff.vim
+102 9375 DirDiff.vim
 1189 8687 matrix.vim
 1173 8689 tcomment
 948  2878 Scons Compiler plugin
@@ -18,7 +18,7 @@ ScriptID SourceID Filename
 987  6978 DoxygenToolkit.vim
 1397 6887 xml.vim
 1290 5190 LogiPat.vim
-1881 8355 svndiff
+1881 9564 svndiff
 1462 5612 dtd2xml
 1046 4249 Lusty Explorer
 2043 7805 VimPdb (debugging python)
@@ -27,8 +27,11 @@ ScriptID SourceID Filename
 39   8196 matchit.vim
 2092 8095 reloaded.vim (matrix colorscheme)
 848  8203 SrchRplcHiGrp.vim (Search/Replace on Syntax Group)
-294  8407 Align.vim
-479 9276 MultipleSearch
-642  8136 :AutoInstall: GetLatestVimScripts.vim
-1066 7618 :AutoInstall: cecutil.vim
-642 8136 :AutoInstall: getscript.vim
+294 9414 Align.vim
+479  9276 MultipleSearch
+1066 7618 cecutil.vim
+642  8136 getscript.vim
+90 9279 vcscommand
+642 8136 :AutoInstall: GetLatestVimScripts.vim
+479 9276 :AutoInstall: MultipleSearch.vba
+1173 8689 tComment.vim
