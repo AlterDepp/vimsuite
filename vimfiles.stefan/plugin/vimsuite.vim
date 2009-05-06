@@ -104,7 +104,8 @@ function s:SetProject(projectfile)
                     \ . "Makefiles\tmakefile;*.mak\n"
                     \ . "All\ Files\t*\n"
         let projectfilePath = fnamemodify(browse(0, 'Select projectfile', l:WA, ''), ':p')
-        if !filereadable(a:projectfile)
+        if !filereadable(projectfilePath)
+            echoerr 'File not readable: ' . projectfilePath
             " Cancel
             return
         endif
