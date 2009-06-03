@@ -31,7 +31,7 @@ command -nargs=0 CCMhistory    call s:CCMhistory(expand('%:p'))
 " Menu
 " ----
 let s:CCMMenuLocation = 100
-let s:CCMmenuname = '&CCM.'
+let s:CCMmenuname = '&VCS.&CCM.'
 
 "-------------------------
 function s:CCMRedrawMenu()

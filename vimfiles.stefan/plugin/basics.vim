@@ -25,6 +25,16 @@ function PrintLine(text)
     echo a:text . line_nr . ' ' . line
 endfunction
 
+function ListToRegexp(list)
+    let groups = []
+    for item in a:list
+        let r = escape(item, '/*.')
+        call add(groups, '\('.r.'\)')
+    endfor
+    let re = join(groups, '\|')
+    return re
+endfunction
+
 command -nargs=1 EchoDebug call EchoDebug(<args>)
 function EchoDebug(text)
     if exists('g:debug')

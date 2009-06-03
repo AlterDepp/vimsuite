@@ -25,7 +25,7 @@ command -nargs=0 SVNstudio call s:SVNstudio()
 " Menu
 " ----
 let s:SVNMenuLocation = 100
-let s:SVNmenuname = '&SVN.'
+let s:SVNmenuname = '&VCS.&SVN.'
 
 "-------------------------
 function s:SVNRedrawMenu()
@@ -172,7 +172,31 @@ function s:SVNadd(filename)
     let output = system(expression)
     echo output
 endfunction
-"
+
+"-----------------------------
+function SVNgetModifiedFiles()
+"-----------------------------
+    let files = []
+    let expression = g:svn . ' status'
+    let output = system(expression)
+    let lines = split(output, '\n')
+    for line in lines
+        let file   = substitute(line, '^\([AMR]\)......\s*\(\S*\)', '\2', '')
+        if file == line
+            continue
+        endif
+        call add(files, file)
+    endfor
+    return files
+endfunction
+
+"-------------------------------
+function SVNgrepModified(regexp)
+"-------------------------------
+    let files = SVNgetModifiedFiles()
+    let command = 'vimgrep /'.a:regexp.'/g ' . join(files, ' ')
+    execute command
+endfunction
 
 "---------------------
 function s:SVNstudio()

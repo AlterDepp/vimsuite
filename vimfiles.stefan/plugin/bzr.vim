@@ -24,8 +24,8 @@ command -nargs=0 BZRstudio call s:BZRstudio()
 " ----
 " Menu
 " ----
-let s:BZRMenuLocation = 100
-let s:BZRmenuname = '&BZR.'
+let s:BZRMenuLocation = '100'
+let s:BZRmenuname = '&VCS.&BZR.'
 
 "-------------------------
 function s:BZRRedrawMenu()
