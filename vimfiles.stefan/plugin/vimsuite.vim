@@ -811,7 +811,7 @@ command SynaxShowGroup execute('echo synIDattr(synID(line("."), col("."), 1), "n
 
 " diff options
 set diffexpr=FileDiff()
-set diffopt=filler,iwhite
+set diffopt=filler
 function FileDiff(...)
   let opt = '-a --binary '
   if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
