@@ -9,9 +9,11 @@ let g:diff        = expand('diff ')
 let g:svn         = expand('svn ')
 let g:cvs         = expand('cvs ')
 let g:cp          = expand('cp ')
+let g:mv          = expand('mv ')
 let g:rm          = expand('rm ')
 let g:rm_f        = expand('rm -rf ')
 let g:mkdir       = expand('mkdir ')
+let g:wget        = expand('wget')
 
 " unix-tools
 let g:patch       = expand('patch ')

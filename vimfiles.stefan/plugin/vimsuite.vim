@@ -886,8 +886,8 @@ function s:GetLatestVimScriptsThroughProxy()
     " reset HOME
     let $HOME = home
 endfunction
-let g:GetLatestVimScripts_wget= expand(g:vimfiles . '/tools/wget.exe')
-let g:GetLatestVimScripts_mv= "move"
+let g:GetLatestVimScripts_wget = g:wget
+let g:GetLatestVimScripts_mv = g:mv
 
 " merge
 command -nargs=+ Merge call Merge(<args>)

@@ -23,6 +23,7 @@ let g:ctags       = expand(g:vimtools . '/ctags.exe ')
 let g:cscope      = expand(g:vimtools . '/cscope.exe ')
 let g:tee         = expand(g:vimtools . '/tee.exe ')
 let g:untee       = expand(g:vimtools . '/untee.bat ')
+let g:wget        = expand(g:vimtools . '/wget.exe')
 
 "let g:nobmsk = 1
 "let g:nobmskmenu = 1
