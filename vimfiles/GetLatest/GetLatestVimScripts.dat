@@ -1,38 +1,34 @@
 ScriptID SourceID Filename
 --------------------------
-1075 9389 netrw.vim
-1502 8743 vimball.vim
-1008 3118 srec.vim (ftplugin)
-1009 3119 srec.vim (syntax file)
-475  2535 latex-suite (install in vimfiles.latex)
-614  3666 C-Referenz
-670  8073 visincr.vim (Visual Increment)
-862  2635 cscope_quickfix.vim
-51    171 cscope_macros.vim
-102 9375 DirDiff.vim
-1189 8687 matrix.vim
-1173 8689 tcomment
-948  2878 Scons Compiler plugin
-1709 6421 Scons Syntax file
-1772 7248 DAMOS.zip DAMOS tools (von Stefan)
-987  6978 DoxygenToolkit.vim
-1397 6887 xml.vim
-1290 5190 LogiPat.vim
-1881 9564 svndiff
-1462 5612 dtd2xml
-1046 4249 Lusty Explorer
-2043 7805 VimPdb (debugging python)
-1776 7902 Vimgrep Replace
-2048 7817 BlockDiff
-39   8196 matchit.vim
-2092 8095 reloaded.vim (matrix colorscheme)
-848  8203 SrchRplcHiGrp.vim (Search/Replace on Syntax Group)
-294 9414 Align.vim
-479  9276 MultipleSearch
-1066 7618 cecutil.vim
-642  8136 getscript.vim
-90 9279 vcscommand
-642 8136 :AutoInstall: GetLatestVimScripts.vim
-479 9276 :AutoInstall: MultipleSearch.vba
-1173 8689 tComment.vim
-2701 1    editsrec
+1008  3118 srec.vim (ftplugin)
+1009  3119 srec.vim (syntax file)
+475   2535 latex-suite (install in vimfiles.latex)
+614   3666 C-Referenz
+670   8073 visincr.vim (Visual Increment)
+862   2635 cscope_quickfix.vim
+51     171 cscope_macros.vim
+102   9375 DirDiff.vim
+1189  8687 matrix.vim
+1173 11513 tcomment
+948   2878 Scons Compiler plugin
+1709  6421 Scons Syntax file
+1772  7248 DAMOS.zip DAMOS tools (von Stefan)
+987  11878 DoxygenToolkit.vim
+1397 11713 xml.vim
+1290  5190 LogiPat.vim
+1462  5612 dtd2xml
+1046  4249 Lusty Explorer
+2043  7805 VimPdb (debugging python)
+1776  7902 Vimgrep Replace
+2048  7817 BlockDiff
+39    8196 matchit.vim
+2092  8095 reloaded.vim (matrix colorscheme)
+848   8203 SrchRplcHiGrp.vim (Search/Replace on Syntax Group)
+294  10110 Align.vim
+479   9276 MultipleSearch.vba
+1066  7618 cecutil.vim
+1173 11513 tComment.vim
+2701 10950 editsrec
+642   8136 :AutoInstall: getscript.vim
+1075 11979 :AutoInstall: netrw.vim
+1502 11981 :AutoInstall: vimball.vim

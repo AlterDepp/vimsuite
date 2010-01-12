@@ -1,0 +1,337 @@
+" Vim Test Cases for Editing .srec Files
+" Maintainer: Alexander Fleck
+"            <alexander.fleck@gmx.net>
+" License:    This File is placed in the Public Domain.
+" Revision | Date [DD.MM.YY] | Changes
+" 00.01.00 |       05.07.09  | 01. Revision
+
+" This File contains Test Cases for the Plugin 'editsrec.vim'
+"                               and its Library 'libsrec.vim'.
+
+TestCases for ByteCount
+Line -----------------------------
+insert a new Line and type "S0"
+type "<Esc><Leader>lb"
+the following Line will be created
+S00F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S1"
+type "<Esc><Leader>lb"
+the following Line will be created
+S10F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S2"
+type "<Esc><Leader>lb"
+the following Line will be created
+S20F000000FFFFFFFFFFFFFFFFFFFFFFFB
+insert a new Line and type "S3"
+type "<Esc><Leader>lb"
+the following Line will be created
+S30F00000000FFFFFFFFFFFFFFFFFFFFFA
+insert a new Line and type "S4"
+type "<Esc><Leader>lb"
+Nothing will be created
+insert a new Line and type "S5"
+type "<Esc><Leader>lb"
+the following Line will be created
+S5030000FC
+insert a new Line and type "S6"
+type "<Esc><Leader>lb"
+Nothing will be created
+insert a new Line and type "S7"
+type "<Esc><Leader>lb"
+the following Line will be created
+S70500000000FA
+insert a new Line and type "S8"
+type "<Esc><Leader>lb"
+the following Line will be created
+S804000000FB
+insert a new Line and type "S9"
+type "<Esc><Leader>lb"
+the following Line will be created
+S9030000FC
+
+Part -----------------------------
+insert a new Line and type "S0"
+type "<Esc><Leader>pb"
+the following Line will be created
+S00F
+insert a new Line and type "S1"
+type "<Esc><Leader>pb"
+the following Line will be created
+S10F
+insert a new Line and type "S2"
+type "<Esc><Leader>pb"
+the following Line will be created
+S20F
+insert a new Line and type "S3"
+type "<Esc><Leader>pb"
+the following Line will be created
+S30F
+insert a new Line and type "S4"
+type "<Esc><Leader>pb"
+Nothing will be created
+insert a new Line and type "S5"
+type "<Esc><Leader>pb"
+the following Line will be created
+S503
+insert a new Line and type "S6"
+type "<Esc><Leader>pb"
+Nothing will be created
+insert a new Line and type "S7"
+type "<Esc><Leader>pb"
+the following Line will be created
+S705
+insert a new Line and type "S8"
+type "<Esc><Leader>pb"
+the following Line will be created
+S804
+insert a new Line and type "S9"
+type "<Esc><Leader>pb"
+the following Line will be created
+S903
+
+
+TestCases for ADdress
+Line -----------------------------
+insert a new Line and type "S00F"
+type "<Esc><Leader>la"
+the following Line will be created
+S00F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S10F"
+type "<Esc><Leader>la"
+the following Line will be created
+S10F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S20F"
+type "<Esc><Leader>la"
+the following Line will be created
+S20F000000FFFFFFFFFFFFFFFFFFFFFFFB
+insert a new Line and type "S30F"
+type "<Esc><Leader>la"
+the following Line will be created
+S30F00000000FFFFFFFFFFFFFFFFFFFFFA
+insert a new Line and type "S40F"
+type "<Esc><Leader>la"
+Nothing will be created
+insert a new Line and type "S503"
+type "<Esc><Leader>la"
+the following Line will be created
+S5030000FC
+insert a new Line and type "S60F"
+type "<Esc><Leader>la"
+Nothing will be created
+insert a new Line and type "S705"
+type "<Esc><Leader>la"
+the following Line will be created
+S70500000000FA
+insert a new Line and type "S804"
+type "<Esc><Leader>la"
+the following Line will be created
+S804000000FB
+insert a new Line and type "S903"
+type "<Esc><Leader>la"
+the following Line will be created
+S9030000FC
+
+Part -----------------------------
+insert a new Line and type "S00F"
+type "<Esc><Leader>pa"
+the following Line will be created
+S00F0000
+insert a new Line and type "S10F"
+type "<Esc><Leader>pa"
+the following Line will be created
+S10F0000
+insert a new Line and type "S20F"
+type "<Esc><Leader>pa"
+the following Line will be created
+S20F000000
+insert a new Line and type "S30F"
+type "<Esc><Leader>pa"
+the following Line will be created
+S30F00000000
+insert a new Line and type "S40F"
+type "<Esc><Leader>pa"
+Nothing will be created
+insert a new Line and type "S503"
+type "<Esc><Leader>pa"
+the following Line will be created
+S5030000
+insert a new Line and type "S60F"
+type "<Esc><Leader>pa"
+Nothing will be created
+insert a new Line and type "S705"
+type "<Esc><Leader>pa"
+the following Line will be created
+S70500000000
+insert a new Line and type "S804"
+type "<Esc><Leader>pa"
+the following Line will be created
+S804000000
+insert a new Line and type "S903"
+type "<Esc><Leader>pa"
+the following Line will be created
+S9030000
+
+
+TestCases for DAta
+Line -----------------------------
+insert a new Line and type "S00F0000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S00F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S10F0000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S10F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S20F000000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S20F000000FFFFFFFFFFFFFFFFFFFFFFFB
+insert a new Line and type "S30F00000000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S30F00000000FFFFFFFFFFFFFFFFFFFFFA
+insert a new Line and type "S40F0000"
+type "<Esc><Leader>ld"
+Nothing will be created
+insert a new Line and type "S5030000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S5030000FC
+insert a new Line and type "S60F0000"
+type "<Esc><Leader>ld"
+Nothing will be created
+insert a new Line and type "S70500000000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S70500000000FA
+insert a new Line and type "S804000000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S804000000FB
+insert a new Line and type "S9030000"
+type "<Esc><Leader>ld"
+the following Line will be created
+S9030000FC
+
+Part -----------------------------
+insert a new Line and type "S00F0000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S00F0000FFFFFFFFFFFFFFFFFFFFFFFF
+insert a new Line and type "S10F0000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S00F0000FFFFFFFFFFFFFFFFFFFFFFFF
+insert a new Line and type "S20F000000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S00F000000FFFFFFFFFFFFFFFFFFFFFF
+insert a new Line and type "S30F00000000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S00F00000000FFFFFFFFFFFFFFFFFFFF
+insert a new Line and type "S40F0000"
+type "<Esc><Leader>pd"
+Nothing will be created
+insert a new Line and type "S5030000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S5030000
+insert a new Line and type "S60F0000"
+type "<Esc><Leader>pd"
+Nothing will be created
+insert a new Line and type "S70500000000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S70500000000
+insert a new Line and type "S804000000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S804000000
+insert a new Line and type "S9030000"
+type "<Esc><Leader>pd"
+the following Line will be created
+S9030000
+
+
+TestCases for CheckSum
+Line -----------------------------
+insert a new Line and type "S00F0000FFFFFFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>lc"
+the following Line will be created
+S00F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S10F0000FFFFFFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>lc"
+the following Line will be created
+S10F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S20F000000FFFFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>lc"
+the following Line will be created
+S20F000000FFFFFFFFFFFFFFFFFFFFFFFB
+insert a new Line and type "S30F00000000FFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>lc"
+the following Line will be created
+S30F00000000FFFFFFFFFFFFFFFFFFFFFA
+insert a new Line and type "S40F0000"
+type "<Esc><Leader>lc"
+Nothing will be created
+insert a new Line and type "S5030000"
+type "<Esc><Leader>lc"
+the following Line will be created
+S5030000FC
+insert a new Line and type "S60F0000"
+type "<Esc><Leader>lc"
+Nothing will be created
+insert a new Line and type
+type "<Esc><Leader>lc"
+the following Line will be created
+S70500000000FA
+insert a new Line and type "S804000000"
+type "<Esc><Leader>lc"
+the following Line will be created
+S804000000FB
+insert a new Line and type "S9030000"
+type "<Esc><Leader>lc"
+the following Line will be created
+S9030000FC
+
+Part -----------------------------
+insert a new Line and type "S00F0000FFFFFFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>pc"
+the following Line will be created
+S00F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S10F0000FFFFFFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>pc"
+the following Line will be created
+S10F0000FFFFFFFFFFFFFFFFFFFFFFFFFC
+insert a new Line and type "S20F000000FFFFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>pc"
+the following Line will be created
+S20F000000FFFFFFFFFFFFFFFFFFFFFFFB
+insert a new Line and type "S30F00000000FFFFFFFFFFFFFFFFFFFF"
+type "<Esc><Leader>pc"
+the following Line will be created
+S30F00000000FFFFFFFFFFFFFFFFFFFFFA
+insert a new Line and type "S40F0000"
+type "<Esc><Leader>pc"
+Nothing will be created
+insert a new Line and type "S5030000"
+type "<Esc><Leader>pc"
+the following Line will be created
+S5030000FC
+insert a new Line and type "S60F0000"
+type "<Esc><Leader>pc"
+Nothing will be created
+insert a new Line and type "S70500000000"
+type "<Esc><Leader>pc"
+the following Line will be created
+S70500000000FA
+insert a new Line and type "S804000000"
+type "<Esc><Leader>pc"
+the following Line will be created
+S804000000FB
+insert a new Line and type "S9030000"
+type "<Esc><Leader>pc"
+the following Line will be created
+S9030000FC
+

@@ -1,0 +1,21 @@
+" Vim Global Plugin for Editing .srec Files, doc-File
+" Maintainer: Alexander Fleck
+"            <alexander.fleck@gmx.net>
+" License:    This File is placed in the Public Domain.
+" Revision | Date [DD.MM.YY] | Changes
+" 00.01.00 |       05.07.09  | 01. Revision
+
+*editsrec.txt* Global Plugin for Editing .srec Files
+
+This Plugin consists of the following Files:
+/plugin/editsrec.vim
+/plugin/editsrec_test.txt
+/autoload/libsrec.vim
+and
+/doc/editsrec.txt
+, this File.
+
+The Purpose of this Plugin is to edit .srec-Files.
+Currently it only allows Editing Line by Line, 
+                but Handling of Files will be added later.
+
