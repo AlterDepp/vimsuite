@@ -35,9 +35,8 @@ endfunction
 
 " Get Address of current cursor position
 function! s:HexGetAddress()
-    let AddressLineNumber = search('^:02*', 'bcnW')
+    let AddressLineNumber = search('^:......04*', 'bcnW')
     let AddressLine = getline(AddressLineNumber)
-
     let LineDict = s:HexParseLine(AddressLine)
     let ExtLinAddress = LineDict['Data']
 
@@ -80,29 +79,25 @@ function! HexGetVal(Bytes)
     let LineDict = s:HexParseLine(getline(line('.')))
     let Data = LineDict['Data']
     let DataList = HexSplitData(Data)
-    let ByteNum = 0
-    while ByteNum < a:Bytes
-        try
+    if (StartByte + a:Bytes) <= len(DataList)
+        let ByteNum = 0
+        while ByteNum < a:Bytes
             let HexString .= DataList[StartByte + ByteNum]
-        catch /^Vim\%((\a\+)\)\=:E684/
-            throw 'oops'
-        finally
             let ByteNum += 1
-        endtry
-    endwhile
-    return eval('0x'.HexString)
+        endwhile
+        return eval('0x'.HexString)
+    else
+        return -1
 endfunction
 
 " Get actual values for 1, 2, 4 Bytes in hex and dez
 function! s:HexGetDezValuesString()
     let String = ''
     for i in [1, 2, 4]
-        try
-            let Byte = HexGetVal(i)
-        catch /oops/
-            break
-        endtry
-        let String .= ' ' . printf('0x%x (%d)', Byte, Byte)
+        let Byte = HexGetVal(i)
+        if Byte != -1
+            let String .= ' ' . printf('0x%x (%d)', Byte, Byte)
+        endif
     endfor
     return String
 endfunction
@@ -112,10 +107,10 @@ function! HexStatusLine()
     let StatusLine =
                 \   ' Address: '
                 \ . s:HexGetAddress()
-                \ . ' Data: '
-                \ . s:HexGetAsciiLine()
                 \ . ' Values: '
                 \ . s:HexGetDezValuesString()
+"                \ . ' Data: '
+"                \ . s:HexGetAsciiLine()
     return StatusLine
 endfunction
 
@@ -124,7 +119,8 @@ endfunction
 "    echo HexStatusLine()
 "endfunction
 
-command HexStatusLine set statusline=%!HexStatusLine()
+command! HexStatusLine set statusline=%!HexStatusLine()
+command! HexStatusLineOff set statusline=
 " Update statusline with HEX info
 set statusline=%!HexStatusLine()
 " Always show statusline
