@@ -1,3 +1,19 @@
+" Vim filetype plugin file
+" Language:    Intel .hex files
+" Maintainer:  Stefan Liebl
+"
+" Features:    Display hex-address in statusline
+"              :HexGotoAddress
+"              :HexStatusLineOff
+"
+" Source:      included in http://code.google.com/p/vimsuite
+
+" Only do this when not done yet for this buffer
+if exists("b:did_ftplugin")
+  finish
+endif
+let b:did_ftplugin = 1
+
 
 " Parse Intel Hex Line into Dictionary
 function! s:HexParseLine(line)
@@ -33,21 +49,36 @@ function! s:HexGetDataByte()
     return DataByte
 endfunction
 
-" Get Address of current cursor position
-function! s:HexGetAddress()
-    let AddressLineNumber = search('^:......04*', 'bcnW')
+" Get Extended linear address
+function! s:HexGetExtLinAddress()
+    let AddressLineNumber = search('^:......04', 'bcnW')
     let AddressLine = getline(AddressLineNumber)
     let LineDict = s:HexParseLine(AddressLine)
     let ExtLinAddress = LineDict['Data']
+    return printf('0x%s0000', ExtLinAddress)
+endfunction
+
+" Get Address of current line
+function! s:HexGetLineAddress()
+    let ExtLinAddress = s:HexGetExtLinAddress()
 
     let LineDict = s:HexParseLine(getline(line('.')))
     let AddressOffset = LineDict['Address']
 
+    let LineAddress = eval(
+                \  ' (  '.ExtLinAddress.')'
+                \ .'+(0x'.AddressOffset.')'
+                \ )
+    return printf('0x%x', LineAddress)
+endfunction
+
+" Get Address of current cursor position
+function! s:HexGetAddress()
+    let LineAddress       = s:HexGetLineAddress()
     let LineAddressOffset = s:HexGetDataByte()
 
     let Address = eval(
-                \  ' (0x'.ExtLinAddress.' * 0x10000)'
-                \ .'+(0x'.AddressOffset.')'
+                \  ' (  '.LineAddress.')'
                 \ .'+(  '.LineAddressOffset.')'
                 \ )
     return printf('0x%x', Address)
@@ -114,6 +145,42 @@ function! HexStatusLine()
     return StatusLine
 endfunction
 
+function! s:HexAddressIsSmaller(a1, a2)
+    let a1 = eval(a:a1)
+    let a2 = eval(a:a2)
+    if (a1 < 0) && (a2 >= 0)
+        " a1 is greater
+        return 0
+    elseif (a1 >= 0) && (a2 < 0)
+        " a2 is greater
+        return 1
+    else
+        return a1 < a2
+    endif
+endfunction
+
+command! -nargs=1 HexGotoAddress call HexGotoAddress("<args>")
+function! HexGotoAddress(address)
+    let target = a:address
+    " Find correct section
+    normal G
+    while s:HexAddressIsSmaller(target, s:HexGetExtLinAddress())
+        call search('^:......04', 'bcW')
+        normal k
+    endwhile
+
+    " Find correct line
+    while s:HexAddressIsSmaller(target, s:HexGetLineAddress())
+        normal k
+    endwhile
+
+    " Find corret position
+    normal $h
+    while s:HexAddressIsSmaller(target, s:HexGetAddress())
+        normal hh
+    endwhile
+endfunction
+
 "command! HexAddress call Test()
 "function! Test()
 "    echo HexStatusLine()
@@ -121,7 +188,7 @@ endfunction
 
 command! HexStatusLine set statusline=%!HexStatusLine()
 command! HexStatusLineOff set statusline=
-" Update statusline with HEX info
+" Always update statusline with HEX info
 set statusline=%!HexStatusLine()
 " Always show statusline
 set laststatus=2
