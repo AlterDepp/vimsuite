@@ -809,7 +809,73 @@ endfunction
 
 command SynaxShowGroup execute('echo synIDattr(synID(line("."), col("."), 1), "name")')
 
+" ----------------
+" Find Ugly C Code
+" ----------------
+
+"function s:SingleChar(x, ...)
+"    if a:0 > 0
+"        let a = a:1
+"    else
+"        let a = a:x
+"    endif
+"    if a:0 > 1
+"        let b = a:2
+"    else
+"        let b = a:x
+"    endif
+"    let string = '[' . a . ']\@<!' . a:x . '[' . b . ']\@!'
+"    return string
+"endfunction
+"
+"function s:SpaceAround(x)
+"    let string = '\%(\%(^\| \)\@<!' . a:x . '\)\|\%(' . a:x . ' \@!\)'
+"    return string
+"endfunction
+
+command FindUglyC call FindUglyC()
+function FindUglyC()
+    let KeyWords = ['if', 'for', 'while', 'switch', 'return', '[&|=]']
+    let KeyWordString = join(KeyWords, '\|')
+    let SpaceBeforeParenthesis = '\(' . KeyWordString . '\)\zs('
+    let NoSpaceBeforeParenthesis = '\(' . KeyWordString . '\|\(^\s*\)' . '\)\@<! ('
+    let NoSpaceAfterKomma = ',\zs[^ ]'
+    let SpaceAfterOpenParenthesis = '(\zs '
+    let SpaceBeforeCloseParenthesis = ' )'
+    let SpaceBeforeBracket = ' \['
+    let SpaceAtLineend = '\s\+$'
+    let ReturnWithParenthesis = 'return\s*\zs(.*)\s*;'
+"    let Operator1 = ['+', '-', '\*', '\/', '|', '&']
+"    let Operator1a = []
+"    for x in Operator1
+"        let Operator1a += [s:SpaceAround(s:SingleChar(x, x . '/\*', x . '=/\*-'))]
+"    endfor
+"    let Operator1String = join(Operator1a, '\|')
+"    let Operator2 = []
+"    for x in Operator1
+"        let Operator2 += [s:SpaceAround(x . x)]
+"        let Operator2 += [s:SpaceAround(x . '=')]
+"    endfor
+"    let Operator2String = join(Operator2, '\|')
+
+    let UglyCstring = '\%(' . join([
+                \ SpaceBeforeParenthesis,
+                \ NoSpaceBeforeParenthesis,
+                \ NoSpaceAfterKomma,
+                \ SpaceBeforeBracket,
+                \ SpaceAfterOpenParenthesis,
+                \ SpaceBeforeCloseParenthesis,
+                \ SpaceAtLineend,
+                \ ReturnWithParenthesis,
+                \ ], '\)\|\%(') . '\)'
+    let @/ = UglyCstring
+    set hlsearch
+    execute '/' . UglyCstring
+endfunction
+
+" ------------
 " diff options
+" ------------
 set diffexpr=FileDiff()
 set diffopt=filler
 function FileDiff(...)
