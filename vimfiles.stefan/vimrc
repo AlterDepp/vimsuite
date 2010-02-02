@@ -53,32 +53,6 @@ set noignorecase
 " set very intelligent formatting
 set formatoptions=croqwan2
 
-" swap and backup directory
-let &directory = g:swapdir
-if !(isdirectory(g:swapdir))
-    try
-        call mkdir(g:swapdir, 'p')
-        echo 'swapdir ' . g:swapdir . ' wurde erzeugt'
-    catch
-        echo 'swapdir ' . g:swapdir . ' existiert nicht und konnte nicht erzeugt werden'
-        echo 'bitte erzeugen oder in ' . $VIMRUNTIME . '/../_vimrc ändern'
-        echo '---'
-        set directory&
-    endtry
-endif
-let &backupdir = g:backupdir
-if !(isdirectory(g:backupdir))
-    try
-        call mkdir(g:backupdir, 'p')
-        echo 'backupdir ' . g:backupdir . ' wurde erzeugt'
-    catch
-        echo 'backupdir ' . g:backupdir . ' existiert nicht und konnte nicht erzeugt werden'
-        echo 'bitte erzeugen oder in ' . $VIMRUNTIME . '/../_vimrc ändern'
-        echo '---'
-        set backupdir&
-    endtry
-endif
-
 " --------
 " Changing
 " --------
@@ -196,6 +170,8 @@ autocmd BufReadPost *
 " autocmd FocusGained * execute
 " save all files on loss of focus
 autocmd FocusLost * execute ':wa'
+" since we always save, don't use a swapfile
+set noswapfile
 
 " -----------
 " spell check
