@@ -8,13 +8,6 @@
 "
 " Source:      included in http://code.google.com/p/vimsuite
 
-" Only do this when not done yet for this buffer
-if exists("b:did_ftplugin")
-  finish
-endif
-let b:did_ftplugin = 1
-
-
 " Parse Intel Hex Line into Dictionary
 function! s:HexParseLine(line)
     let Pattern = '^:\(..\)\(....\)\(..\)\(.*\)\(..\)$'
