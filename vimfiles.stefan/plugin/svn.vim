@@ -173,28 +173,48 @@ function s:SVNadd(filename)
     echo output
 endfunction
 
-"-----------------------------
-function SVNgetModifiedFiles()
-"-----------------------------
+"--------------------------------
+function SVNgetModifiedFiles(...)
+"--------------------------------
     let files = []
-    let expression = g:svn . ' status'
+    if a:0 > 0
+        let r1 = a:1
+        if a:0 > 1
+            let r2 = a:2
+            if str2nr(r1) > str2nr(r2)
+                let r = r2
+                let r2 = r1
+                let r1 = r
+            endif
+        else
+            let r2 = 'HEAD'
+        endif
+        let expression = g:svn . ' log --verbose --revision ' . r1 . ':' . r2
+        let re         = '^\s\+\([AMR]\)\s\+\S*/\(src/\S*\)\(\s\+.*\)\?'
+    else
+        let expression = g:svn . ' status'
+        let re         = '^\([AMR]\)......\s*\(\S*\)'
+    endif
     let output = system(expression)
     let lines = split(output, '\n')
     for line in lines
-        let file   = substitute(line, '^\([AMR]\)......\s*\(\S*\)', '\2', '')
+        let file   = substitute(line, re, '\2', '')
         if file == line
             continue
         endif
         call add(files, file)
     endfor
+    for file in files
+    endfor
     return files
 endfunction
 
-"-------------------------------
-function SVNgrepModified(regexp)
-"-------------------------------
-    let files = SVNgetModifiedFiles()
+"------------------------------------
+function SVNgrepModified(regexp, ...)
+"------------------------------------
+    execute 'let files = SVNgetModifiedFiles(' . join(a:000, ',') . ')'
     let command = 'vimgrep /'.a:regexp.'/g ' . join(files, ' ')
+    echo command
     execute command
 endfunction
 
