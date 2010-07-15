@@ -213,9 +213,13 @@ endfunction
 function SVNgrepModified(regexp, ...)
 "------------------------------------
     execute 'let files = SVNgetModifiedFiles(' . join(a:000, ',') . ')'
-    let command = 'vimgrep /'.a:regexp.'/g ' . join(files, ' ')
-    echo command
-    execute command
+    if empty(files)
+        echo 'no files changed'
+    else
+        let command = 'vimgrep /'.a:regexp.'/g ' . join(files, ' ')
+        echo command
+        execute command
+    endif
 endfunction
 
 "---------------------
