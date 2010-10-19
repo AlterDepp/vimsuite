@@ -4,6 +4,7 @@
 " License:    This File is placed in the Public Domain.
 " Revision | Date [DD.MM.YY] | Changes
 " 00.01.00 |       05.07.09  | 01. Revision
+" 00.02.00 |       29.03.10  | Fun added, MakeSrecS5()
 
 if exists("loaded_editsrec")
   finish
@@ -60,6 +61,13 @@ if !hasmapto('<Plug>EditSrecPartCS')
 endif
 noremap <unique> <script> <Plug>EditSrecPartCS <SID>AutoPartCS
 noremap <SID>AutoPartCS <Esc>:call <SID>AutoPartCS()<CR>
+
+" M5 = MakeS5
+if !hasmapto('<Plug>MakeSrecLineS5')
+  map <unique> <Leader>m5 <Plug>MakeSrecLineS5
+endif
+noremap <unique> <script> <Plug>MakeSrecLineS5 <SID>MakeSrecS5
+noremap <SID>MakeSrecS5 <Esc>:call <SID>MakeSrecS5()<CR>
 
 " obsolete Mappings
 "imap <F5>    <Esc>:call <SID>AutoLineBC()<CR>a
@@ -159,6 +167,17 @@ fun s:AutoPartCS()
   let s:ln = getline(".")
   
   let s:ln = s:ln . libsrec#CrCS(s:ln)
+  
+  call setline(".", s:ln)
+  
+  unlet s:ln
+endfun
+
+" make S5 record
+fun s:MakeSrecS5()
+  let s:ln = getline(".")
+  
+  let s:ln = s:ln . libsrec#MkS5(s:ln)
   
   call setline(".", s:ln)
   

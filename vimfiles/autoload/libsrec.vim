@@ -4,6 +4,11 @@
 " License:    This File is placed in the Public Domain.
 " Revision | Date [DD.MM.YY] | Changes
 " 00.01.00 |       05.07.09  | 01. Revision
+" 00.01.10 |       29.03.10  | BugFix, in libsrec#CrCS()
+"          |                 | leading Zeros in Result
+" 00.02.00 |       29.03.10  | Fun added, MkS5()
+" 00.02.10 |       15.06.10  | BugFix, in libsrec#CrCS()
+"          |                 | wrong Source for CS
 
 " create ByteCount
 fun libsrec#CrBC(line)
@@ -141,6 +146,15 @@ fun libsrec#CrCS(line)
       let s:csby = s:csby        / 16
     endwhile
     
+    " add missing Zeros
+    while strlen(s:chsu) < 2
+      let s:chsu = "0" . s:chsu
+    endwhile
+    " Exception Handling
+    if strlen(s:chsu) > 2
+      let s:chsu = "CS"
+    endif
+    
     unlet s:hxva
     unlet s:csby
   endif
@@ -148,5 +162,52 @@ fun libsrec#CrCS(line)
   unlet s:bchx
   "unlet s:chsu
   return s:chsu
+endfun
+
+" make S5 record
+fun libsrec#MkS5(line)
+  let s:srec = ""
+  let s:line = ""
+  let s:srco = 0
+  let s:srad = ""
+  
+  let s:srec = s:srec . "S5" . "03"
+  
+  let s:n = 1
+  while (line2byte(s:n) != line2byte("."))
+    let s:line = getline(s:n)
+    if ((s:line[0] == "S") && ((s:line[1] == "1") || (s:line[1] == "2") || (s:line[1] == "3")))
+      let s:srco = s:srco + 1
+    endif
+    let s:n = s:n + 1
+  endwhile
+  unlet s:n
+  
+  " convert to Hex Value,
+  "            Hex String without "0x"
+  let s:hxva = "0123456789ABCDEF"
+  while s:srco
+    let s:srad = s:hxva[s:srco % 16] . s:srad
+    let s:srco = s:srco        / 16
+  endwhile
+  
+  " add missing Zeros
+  while strlen(s:srad) < 4
+    let s:srad = "0" . s:srad
+  endwhile
+  " Exception Handling
+  if strlen(s:srad) > 4
+    let s:srad = "AAAA"
+  endif
+  
+  unlet s:hxva
+  
+  let s:srec = s:srec . s:srad . libsrec#CrCS(s:srec . s:srad)
+  
+  unlet s:srad
+  unlet s:srco
+  unlet s:line
+  "unlet s:srec
+  return s:srec
 endfun
 

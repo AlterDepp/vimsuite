@@ -4,6 +4,7 @@
 " License:    This File is placed in the Public Domain.
 " Revision | Date [DD.MM.YY] | Changes
 " 00.01.00 |       05.07.09  | 01. Revision
+" 00.02.00 |       29.03.10  | Description added
 
 *editsrec.txt* Global Plugin for Editing .srec Files
 
@@ -18,4 +19,23 @@ and
 The Purpose of this Plugin is to edit .srec-Files.
 Currently it only allows Editing Line by Line, 
                 but Handling of Files will be added later.
+
+Commands | Description                       |
+---------|-----------------------------------|
+lb       | build a line from ByteCount       |
+pb       | build only the ByteCount          |
+---------|-----------------------------------|
+la       | build a line from ADdress         |
+pa       | build only the ADdress            |
+---------|-----------------------------------|
+ld       | build a line from DAta            |
+pd       | build only the DAta               |
+---------|-----------------------------------|
+lc       | build a line from CheckSum        |
+pc       | build only the CheckSum           |
+---------|-----------------------------------|
+m5       | make an S5 record on a blank line |
+         |                                   |
+
+see *editsrec_test.txt* for examples
 

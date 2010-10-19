@@ -4,6 +4,9 @@
 " License:    This File is placed in the Public Domain.
 " Revision | Date [DD.MM.YY] | Changes
 " 00.01.00 |       05.07.09  | 01. Revision
+" 00.01.10 |       29.03.10  | BugFix, in libsrec#CrCS()
+"          |                 | leading Zeros in Result
+" 00.02.00 |       29.03.10  | Fun added
 
 " This File contains Test Cases for the Plugin 'editsrec.vim'
 "                               and its Library 'libsrec.vim'.
@@ -334,4 +337,20 @@ insert a new Line and type "S9030000"
 type "<Esc><Leader>pc"
 the following Line will be created
 S9030000FC
+
+TestCase for leading Zeros -------
+insert a new Line and type "S30F00000000000000000000000000EE"
+type "<Esc><Leader>lc"
+the following Line will be created
+S30F00000000000000000000000000EE02
+
+TestCase for Making S5 Record ----
+insert
+S30F00000000000000000000000000EE02
+S30F00000000000000000000000000EE02
+S30F00000000000000000000000000EE02
+insert a new Line
+type "<Esc><Leader>m5"
+the following Line will be created
+S5030003FC
 
