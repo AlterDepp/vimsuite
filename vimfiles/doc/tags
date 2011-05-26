@@ -21,6 +21,12 @@
 :MkVimball	pi_vimball.txt	/*:MkVimball*
 :NetrwClean	pi_netrw.txt	/*:NetrwClean*
 :Nexplore	pi_netrw.txt	/*:Nexplore*
+:Nr	pi_netrw.txt	/*:Nr*
+:Nread	pi_netrw.txt	/*:Nread*
+:Ns	pi_netrw.txt	/*:Ns*
+:Nsource	pi_netrw.txt	/*:Nsource*
+:Nw	pi_netrw.txt	/*:Nw*
+:Nwrite	pi_netrw.txt	/*:Nwrite*
 :Pexplore	pi_netrw.txt	/*:Pexplore*
 :RI	visincr.txt	/*:RI*
 :RID	visincr.txt	/*:RID*
@@ -63,9 +69,7 @@ MultipleSearch-commands	MultipleSearch.txt	/*MultipleSearch-commands*
 MultipleSearch-mappings	MultipleSearch.txt	/*MultipleSearch-mappings*
 MultipleSearch-settings	MultipleSearch.txt	/*MultipleSearch-settings*
 MultipleSearch.txt	MultipleSearch.txt	/*MultipleSearch.txt*
-Nread	pi_netrw.txt	/*Nread*
-Nsource	pi_netrw.txt	/*Nsource*
-Nwrite	pi_netrw.txt	/*Nwrite*
+NetUserPass()	pi_netrw.txt	/*NetUserPass()*
 SR	SrchRplcHiGrp.txt	/*SR*
 SRChooseHiGrp	SrchRplcHiGrp.txt	/*SRChooseHiGrp*
 SRDispHiGrp	SrchRplcHiGrp.txt	/*SRDispHiGrp*
@@ -1441,14 +1445,16 @@ g:netrw_altv	pi_netrw.txt	/*g:netrw_altv*
 g:netrw_banner	pi_netrw.txt	/*g:netrw_banner*
 g:netrw_browse_split	pi_netrw.txt	/*g:netrw_browse_split*
 g:netrw_browsex_viewer	pi_netrw.txt	/*g:netrw_browsex_viewer*
+g:netrw_bufsettings	pi_netrw.txt	/*g:netrw_bufsettings*
 g:netrw_chgperm	pi_netrw.txt	/*g:netrw_chgperm*
 g:netrw_chgwin	pi_netrw.txt	/*g:netrw_chgwin*
 g:netrw_compress	pi_netrw.txt	/*g:netrw_compress*
 g:netrw_ctags	pi_netrw.txt	/*g:netrw_ctags*
-g:netrw_cursorline	pi_netrw.txt	/*g:netrw_cursorline*
+g:netrw_cursor	pi_netrw.txt	/*g:netrw_cursor*
 g:netrw_cygwin	pi_netrw.txt	/*g:netrw_cygwin*
 g:netrw_dav_cmd	pi_netrw.txt	/*g:netrw_dav_cmd*
 g:netrw_decompress	pi_netrw.txt	/*g:netrw_decompress*
+g:netrw_dirhistmax	pi_netrw.txt	/*g:netrw_dirhistmax*
 g:netrw_fastbrowse	pi_netrw.txt	/*g:netrw_fastbrowse*
 g:netrw_fetch_cmd	pi_netrw.txt	/*g:netrw_fetch_cmd*
 g:netrw_fname_escape	pi_netrw.txt	/*g:netrw_fname_escape*
@@ -1610,6 +1616,7 @@ netrw-clean	pi_netrw.txt	/*netrw-clean*
 netrw-contents	pi_netrw.txt	/*netrw-contents*
 netrw-copyright	pi_netrw.txt	/*netrw-copyright*
 netrw-cr	pi_netrw.txt	/*netrw-cr*
+netrw-createfile	pi_netrw.txt	/*netrw-createfile*
 netrw-credits	pi_netrw.txt	/*netrw-credits*
 netrw-ctrl-h	pi_netrw.txt	/*netrw-ctrl-h*
 netrw-ctrl-l	pi_netrw.txt	/*netrw-ctrl-l*
@@ -1633,7 +1640,9 @@ netrw-fixup	pi_netrw.txt	/*netrw-fixup*
 netrw-ftp	pi_netrw.txt	/*netrw-ftp*
 netrw-ftype	pi_netrw.txt	/*netrw-ftype*
 netrw-gb	pi_netrw.txt	/*netrw-gb*
+netrw-gd	pi_netrw.txt	/*netrw-gd*
 netrw-getftype	pi_netrw.txt	/*netrw-getftype*
+netrw-gf	pi_netrw.txt	/*netrw-gf*
 netrw-gh	pi_netrw.txt	/*netrw-gh*
 netrw-gp	pi_netrw.txt	/*netrw-gp*
 netrw-gx	pi_netrw.txt	/*netrw-gx*
@@ -1675,6 +1684,7 @@ netrw-mx	pi_netrw.txt	/*netrw-mx*
 netrw-mz	pi_netrw.txt	/*netrw-mz*
 netrw-netrc	pi_netrw.txt	/*netrw-netrc*
 netrw-nexplore	pi_netrw.txt	/*netrw-nexplore*
+netrw-noload	pi_netrw.txt	/*netrw-noload*
 netrw-nread	pi_netrw.txt	/*netrw-nread*
 netrw-nwrite	pi_netrw.txt	/*netrw-nwrite*
 netrw-o	pi_netrw.txt	/*netrw-o*
@@ -1684,6 +1694,7 @@ netrw-p1	pi_netrw.txt	/*netrw-p1*
 netrw-p10	pi_netrw.txt	/*netrw-p10*
 netrw-p11	pi_netrw.txt	/*netrw-p11*
 netrw-p12	pi_netrw.txt	/*netrw-p12*
+netrw-p13	pi_netrw.txt	/*netrw-p13*
 netrw-p2	pi_netrw.txt	/*netrw-p2*
 netrw-p3	pi_netrw.txt	/*netrw-p3*
 netrw-p4	pi_netrw.txt	/*netrw-p4*
@@ -1734,7 +1745,6 @@ netrw-texplore	pi_netrw.txt	/*netrw-texplore*
 netrw-todo	pi_netrw.txt	/*netrw-todo*
 netrw-transparent	pi_netrw.txt	/*netrw-transparent*
 netrw-u	pi_netrw.txt	/*netrw-u*
-netrw-uidpass	pi_netrw.txt	/*netrw-uidpass*
 netrw-updir	pi_netrw.txt	/*netrw-updir*
 netrw-urls	pi_netrw.txt	/*netrw-urls*
 netrw-userpass	pi_netrw.txt	/*netrw-userpass*
