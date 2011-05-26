@@ -69,7 +69,7 @@ function s:GetAllProjectFilesInPath(path)
         let path = a:path . '*'
     endif
     for makefileName in s:projectFileNames
-        let pathlist = path . ',' . path . '/*,' . path . '/*/*'
+        let pathlist = path . ',' . path . '/*,' . path . '/*/*,' . path . '/*/*/*'
         let newfiles = split(globpath(pathlist, makefileName))
         let files += newfiles
 "        echo files

@@ -10,17 +10,34 @@ execute('source ' . $VIMRUNTIME . '/syntax/c.vim')
 "syntax keyword kgsFunctions sg_funktion contained
 syntax keyword kgsFunctions     sg_funktion variante revision
 syntax keyword kgsDefinitions   fkt_bezeichner kgs_bezeichner ram_bezeichner
-syntax keyword kgsDefinitions   ram_groesse lok_ram_groesse kennwert kennlinie
-syntax keyword kgsDefinitions   gruppenkennlinie gruppenkennfeld gruppenstuetzstellen
-syntax keyword kgsDefinitions   kennfeld kennwerteblock systemkonstante festkennlinie
-syntax keyword kgsDefinitions   festkennfeld
-syntax keyword kgsDefinitions   kenngroessen_gruppe ram_groessen_gruppe
-syntax keyword kgsDefinitions   lok_kenngroessen_gruppe lok_ram_groessen_gruppe
-syntax keyword kgsRefgroessen   ref_ram_groesse
-syntax keyword kgsRefgroessen   ref_kennwert ref_kennlinie ref_kennfeld
-syntax keyword kgsRefgroessen   ref_gruppenstuetzstellen
+
+syntax keyword kgsDefinitions   systemkonstante 
 syntax keyword kgsRefgroessen   ref_systemkonstante
+syntax keyword kgsDefinitions   ram_groesse lok_ram_groesse
+syntax keyword kgsRefgroessen   ref_ram_groesse
+syntax keyword kgsDefinitions   kennwert lok_kennwert
+syntax keyword kgsRefgroessen   ref_kennwert
+syntax keyword kgsDefinitions   kennwerteblock lok_kennwerteblock
 syntax keyword kgsRefgroessen   ref_kennwerteblock
+syntax keyword kgsDefinitions   kennlinie lok_kennlinie
+syntax keyword kgsRefgroessen   ref_kennlinie
+syntax keyword kgsDefinitions   kennfeld lok_kennfeld
+syntax keyword kgsRefgroessen   ref_kennfeld
+syntax keyword kgsDefinitions   festkennlinie lok_festkennlinie
+syntax keyword kgsRefgroessen   ref_festkennlinie
+syntax keyword kgsDefinitions   festkennfeld lok_festkennfeld
+syntax keyword kgsRefgroessen   ref_festkennfeld
+syntax keyword kgsDefinitions   gruppenkennlinie lok_gruppenkennlinie
+syntax keyword kgsRefgroessen   ref_gruppenkennlinie
+syntax keyword kgsDefinitions   gruppenkennfeld lok_gruppenkennfeld
+syntax keyword kgsRefgroessen   ref_gruppenkennfeld
+syntax keyword kgsDefinitions   gruppenstuetzstellen lok_gruppenstuetzstellen
+syntax keyword kgsRefgroessen   ref_gruppenstuetzstellen
+syntax keyword kgsDefinitions   kenngroessen_gruppe lok_kenngroessen_gruppe
+syntax keyword kgsRefgroessen   ref_kenngroessen_gruppe
+syntax keyword kgsDefinitions   ram_groessen_gruppe lok_ram_groessen_gruppe
+syntax keyword kgsRefgroessen   ref_ram_groessen_gruppe
+
 syntax keyword kgsKomponents    umrechnung codesyntax datentyp adressierschema
 syntax keyword kgsKomponents    bitanzahl element_anzahl bitbasis_typ bitposition
 syntax keyword kgsKomponents    bitbasis_name init_wertp minp_w maxp_w

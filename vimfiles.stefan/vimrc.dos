@@ -5,7 +5,7 @@ let g:backupdir   = expand($TEMP . '/vi')
 let g:swapdir     = expand($TEMP . '/vi')
 
 let g:gvim        = expand($VIMRUNTIME . '/gvim.exe ')
-let g:pythonPath  = expand('c:/wa/tools/python/2.4.1')
+let g:pythonPath  = expand('d:/wa/tools/python/2.6.3')
 let g:diff        = expand($VIMRUNTIME . '/diff ')
 let g:svn         = expand('svn ')
 let g:cvs         = expand('cvs ')

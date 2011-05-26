@@ -21,7 +21,7 @@ function! s:HexParseLine(line)
                 \'Address': Address,
                 \'Type': Type,
                 \'Data': Data,
-                \'Checksum': Checksum,
+                \'Checksum': Checksum
                 \}
     return LineDict
 endfunction
@@ -67,14 +67,19 @@ endfunction
 
 " Get Address of current cursor position
 function! s:HexGetAddress()
-    let LineAddress       = s:HexGetLineAddress()
-    let LineAddressOffset = s:HexGetDataByte()
+    try
+        let LineAddress       = s:HexGetLineAddress()
+        let LineAddressOffset = s:HexGetDataByte()
 
-    let Address = eval(
-                \  ' (  '.LineAddress.')'
-                \ .'+(  '.LineAddressOffset.')'
-                \ )
-    return printf('0x%x', Address)
+        let Address = eval(
+                    \  ' (  '.LineAddress.')'
+                    \ .'+(  '.LineAddressOffset.')'
+                    \ )
+        let HexAddress = printf('0x%x', Address)
+    catch
+        let HexAddress = 'unknown'
+    endtry
+    return HexAddress
 endfunction
 
 " Split data string in List of byte strings
@@ -85,14 +90,18 @@ endfunction
 
 " Get ASCII representation of current data
 function! s:HexGetAsciiLine()
-    let String = ''
-    let LineDict = s:HexParseLine(getline(line('.')))
-    let Data = LineDict['Data']
-    let DataList = HexSplitData(Data)
-    for Byte in DataList
-        let ByteVal = eval('0x'.Byte)
-        let String .= nr2char(ByteVal)
-    endfor
+    try
+        let String = ''
+        let LineDict = s:HexParseLine(getline(line('.')))
+        let Data = LineDict['Data']
+        let DataList = HexSplitData(Data)
+        for Byte in DataList
+            let ByteVal = eval('0x'.Byte)
+            let String .= nr2char(ByteVal)
+        endfor
+    catch
+        let String = '?'
+    endtry
     return String
 endfunction
 
@@ -112,17 +121,22 @@ function! HexGetVal(Bytes)
         return eval('0x'.HexString)
     else
         return -1
+    endif
 endfunction
 
 " Get actual values for 1, 2, 4 Bytes in hex and dez
 function! s:HexGetDezValuesString()
-    let String = ''
-    for i in [1, 2, 4]
-        let Byte = HexGetVal(i)
-        if Byte != -1
-            let String .= ' ' . printf('0x%x (%d)', Byte, Byte)
-        endif
-    endfor
+    try
+        let String = ''
+        for i in [1, 2, 4]
+            let Byte = HexGetVal(i)
+            if Byte != -1
+                let String .= ' ' . printf('0x%x (%d)', Byte, Byte)
+            endif
+        endfor
+    catch
+        let String = '?'
+    endtry
     return String
 endfunction
 
@@ -133,8 +147,8 @@ function! HexStatusLine()
                 \ . s:HexGetAddress()
                 \ . ' Values: '
                 \ . s:HexGetDezValuesString()
-"                \ . ' Data: '
-"                \ . s:HexGetAsciiLine()
+                \ . ' Data: '
+                \ . s:HexGetAsciiLine()
     return StatusLine
 endfunction
 

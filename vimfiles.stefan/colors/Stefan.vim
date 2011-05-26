@@ -47,9 +47,9 @@ hi NonText      term=NONE       cterm=NONE  ctermfg=Blue                  gui=NO
 hi Directory    term=bold                   ctermfg=Blue                              guifg=Blue
 hi ErrorMsg     term=standout   cterm=bold  ctermfg=Grey     ctermbg=Red  gui=bold    guifg=White     guibg=LightRed
 hi IncSearch    term=reverse    cterm=reverse                             gui=reverse
-hi Search       term=reverse                                 ctermbg=Brown            guifg=Black     guibg=LightGreen
+hi Search       term=reverse                                 ctermbg=Brown                            guibg=Green
 hi MoreMsg      term=bold                   ctermfg=Grey                  gui=bold    guifg=White
-hi ModeMsg      term=bold       cterm=bold                                gui=bold    guifg=Black
+hi ModeMsg      term=bold       cterm=bold                                gui=bold    guifg=LightGrey
 hi LineNr       term=underline              ctermfg=Yellow                            guifg=Orange    guibg=SeaGreen
 hi Question     term=standout               ctermfg=Grey                  gui=bold    guifg=White
 hi StatusLine   term=bold,reverse cterm=bold,reverse                      gui=bold    guifg=White     guibg=Black
@@ -59,8 +59,8 @@ hi Title        term=bold                   ctermfg=Magenta               gui=bo
 hi Visual       term=reverse    cterm=reverse                             gui=reverse                 guibg=Black
 hi VisualNOS    term=bold,underline cterm=bold,underline                  gui=bold,underline
 hi WarningMsg   term=standout               ctermfg=Red                   gui=bold    guifg=Red       guibg=LightGreen
-hi WildMenu     term=standout               ctermfg=Black    ctermbg=Brown            guifg=Black     guibg=Yellow
-hi Folded       term=standout               ctermfg=Black    ctermbg=DarkGreen        guifg=Black     guibg=DarkGreen
+hi WildMenu     term=standout               ctermfg=Black    ctermbg=Brown            guifg=LightGrey     guibg=Yellow
+hi Folded       term=standout               ctermfg=Black    ctermbg=DarkGreen        guifg=LightGrey     guibg=DarkGreen
 hi FoldColumn   term=standout               ctermfg=Blue     ctermbg=Grey             guifg=DarkBlue  guibg=Gray80
 hi DiffAdd      term=bold                                    ctermbg=Red                              guibg=Red
 hi DiffChange   term=bold                                    ctermbg=Magenta                          guibg=DarkGreen
@@ -71,7 +71,7 @@ hi lCursor                                                                      
 
 " Colors for syntax highlighting
 hi Comment      term=bold                   ctermfg=DarkYellow            gui=NONE    guifg=Yellow
-hi Constant     term=underline              ctermfg=DarkMagenta                       guifg=Black
+hi Constant     term=underline              ctermfg=DarkMagenta                       guifg=LightGrey
 hi Special      term=bold                   ctermfg=Blue                              guifg=Blue
 hi Identifier   term=underline              ctermfg=DarkCyan                          guifg=Cyan
 hi Statement    term=bold                   ctermfg=DarkCyan              gui=bold    guifg=Cyan
@@ -86,7 +86,7 @@ hi Underlined   term=underline  cterm=underline ctermfg=Blue              gui=un
 hi MatchParen   term=reverse                                                                          guibg=Blue
 
 hi StdFunction                                                            gui=bold    guifg=LightGreen
-hi Operator                                                               gui=NONE    guifg=Black
+hi Operator                                                               gui=NONE    guifg=LightGrey
 hi OperatorBold                                                           gui=bold    guifg=Magenta
 hi StdName                                                                gui=bold    guifg=Magenta
 hi Name                                                                   gui=NONE    guifg=LightGray
@@ -99,3 +99,6 @@ hi DiffAdd    ctermbg=DarkBlue
 hi DiffChange ctermbg=DarkBlue
 hi DiffText   ctermbg=Red ctermfg=DarkBlue
 "hi DiffDelete
+
+" Netrw
+hi netrwMarkFile                                                          gui=bold    guifg=Magenta
