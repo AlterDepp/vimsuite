@@ -49,7 +49,7 @@ endif
 
 " Jetzt sollte es eigentlich gehen
 if !has('python')
-    echo 'kein Python-Modul für vim'
+    echoe 'kein Python-Modul für vim'
     finish
 endif
 
