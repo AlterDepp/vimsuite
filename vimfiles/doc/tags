@@ -1574,6 +1574,7 @@ glvs-options	pi_getscript.txt	/*glvs-options*
 glvs-plugins	pi_getscript.txt	/*glvs-plugins*
 glvs-usage	pi_getscript.txt	/*glvs-usage*
 gundo.txt	gundo.txt	/*gundo.txt*
+gundo_close_on_revert	gundo.txt	/*gundo_close_on_revert*
 gundo_disable	gundo.txt	/*gundo_disable*
 gundo_help	gundo.txt	/*gundo_help*
 gundo_map_move_newer	gundo.txt	/*gundo_map_move_newer*
@@ -1731,6 +1732,8 @@ netrw-p10	pi_netrw.txt	/*netrw-p10*
 netrw-p11	pi_netrw.txt	/*netrw-p11*
 netrw-p12	pi_netrw.txt	/*netrw-p12*
 netrw-p13	pi_netrw.txt	/*netrw-p13*
+netrw-p14	pi_netrw.txt	/*netrw-p14*
+netrw-p15	pi_netrw.txt	/*netrw-p15*
 netrw-p2	pi_netrw.txt	/*netrw-p2*
 netrw-p3	pi_netrw.txt	/*netrw-p3*
 netrw-p4	pi_netrw.txt	/*netrw-p4*
@@ -1779,6 +1782,7 @@ netrw-start	pi_netrw.txt	/*netrw-start*
 netrw-t	pi_netrw.txt	/*netrw-t*
 netrw-texplore	pi_netrw.txt	/*netrw-texplore*
 netrw-todo	pi_netrw.txt	/*netrw-todo*
+netrw-trailingslash	pi_netrw.txt	/*netrw-trailingslash*
 netrw-transparent	pi_netrw.txt	/*netrw-transparent*
 netrw-u	pi_netrw.txt	/*netrw-u*
 netrw-updir	pi_netrw.txt	/*netrw-updir*
