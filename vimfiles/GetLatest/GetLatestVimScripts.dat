@@ -34,3 +34,5 @@ ScriptID SourceID Filename
 1075 15782 :AutoInstall: netrw.vim
 1502 15362 :AutoInstall: vimball.vim
 3304 16172 Gundo
+90   15797 vcscommand
+
