@@ -9,7 +9,6 @@ ScriptID SourceID Filename
 51     171 cscope_macros.vim
 102 16171 DirDiff.vim
 1189  8687 matrix.vim
-1173 15731 tcomment
 948   2878 Scons Compiler plugin
 1709  6421 Scons Syntax file
 1772  7248 DAMOS.zip DAMOS tools (von Stefan)
