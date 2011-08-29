@@ -14,7 +14,7 @@ let current_compiler = "python"
 set makeprg=python\ -c\ \"import\ py_compile;\ py_compile.compile('%')\"
 "let &makeprg = g:python . ' -c "print \"hallo welt\"; print \"ende\""'
 
-setlocal shellpipe=2>
+set shellpipe=2>
 
 set errorformat+=%E%\\s%#File\ \"%f\"\\,\ line\ %l\\,\ %m
 set errorformat+=%C%m

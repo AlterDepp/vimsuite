@@ -5,7 +5,7 @@ setlocal shiftwidth=2
 setlocal expandtab
 setlocal tabstop=8
 
-"set autoindent
+"setlocal autoindent
 
 compiler java
 

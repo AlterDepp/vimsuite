@@ -70,7 +70,7 @@ function s:CVSshowDifferences(filename)
 	let patchfile = tempname()
 	echo 'patchfile: ' . patchfile
 	call s:CVSdiff(a:filename, patchfile)
-	set patchexpr=ReversePatch()
+	setlocal patchexpr=ReversePatch()
 	execute 'vertical diffpatch ' . patchfile
 endfunction
 

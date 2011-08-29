@@ -1,7 +1,7 @@
 " Stefans vim-file plugin
 
 " Add Menu-Bar
-set guioptions+=m
+setlocal guioptions+=m
 
 " benutze Makefile
 let g:Tex_UseMakefile = 1

@@ -10,7 +10,7 @@ let current_compiler = "pascal"
 
 
 "let &makeprg = "\\tools\\python\\v2.1a2\\python %:p"
-"setlocal shellpipe=2>
+"set shellpipe=2>
 
 "set errorformat+=%E%\\s%#File\ \"%f\"\\,\ line\ %l\\,\ %m
 "set errorformat+=%C%m

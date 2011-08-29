@@ -193,9 +193,9 @@ endfunction
 "    echo HexStatusLine()
 "endfunction
 
-command! HexStatusLine set statusline=%!HexStatusLine()
-command! HexStatusLineOff set statusline=
+command! HexStatusLine setlocal statusline=%!HexStatusLine()
+command! HexStatusLineOff setlocal statusline=
 " Always update statusline with HEX info
-set statusline=%!HexStatusLine()
+setlocal statusline=%!HexStatusLine()
 " Always show statusline
-set laststatus=2
+setlocal laststatus=2

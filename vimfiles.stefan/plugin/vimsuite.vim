@@ -922,10 +922,10 @@ endfunction
 
 command DiffOff call DiffOff()
 function DiffOff()
-    set nodiff
-    set noscrollbind
-    set foldcolumn=0
-    set foldmethod=syntax
+    setlocal nodiff
+    setlocal noscrollbind
+    setlocal foldcolumn=0
+    setlocal foldmethod=syntax
 endfunction
 
 " options for DirDiff

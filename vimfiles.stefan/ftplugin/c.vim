@@ -12,14 +12,14 @@ let &l:tabstop = s:tabwidth
 " spaces for tabs
 "let &softtabstop = s:tabwidth
 " smart indent tabs (use spaces for indent else tabs)
-"set smarttab
+"setlocal smarttab
 " use spaces for tabs
 setlocal expandtab
 
 " autoindent
 " indent mode - one of autoindent, smartindent or cindent
-" set autoindent
-" set smartindent
+" setlocal autoindent
+" setlocal smartindent
 setlocal cindent
 setlocal cinoptions=*200,)100,(s,w1,W4
 let &l:shiftwidth = s:tabwidth

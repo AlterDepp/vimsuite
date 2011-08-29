@@ -19,24 +19,24 @@ execute('source ' . $VIMRUNTIME . '/compiler/gcc.vim')
 " -------
 " PC-Lint
 " -------
-"setlocal errorformat+=\"%f\"\\,\ line\ %l:\ %t%.%#\ \(pclint:%n\):%m
-"setlocal errorformat+=%t%.%#\ \(pclint:%n\):%m
+"set errorformat+=\"%f\"\\,\ line\ %l:\ %t%.%#\ \(pclint:%n\):%m
+"set errorformat+=%t%.%#\ \(pclint:%n\):%m
 " -------
 " SP-Lint
 " -------
-setlocal errorformat+=%A%f\(%l\):\ %m
-setlocal errorformat+=%A%f\(%l\):
-setlocal errorformat+=%A%f\(%l\\,%c\):\ %m
-setlocal errorformat+=%A%f\(%l\\,%c\):
-setlocal errorformat+=%C\ \ \ \ %m
+set errorformat+=%A%f\(%l\):\ %m
+set errorformat+=%A%f\(%l\):
+set errorformat+=%A%f\(%l\\,%c\):\ %m
+set errorformat+=%A%f\(%l\\,%c\):
+set errorformat+=%C\ \ \ \ %m
 
 " -----
 " Tools
 " -----
-setlocal errorformat+=%+G%.%#.exe:\ %m
-setlocal errorformat+=%+G%.%#.exe[%*\\d]:\ ***\ %m
+set errorformat+=%+G%.%#.exe:\ %m
+set errorformat+=%+G%.%#.exe[%*\\d]:\ ***\ %m
 
 " Error format from other programs: ...: ...
-"setlocal errorformat+=%+G%f:\ %m
+"set errorformat+=%+G%f:\ %m
 
 let current_compiler = 'gcc-special'

@@ -1,1 +1,1 @@
-autocmd BufRead,BufNewFile *.uc  set filetype=uc
+autocmd BufRead,BufNewFile *.uc  setlocal filetype=uc

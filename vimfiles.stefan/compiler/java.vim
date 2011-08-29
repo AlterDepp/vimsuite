@@ -6,7 +6,7 @@ let current_compiler = "java"
 
 
 "let &makeprg = "/usr/java/current/bin/javac %:p"
-"setlocal shellpipe=2>
+"set shellpipe=2>
 
 "set errorformat+=%E%\\s%#File\ \"%f\"\\,\ line\ %l\\,\ %m
 "set errorformat+=%C%m

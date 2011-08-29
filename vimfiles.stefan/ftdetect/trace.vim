@@ -1,1 +1,1 @@
-autocmd BufRead,BufNewFile *.cmm set filetype=trace
+autocmd BufRead,BufNewFile *.cmm setlocal filetype=trace

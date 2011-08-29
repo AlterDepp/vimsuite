@@ -11,8 +11,8 @@ let current_compiler = 'python'
 
 
 let &makeprg = 'python %:p'
-"setlocal shellpipe=>
-setlocal shellpipe=2>
+"set shellpipe=>
+set shellpipe=2>
 "let &shellpipe = '|' PathNormpath('e:/tools/gnu/shutils/bin/tee.exe')
 "let &shellpipe = '|' PathNormpath('e:/tools/gnu/shutils/bin/tee.exe')
 "            \ PathNormpath(make_log) '|' PathNormpath('e:/tools/gnu/shutils/bin/tee.exe')
