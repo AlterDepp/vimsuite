@@ -102,7 +102,7 @@ function! s:HexGetAsciiLine()
     catch
         let String = '?'
     endtry
-    return String
+    return strtrans(String)
 endfunction
 
 " Get value of current data under cursor for a:Bytes

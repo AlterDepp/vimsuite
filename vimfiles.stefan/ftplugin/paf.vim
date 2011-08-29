@@ -1,6 +1,6 @@
 
 " Adresse der aktuellen Zeile berechnen und in der Statusline anzeigen
-command PafGetAddress! call PafGetAddress()
+command! PafGetAddress call PafGetAddress()
 function! PafGetAddress()
     let RE = ':\x\{2}\x\{4}02\(\x\{4}\)\x\{2}'
     let line = search(RE, 'bcnW')
