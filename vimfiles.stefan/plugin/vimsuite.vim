@@ -930,7 +930,7 @@ endfunction
 
 " options for DirDiff
 let g:DirDiffCommand = expand($VIMRUNTIME . '/diff')
-let g:DirDiffExcludes = '*.log,*.pyc,.svn,_ccmwaid.inf,.static_wa,out,tags,cscope.out'
+let g:DirDiffExcludes = '*.log,*.pyc,.svn,.asc,_ccmwaid.inf,.static_wa,out,Build,tags,cscope.out'
 "let g:DirDiffDynamicDiffText = 1
 
 " options for Vimball
