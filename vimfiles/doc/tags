@@ -13,8 +13,10 @@
 :Hexplore	pi_netrw.txt	/*:Hexplore*
 :I	visincr.txt	/*:I*
 :IA	visincr.txt	/*:IA*
+:IB	visincr.txt	/*:IB*
 :ID	visincr.txt	/*:ID*
 :II	visincr.txt	/*:II*
+:IIB	visincr.txt	/*:IIB*
 :IIO	visincr.txt	/*:IIO*
 :IIR	visincr.txt	/*:IIR*
 :IIX	visincr.txt	/*:IIX*
@@ -25,6 +27,8 @@
 :IX	visincr.txt	/*:IX*
 :LP	LogiPat.txt	/*:LP*
 :LPF	LogiPat.txt	/*:LPF*
+:Linediff	linediff.txt	/*:Linediff*
+:LinediffReset	linediff.txt	/*:LinediffReset*
 :LogiPat	LogiPat.txt	/*:LogiPat*
 :MatchDebug	matchit.txt	/*:MatchDebug*
 :MkVimball	pi_vimball.txt	/*:MkVimball*
@@ -1595,6 +1599,7 @@ g:tcommentSyntaxMap	tcomment.txt	/*g:tcommentSyntaxMap*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
 g:vimball_mkdir	pi_vimball.txt	/*g:vimball_mkdir*
 g:visincr_datedivset	visincr.txt	/*g:visincr_datedivset*
+g:visincr_longcmd	visincr.txt	/*g:visincr_longcmd*
 getlatestvimscripts-install	pi_getscript.txt	/*getlatestvimscripts-install*
 getscript	pi_getscript.txt	/*getscript*
 getscript-autoinstall	pi_getscript.txt	/*getscript-autoinstall*
@@ -1627,6 +1632,13 @@ gundo_preview_height	gundo.txt	/*gundo_preview_height*
 gundo_right	gundo.txt	/*gundo_right*
 gundo_width	gundo.txt	/*gundo_width*
 http	pi_netrw.txt	/*http*
+linediff	linediff.txt	/*linediff*
+linediff-commands	linediff.txt	/*linediff-commands*
+linediff-contents	linediff.txt	/*linediff-contents*
+linediff-installation	linediff.txt	/*linediff-installation*
+linediff-internals	linediff.txt	/*linediff-internals*
+linediff-issues	linediff.txt	/*linediff-issues*
+linediff-usage	linediff.txt	/*linediff-usage*
 local_markfilelist	pi_netrw.txt	/*local_markfilelist*
 logipat	LogiPat.txt	/*logipat*
 logipat-arg	LogiPat.txt	/*logipat-arg*
@@ -1904,13 +1916,14 @@ vimball-history	pi_vimball.txt	/*vimball-history*
 vimball-intro	pi_vimball.txt	/*vimball-intro*
 vimball-manual	pi_vimball.txt	/*vimball-manual*
 vimball-windows	pi_vimball.txt	/*vimball-windows*
-viscinr-I	visincr.txt	/*viscinr-I*
-viscinr-contents	visincr.txt	/*viscinr-contents*
 visincr	visincr.txt	/*visincr*
+visincr-I	visincr.txt	/*visincr-I*
 visincr-IA	visincr.txt	/*visincr-IA*
+visincr-IB	visincr.txt	/*visincr-IB*
 visincr-ID	visincr.txt	/*visincr-ID*
 visincr-IDMY	visincr.txt	/*visincr-IDMY*
 visincr-II	visincr.txt	/*visincr-II*
+visincr-IIB	visincr.txt	/*visincr-IIB*
 visincr-IIO	visincr.txt	/*visincr-IIO*
 visincr-IIPOW	visincr.txt	/*visincr-IIPOW*
 visincr-IIR	visincr.txt	/*visincr-IIR*
@@ -1932,6 +1945,7 @@ visincr-RIMDY	visincr.txt	/*visincr-RIMDY*
 visincr-RIPOW	visincr.txt	/*visincr-RIPOW*
 visincr-RIYMD	visincr.txt	/*visincr-RIYMD*
 visincr-calutil	visincr.txt	/*visincr-calutil*
+visincr-contents	visincr.txt	/*visincr-contents*
 visincr-copyright	visincr.txt	/*visincr-copyright*
 visincr-decrease	visincr.txt	/*visincr-decrease*
 visincr-decrement	visincr.txt	/*visincr-decrement*
