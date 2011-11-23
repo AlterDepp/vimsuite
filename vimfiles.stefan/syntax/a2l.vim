@@ -21,6 +21,7 @@ syn keyword attribute SYSTEM_CONSTANT
 syn keyword attribute BYTE_ORDER ALIGNMENT_BYTE ALIGNMENT_WORD ALIGNMENT_LONG ALIGNMENT_FLOAT32_IEEE
 syn keyword attribute FORMAT DEPOSIT AXIS_PTS_REF BIT_MASK ECU_ADDRESS ARRAY_SIZE
 syn keyword attribute COEFFS FNC_VALUES NO_AXIS_PTS_X NO_AXIS_PTS_Y AXIS_PTS_X AXIS_PTS_Y
+syn keyword attribute REF_MEMORY_SEGMENT
 
 
 " Define the default highlighting.

@@ -154,16 +154,21 @@ function s:SetProject(projectfile)
         call s:EvalProjectVariables()
     endif
 
-    if exists('g:sessionfile')
-        " Vim-Session load
-        try
-            execute 'source' g:sessionfile
-        catch /^Vim\%((\a\+)\)\=:E484/ " file not found
-        catch " other error
-            echom 'Fehler in' g:sessionfile ':' v:exception
-        endtry
-        " Vim-Session autowrite
-        autocmd VimLeavePre * execute 'mksession!' g:sessionfile
+    if exists('g:did_load_sessionfile')
+        echom 'Sessionfile not loaded again'
+    else
+        let g:did_load_sessionfile=1
+        if exists('g:sessionfile')
+            " Vim-Session load
+            try
+                execute 'source' g:sessionfile
+            catch /^Vim\%((\a\+)\)\=:E484/ " file not found
+            catch " other error
+                echom 'Fehler in' g:sessionfile ':' v:exception
+            endtry
+            " Vim-Session autowrite
+            autocmd VimLeavePre * execute 'mksession!' g:sessionfile
+        endif
     endif
 
 endfunction
