@@ -249,3 +249,8 @@ let g:DoxygenToolkit_dox_attention = "yes"
 " Add sa to Dox if you want
 let g:DoxygenToolkit_dox_sa = "yes"
 
+" -----------
+" VCS Command
+" -----------
+let g:VCSCommandMenuRoot = '&VCS'
+
