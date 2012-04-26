@@ -8,7 +8,7 @@ let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.cvim'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.vjde'
 
 " Laden weiterer Einstellungen:
-if has("win32")
+if (has("win32") || has("win64"))
     let g:os ='dos'
     execute 'source ' . expand(g:vimfiles . '/vimrc.dos')
 else
