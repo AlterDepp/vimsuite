@@ -2,6 +2,7 @@
 " special keywords
 syntax keyword cType     uint8  sint8  uint16  sint16  uint32  sint32  uint64  sint64
 syntax keyword cType    tuint8 tsint8 tuint16 tsint16 tuint32 tsint32 tuint64 tsint64
+syntax keyword cType    float32
 syntax keyword cType    DfpType SfpType SfpErrorType LWrd LInt
 syntax keyword cType    TickType
 syntax keyword Special  ATOMIC BEGIN_ATOMIC END_ATOMIC
