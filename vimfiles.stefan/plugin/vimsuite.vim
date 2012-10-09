@@ -496,8 +496,8 @@ function s:RedrawMenu()
                 \'&Diff.&show\ diffs<tab>:diffthis'.
                 \'   :diffthis<CR>'
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.60 '.s:VimSuiteMenuName.
-                \'&Diff.&end\ diffs<tab>:DiffOff'.
-                \'   :DiffOff<CR>'
+                \'&Diff.&end\ diffs<tab>:diffoff'.
+                \'   :diffoff<CR>'
     exec 'anoremenu '.s:VimSuiteMenuLocation.'.60 '.s:VimSuiteMenuName.
                 \'&Diff.&close\ diff<tab>:DiffClose'.
                 \'   :DiffClose<CR>'
@@ -921,21 +921,13 @@ endfunction
 " turn diff off
 command DiffClose call DiffClose()
 function DiffClose()
+    diffoff!
     :quit
-    call DiffOff()
-endfunction
-
-command DiffOff call DiffOff()
-function DiffOff()
-    setlocal nodiff
-    setlocal noscrollbind
-    setlocal foldcolumn=0
-    setlocal foldmethod=syntax
 endfunction
 
 " options for DirDiff
 let g:DirDiffCommand = expand($VIMRUNTIME . '/diff')
-let g:DirDiffExcludes = '*.log,*.pyc,.svn,.asc,_ccmwaid.inf,.static_wa,out,Build,tags,cscope.out'
+let g:DirDiffExcludes = '*.log,*.pyc,.svn,.git*,.asc,_ccmwaid.inf,.static_wa,out,Build,tags,cscope.out'
 "let g:DirDiffDynamicDiffText = 1
 
 " options for Vimball
