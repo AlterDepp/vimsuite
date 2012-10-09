@@ -1,3 +1,4 @@
+:AlignMapsClean	Align.txt	/*:AlignMapsClean*
 :CVSEdit	vcscommand.txt	/*:CVSEdit*
 :CVSEditors	vcscommand.txt	/*:CVSEditors*
 :CVSUnedit	vcscommand.txt	/*:CVSUnedit*
@@ -158,6 +159,7 @@ align-usage	Align.txt	/*align-usage*
 align-userguide	Align.txt	/*align-userguide*
 align-utf	Align.txt	/*align-utf*
 align-utf8	Align.txt	/*align-utf8*
+align-xstrlen	Align.txt	/*align-xstrlen*
 align.txt	Align.txt	/*align.txt*
 alignctrl	Align.txt	/*alignctrl*
 alignctrl-	Align.txt	/*alignctrl-*
@@ -171,8 +173,11 @@ alignctrl-C	Align.txt	/*alignctrl-C*
 alignctrl-I	Align.txt	/*alignctrl-I*
 alignctrl-P	Align.txt	/*alignctrl-P*
 alignctrl-W	Align.txt	/*alignctrl-W*
+alignctrl-alignskip	Align.txt	/*alignctrl-alignskip*
 alignctrl-c	Align.txt	/*alignctrl-c*
 alignctrl-g	Align.txt	/*alignctrl-g*
+alignctrl-init	Align.txt	/*alignctrl-init*
+alignctrl-initialization	Align.txt	/*alignctrl-initialization*
 alignctrl-l	Align.txt	/*alignctrl-l*
 alignctrl-m	Align.txt	/*alignctrl-m*
 alignctrl-no-option	Align.txt	/*alignctrl-no-option*
@@ -180,6 +185,7 @@ alignctrl-p	Align.txt	/*alignctrl-p*
 alignctrl-r	Align.txt	/*alignctrl-r*
 alignctrl-separators	Align.txt	/*alignctrl-separators*
 alignctrl-settings	Align.txt	/*alignctrl-settings*
+alignctrl-star	Align.txt	/*alignctrl-star*
 alignctrl-v	Align.txt	/*alignctrl-v*
 alignctrl-w	Align.txt	/*alignctrl-w*
 alignman	Align.txt	/*alignman*
@@ -1497,11 +1503,14 @@ ex-visincr-IYMD	visincr.txt	/*ex-visincr-IYMD*
 fetch	pi_netrw.txt	/*fetch*
 ftp	pi_netrw.txt	/*ftp*
 g%	matchit.txt	/*g%*
+g:AlignSkip	Align.txt	/*g:AlignSkip*
 g:MultipleSearchColorSequence	MultipleSearch.txt	/*g:MultipleSearchColorSequence*
 g:MultipleSearchMaxColors	MultipleSearch.txt	/*g:MultipleSearchMaxColors*
 g:MultipleSearchTextColorSequence	MultipleSearch.txt	/*g:MultipleSearchTextColorSequence*
 g:NetrwTopLvlMenu	pi_netrw.txt	/*g:NetrwTopLvlMenu*
 g:Netrw_funcref	pi_netrw.txt	/*g:Netrw_funcref*
+g:alignmaps_euronumber	Align.txt	/*g:alignmaps_euronumber*
+g:alignmaps_usanumber	Align.txt	/*g:alignmaps_usanumber*
 g:netrw_alto	pi_netrw.txt	/*g:netrw_alto*
 g:netrw_altv	pi_netrw.txt	/*g:netrw_altv*
 g:netrw_banner	pi_netrw.txt	/*g:netrw_banner*
@@ -1623,6 +1632,7 @@ glvs-options	pi_getscript.txt	/*glvs-options*
 glvs-plugins	pi_getscript.txt	/*glvs-plugins*
 glvs-usage	pi_getscript.txt	/*glvs-usage*
 gundo.txt	gundo.txt	/*gundo.txt*
+gundo_auto_preview	gundo.txt	/*gundo_auto_preview*
 gundo_close_on_revert	gundo.txt	/*gundo_close_on_revert*
 gundo_disable	gundo.txt	/*gundo_disable*
 gundo_help	gundo.txt	/*gundo_help*
