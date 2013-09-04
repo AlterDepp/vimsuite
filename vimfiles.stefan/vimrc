@@ -5,7 +5,7 @@ let &runtimepath = ''
 " zuerst in vimsuite suchen
 let &runtimepath = &runtimepath . ',' . g:vimfiles
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles'
-let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.latex'
+"let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.latex'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.damos'
 
 " dann in vim Installation suchen

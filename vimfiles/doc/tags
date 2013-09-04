@@ -1972,3 +1972,8 @@ visincr-raggedright	visincr.txt	/*visincr-raggedright*
 visincr-restrict	visincr.txt	/*visincr-restrict*
 visincr-usage	visincr.txt	/*visincr-usage*
 visincr.txt	visincr.txt	/*visincr.txt*
+xml-plugin-callbacks	xml-plugin.txt	/*xml-plugin-callbacks*
+xml-plugin-html	xml-plugin.txt	/*xml-plugin-html*
+xml-plugin-mappings	xml-plugin.txt	/*xml-plugin-mappings*
+xml-plugin-settings	xml-plugin.txt	/*xml-plugin-settings*
+xml-plugin.txt	xml-plugin.txt	/*xml-plugin.txt*

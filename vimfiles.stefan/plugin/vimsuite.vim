@@ -576,6 +576,18 @@ function GrepFull(GrepDir, GrepFiles, Pattern)
     execute 'cl'
 endfunction
 
+func GitGrep(...)
+  let save = &grepprg
+  set grepprg=git\ grep\ -n\ $*
+  let s = 'grep'
+  for i in a:000
+    let s = s . ' ' . i
+  endfor
+  exe s
+  let &grepprg = save
+endfun
+command -nargs=? GitGrep call GitGrep(<f-args>)
+
 " Formatting Functions
 " --------------------
 
@@ -881,41 +893,7 @@ endfunction
 " ------------
 " diff options
 " ------------
-set diffexpr=FileDiff()
 set diffopt=filler
-function FileDiff(...)
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  if a:0 == 3
-      let arg1 = a:1
-      let arg2 = a:2
-      let arg3 = a:3
-  else
-      let arg1 = v:fname_in
-      let arg2 = v:fname_new
-      let arg3 = v:fname_out
-  endif
-
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  if !executable(cmd)
-      let cmd = 'diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
 
 
 " turn diff off
