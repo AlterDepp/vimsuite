@@ -1,12 +1,12 @@
 " LogiPat:
-"   Author:  Charles E. Campbell, Jr.
-"   Date:    Sep 01, 2005
-"   Version: 2
+"   Author:  Charles E. Campbell
+"   Date:    Mar 13, 2013
+"   Version: 3
 "   Purpose: to do Boolean-logic based regular expression pattern matching
-" Copyright:    Copyright (C) 1999-2005 Charles E. Campbell, Jr. {{{1
+" Copyright:    Copyright (C) 1999-2011 Charles E. Campbell {{{1
 "               Permission is hereby granted to use and distribute this code,
 "               with or without modifications, provided that this copyright
-"               notice is copied with it. Like anything else that's free,
+"               notice is copied with it. Like most anything else that's free,
 "               LogiPat.vim is provided *as is* and comes with no warranty
 "               of any kind, either expressed or implied. By using this
 "               plugin, you agree that in no event will the copyright
@@ -39,16 +39,18 @@
 if &cp || exists("loaded_logipat")
  finish
 endif
-let g:loaded_LogiPat = "v2"
+let g:loaded_LogiPat = "v3"
 let s:keepcpo        = &cpo
 set cpo&vim
+"DechoRemOn
 
 " ---------------------------------------------------------------------
 " Public Interface: {{{1
-com!        -nargs=* LogiPat      call   LogiPat(<q-args>,1)
-silent! com -nargs=* LP           call   LogiPat(<q-args>,1)
-com!        -nargs=+ LogiPatFlags let  s:LogiPatFlags="<args>"
-silent! com -nargs=+ LPF          let  s:LogiPatFlags="<args>"
+com!        -nargs=* LogiPat		call   LogiPat(<q-args>,1)
+silent! com -nargs=* LP				call   LogiPat(<q-args>,1)
+com!        -nargs=+ ELP			echomsg   LogiPat(<q-args>)
+com!        -nargs=+ LogiPatFlags	let  s:LogiPatFlags="<args>"
+silent! com -nargs=+ LPF			let  s:LogiPatFlags="<args>"
 
 " =====================================================================
 " Functions: {{{1
@@ -75,32 +77,33 @@ fun! LogiPat(pat,...)
 "   call Decho("expr<".expr.">")
 
    if expr =~ '^"'
-   	" push a Pattern
-   	let pat    = substitute(strpart(expr,1),'^\([^"]*\)".*$','\1','')
-   	let patlen = strlen(pat) - 1
-"	call Decho("pat<".pat."> patlen-1=".patlen)
-	if patlen > 1 && strpart(pat,patlen,1) == '\\'
-	 echoerr "LogiPat doesn't accept escaped backquotes in patterns (yet)"
-"	 call Dret("LogiPat --error--")
-     return '--error--'
-	endif
-	call s:LP_PatPush('.*'.pat.'.*')
-	let patlen = patlen+3
-	let expr   = strpart(expr,patlen)
+	" push a Pattern; accept "" as a single " in the pattern
+    let expr = substitute(expr,'^\s*"','','')
+    let pat  = substitute(expr,'^\(\%([^"]\|\"\"\)\{-}\)"\([^"].*$\|$\)','\1','')
+	let pat  = substitute(pat,'""','"','g')
+    let expr = substitute(expr,'^\(\%([^"]\|\"\"\)\{-}\)"\([^"].*$\|$\)','\2','')
+    let expr = substitute(expr,'^\s*','','')
+"    call Decho("pat<".pat."> expr<".expr.">")
+
+    call s:LP_PatPush('.*'.pat.'.*')
 
    elseif expr =~ '^[!()|&]'
-   	" push an operator
-   	let op   = strpart(expr,0,1)
-   	let expr = strpart(expr,strlen(op))
-	call s:LP_OpPush(op)
+    " push an operator
+    let op   = strpart(expr,0,1)
+    let expr = strpart(expr,strlen(op))
+	" allow for those who can't resist doubling their and/or operators
+	if op =~ '[|&]' && expr[0] == op
+     let expr = strpart(expr,strlen(op))
+	endif
+    call s:LP_OpPush(op)
 
    elseif expr =~ '^\s'
-   	" skip whitespace
-   	let expr= strpart(expr,1)
+    " skip whitespace
+    let expr= strpart(expr,1)
 
    else
-   	echoerr "operator<".strpart(expr,0,1)."> not supported (yet)"
-   	let expr= strpart(expr,1)
+    echoerr "operator<".strpart(expr,0,1)."> not supported (yet)"
+    let expr= strpart(expr,1)
    endif
 
   endwhile
@@ -136,6 +139,12 @@ fun! LogiPat(pat,...)
 "  call Dret("LogiPat ".result)
   return result
 endfun
+
+" ---------------------------------------------------------------------
+" s:String: Vim6.4 doesn't have string() {{{2
+func! s:String(str)
+  return "'".escape(a:str, '"')."'"
+endfunc
 
 " ---------------------------------------------------------------------
 " LP_PatPush: {{{2
@@ -191,29 +200,30 @@ fun! s:LP_OpPush(op)
    echoerr "expr<".expr."> not supported (yet)"
    let preclvl= s:preclvl
   endif
+"  call Decho("new operator<".a:op."> preclvl=".preclvl)
 
   " execute higher-precdence operators
+"  call Decho("execute higher-precedence operators")
   call s:LP_Execute(preclvl)
 
   " push new operator onto operator-stack
+"  call Decho("push new operator<".a:op."> onto stack with preclvl=".preclvl." at nopstack=".(s:nopstack+1))
   if a:op =~ '!'
    let s:nopstack             = s:nopstack + 1
    let s:opprec_{s:nopstack}  = preclvl
    let s:opstack_{s:nopstack} = a:op
   elseif a:op =~ '|'
-   let preclvl= s:preclvl + 1
    let s:nopstack             = s:nopstack + 1
    let s:opprec_{s:nopstack}  = preclvl
    let s:opstack_{s:nopstack} = a:op
   elseif a:op == '&'
-   let preclvl= s:preclvl + 2
    let s:nopstack             = s:nopstack + 1
    let s:opprec_{s:nopstack}  = preclvl
    let s:opstack_{s:nopstack} = a:op
   endif
 
 "  call s:StackLook("oppush") "Decho
-"  call Dret("LP_OpPush")
+"  call Dret("LP_OpPush : s:preclvl=".s:preclvl)
 endfun
 
 " ---------------------------------------------------------------------
@@ -267,7 +277,7 @@ endfun
 " LP_Or: writes a logical-or branch using two patterns {{{2
 fun! s:LP_Or(pat1,pat2)
 "  call Dfunc("LP_Or(pat1<".a:pat1."> pat2<".a:pat2.">)")
-  let ret= a:pat1.'\|'.a:pat2
+  let ret= '\%('.a:pat1.'\|'.a:pat2.'\)'
 "  call Dret("LP_Or ".ret)
   return ret
 endfun
@@ -318,3 +328,8 @@ fun! s:StackLook(description)
 "  call Dret("StackLook")
 endfun
 
+" ---------------------------------------------------------------------
+"  Cleanup And Modeline: {{{1
+let &cpo= s:keepcpo
+unlet s:keepcpo
+" vim: ts=4 fdm=marker

@@ -9,6 +9,7 @@
 " 00.02.00 |       29.03.10  | Fun added, MkS5()
 " 00.02.10 |       15.06.10  | BugFix, in libsrec#CrCS()
 "          |                 | wrong Source for CS
+" 00.02.20 |                 | -
 
 " create ByteCount
 fun libsrec#CrBC(line)

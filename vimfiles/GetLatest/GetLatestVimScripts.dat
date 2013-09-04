@@ -14,7 +14,7 @@ ScriptID SourceID Filename
 1772  7248 DAMOS.zip DAMOS tools (von Stefan)
 987  14064 DoxygenToolkit.vim
 1397 16076 xml.vim
-1290  5190 LogiPat.vim
+1290 19635 LogiPat.vim
 1462  5612 dtd2xml
 1046  4249 Lusty Explorer
 2043  7805 VimPdb (debugging python)
@@ -23,16 +23,16 @@ ScriptID SourceID Filename
 39    8196 matchit.vim
 2092  8095 reloaded.vim (matrix colorscheme)
 848  14668 SrchRplcHiGrp.vim (Search/Replace on Syntax Group)
-294  18148 Align.vim
+294 19633 Align.vim
 479   9276 MultipleSearch.vba
 1066  7618 cecutil.vim
-1173 17289 tComment.vim
-2701 13194 editsrec
+1173 19247 tComment.vim
+2701 18988 editsrec
 3280 14334 Tabbi
 642  15781 :AutoInstall: getscript.vim
-1075 15782 :AutoInstall: netrw.vim
+1075 19823 :AutoInstall: netrw.vim
 1502 15362 :AutoInstall: vimball.vim
-3304 18081 Gundo
-90   17031 vcscommand
+3304 20505 Gundo
+90 19809 vcscommand
 974   4316 python.vim (indent)
 

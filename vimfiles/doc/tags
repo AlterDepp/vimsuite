@@ -1,3 +1,5 @@
+:Align	Align.txt	/*:Align*
+:AlignCtrl	Align.txt	/*:AlignCtrl*
 :AlignMapsClean	Align.txt	/*:AlignMapsClean*
 :CVSEdit	vcscommand.txt	/*:CVSEdit*
 :CVSEditors	vcscommand.txt	/*:CVSEditors*
@@ -8,6 +10,7 @@
 :CVSWatchOn	vcscommand.txt	/*:CVSWatchOn*
 :CVSWatchRemove	vcscommand.txt	/*:CVSWatchRemove*
 :CVSWatchers	vcscommand.txt	/*:CVSWatchers*
+:ELP	LogiPat.txt	/*:ELP*
 :Explore	pi_netrw.txt	/*:Explore*
 :GLVS	pi_getscript.txt	/*:GLVS*
 :GetLatestVimScripts_dat	pi_getscript.txt	/*:GetLatestVimScripts_dat*
@@ -1508,6 +1511,7 @@ g:MultipleSearchColorSequence	MultipleSearch.txt	/*g:MultipleSearchColorSequence
 g:MultipleSearchMaxColors	MultipleSearch.txt	/*g:MultipleSearchMaxColors*
 g:MultipleSearchTextColorSequence	MultipleSearch.txt	/*g:MultipleSearchTextColorSequence*
 g:NetrwTopLvlMenu	pi_netrw.txt	/*g:NetrwTopLvlMenu*
+g:Netrw_corehandler	pi_netrw.txt	/*g:Netrw_corehandler*
 g:Netrw_funcref	pi_netrw.txt	/*g:Netrw_funcref*
 g:alignmaps_euronumber	Align.txt	/*g:alignmaps_euronumber*
 g:alignmaps_usanumber	Align.txt	/*g:alignmaps_usanumber*
@@ -1526,6 +1530,8 @@ g:netrw_cygwin	pi_netrw.txt	/*g:netrw_cygwin*
 g:netrw_dav_cmd	pi_netrw.txt	/*g:netrw_dav_cmd*
 g:netrw_decompress	pi_netrw.txt	/*g:netrw_decompress*
 g:netrw_dirhistmax	pi_netrw.txt	/*g:netrw_dirhistmax*
+g:netrw_dynamic_maxfilenamelen	pi_netrw.txt	/*g:netrw_dynamic_maxfilenamelen*
+g:netrw_errorlvl	pi_netrw.txt	/*g:netrw_errorlvl*
 g:netrw_fastbrowse	pi_netrw.txt	/*g:netrw_fastbrowse*
 g:netrw_fetch_cmd	pi_netrw.txt	/*g:netrw_fetch_cmd*
 g:netrw_fname_escape	pi_netrw.txt	/*g:netrw_fname_escape*
@@ -1533,6 +1539,7 @@ g:netrw_ftp	pi_netrw.txt	/*g:netrw_ftp*
 g:netrw_ftp_browse_reject	pi_netrw.txt	/*g:netrw_ftp_browse_reject*
 g:netrw_ftp_cmd	pi_netrw.txt	/*g:netrw_ftp_cmd*
 g:netrw_ftp_list_cmd	pi_netrw.txt	/*g:netrw_ftp_list_cmd*
+g:netrw_ftp_options	pi_netrw.txt	/*g:netrw_ftp_options*
 g:netrw_ftp_sizelist_cmd	pi_netrw.txt	/*g:netrw_ftp_sizelist_cmd*
 g:netrw_ftp_timelist_cmd	pi_netrw.txt	/*g:netrw_ftp_timelist_cmd*
 g:netrw_ftpextracmd	pi_netrw.txt	/*g:netrw_ftpextracmd*
@@ -1547,17 +1554,19 @@ g:netrw_keepdir	pi_netrw.txt	/*g:netrw_keepdir*
 g:netrw_list_cmd	pi_netrw.txt	/*g:netrw_list_cmd*
 g:netrw_list_hide	pi_netrw.txt	/*g:netrw_list_hide*
 g:netrw_liststyle	pi_netrw.txt	/*g:netrw_liststyle*
-g:netrw_local_mkdir	pi_netrw.txt	/*g:netrw_local_mkdir*
-g:netrw_local_rmdir	pi_netrw.txt	/*g:netrw_local_rmdir*
 g:netrw_localcopycmd	pi_netrw.txt	/*g:netrw_localcopycmd*
+g:netrw_localmkdir	pi_netrw.txt	/*g:netrw_localmkdir*
 g:netrw_localmovecmd	pi_netrw.txt	/*g:netrw_localmovecmd*
+g:netrw_localrmdir	pi_netrw.txt	/*g:netrw_localrmdir*
 g:netrw_maxfilenamelen	pi_netrw.txt	/*g:netrw_maxfilenamelen*
 g:netrw_menu	pi_netrw.txt	/*g:netrw_menu*
 g:netrw_mkdir_cmd	pi_netrw.txt	/*g:netrw_mkdir_cmd*
 g:netrw_mousemaps	pi_netrw.txt	/*g:netrw_mousemaps*
+g:netrw_nobeval	pi_netrw.txt	/*g:netrw_nobeval*
 g:netrw_nogx	pi_netrw.txt	/*g:netrw_nogx*
 g:netrw_preview	pi_netrw.txt	/*g:netrw_preview*
 g:netrw_rcp_cmd	pi_netrw.txt	/*g:netrw_rcp_cmd*
+g:netrw_remote_mkdir	pi_netrw.txt	/*g:netrw_remote_mkdir*
 g:netrw_retmap	pi_netrw.txt	/*g:netrw_retmap*
 g:netrw_rm_cmd	pi_netrw.txt	/*g:netrw_rm_cmd*
 g:netrw_rmdir_cmd	pi_netrw.txt	/*g:netrw_rmdir_cmd*
@@ -1586,6 +1595,7 @@ g:netrw_win95ftp	pi_netrw.txt	/*g:netrw_win95ftp*
 g:netrw_winsize	pi_netrw.txt	/*g:netrw_winsize*
 g:netrw_xstrlen	pi_netrw.txt	/*g:netrw_xstrlen*
 g:tcomment#ignore_char_type	tcomment.txt	/*g:tcomment#ignore_char_type*
+g:tcomment#replacements_c	tcomment.txt	/*g:tcomment#replacements_c*
 g:tcomment#syntax_substitute	tcomment.txt	/*g:tcomment#syntax_substitute*
 g:tcommentBlankLines	tcomment.txt	/*g:tcommentBlankLines*
 g:tcommentBlockC	tcomment.txt	/*g:tcommentBlockC*
@@ -1594,18 +1604,24 @@ g:tcommentBlockXML	tcomment.txt	/*g:tcommentBlockXML*
 g:tcommentGuessFileType	tcomment.txt	/*g:tcommentGuessFileType*
 g:tcommentGuessFileType_django	tcomment.txt	/*g:tcommentGuessFileType_django*
 g:tcommentGuessFileType_dsl	tcomment.txt	/*g:tcommentGuessFileType_dsl*
+g:tcommentGuessFileType_eruby	tcomment.txt	/*g:tcommentGuessFileType_eruby*
 g:tcommentGuessFileType_html	tcomment.txt	/*g:tcommentGuessFileType_html*
 g:tcommentGuessFileType_php	tcomment.txt	/*g:tcommentGuessFileType_php*
+g:tcommentGuessFileType_smarty	tcomment.txt	/*g:tcommentGuessFileType_smarty*
 g:tcommentGuessFileType_tskeleton	tcomment.txt	/*g:tcommentGuessFileType_tskeleton*
 g:tcommentGuessFileType_vim	tcomment.txt	/*g:tcommentGuessFileType_vim*
 g:tcommentIgnoreTypes_php	tcomment.txt	/*g:tcommentIgnoreTypes_php*
 g:tcommentInlineC	tcomment.txt	/*g:tcommentInlineC*
 g:tcommentInlineXML	tcomment.txt	/*g:tcommentInlineXML*
+g:tcommentMapLeader1	tcomment.txt	/*g:tcommentMapLeader1*
+g:tcommentMapLeader2	tcomment.txt	/*g:tcommentMapLeader2*
 g:tcommentMapLeaderOp1	tcomment.txt	/*g:tcommentMapLeaderOp1*
 g:tcommentMapLeaderOp2	tcomment.txt	/*g:tcommentMapLeaderOp2*
+g:tcommentModeExtra	tcomment.txt	/*g:tcommentModeExtra*
 g:tcommentOpModeExtra	tcomment.txt	/*g:tcommentOpModeExtra*
 g:tcommentOptions	tcomment.txt	/*g:tcommentOptions*
 g:tcommentSyntaxMap	tcomment.txt	/*g:tcommentSyntaxMap*
+g:tcomment_types	tcomment.txt	/*g:tcomment_types*
 g:vimball_home	pi_vimball.txt	/*g:vimball_home*
 g:vimball_mkdir	pi_vimball.txt	/*g:vimball_mkdir*
 g:visincr_datedivset	visincr.txt	/*g:visincr_datedivset*
@@ -1638,6 +1654,7 @@ gundo_disable	gundo.txt	/*gundo_disable*
 gundo_help	gundo.txt	/*gundo_help*
 gundo_map_move_newer	gundo.txt	/*gundo_map_move_newer*
 gundo_map_move_older	gundo.txt	/*gundo_map_move_older*
+gundo_playback_delay	gundo.txt	/*gundo_playback_delay*
 gundo_preview_bottom	gundo.txt	/*gundo_preview_bottom*
 gundo_preview_height	gundo.txt	/*gundo_preview_height*
 gundo_preview_statusline	gundo.txt	/*gundo_preview_statusline*
@@ -1656,6 +1673,7 @@ local_markfilelist	pi_netrw.txt	/*local_markfilelist*
 logipat	LogiPat.txt	/*logipat*
 logipat-arg	LogiPat.txt	/*logipat-arg*
 logipat-caveat	LogiPat.txt	/*logipat-caveat*
+logipat-contents	LogiPat.txt	/*logipat-contents*
 logipat-copyright	LogiPat.txt	/*logipat-copyright*
 logipat-examples	LogiPat.txt	/*logipat-examples*
 logipat-history	LogiPat.txt	/*logipat-history*
@@ -1701,8 +1719,8 @@ netrw-O	pi_netrw.txt	/*netrw-O*
 netrw-P	pi_netrw.txt	/*netrw-P*
 netrw-R	pi_netrw.txt	/*netrw-R*
 netrw-S	pi_netrw.txt	/*netrw-S*
-netrw-T	pi_netrw.txt	/*netrw-T*
 netrw-U	pi_netrw.txt	/*netrw-U*
+netrw-X	pi_netrw.txt	/*netrw-X*
 netrw-a	pi_netrw.txt	/*netrw-a*
 netrw-activate	pi_netrw.txt	/*netrw-activate*
 netrw-bookmark	pi_netrw.txt	/*netrw-bookmark*
@@ -1712,6 +1730,7 @@ netrw-browse-cmds	pi_netrw.txt	/*netrw-browse-cmds*
 netrw-browse-maps	pi_netrw.txt	/*netrw-browse-maps*
 netrw-browser	pi_netrw.txt	/*netrw-browser*
 netrw-browser-options	pi_netrw.txt	/*netrw-browser-options*
+netrw-browser-settings	pi_netrw.txt	/*netrw-browser-settings*
 netrw-browser-var	pi_netrw.txt	/*netrw-browser-var*
 netrw-browsing	pi_netrw.txt	/*netrw-browsing*
 netrw-c	pi_netrw.txt	/*netrw-c*
@@ -1760,6 +1779,7 @@ netrw-history	pi_netrw.txt	/*netrw-history*
 netrw-horiz	pi_netrw.txt	/*netrw-horiz*
 netrw-i	pi_netrw.txt	/*netrw-i*
 netrw-incompatible	pi_netrw.txt	/*netrw-incompatible*
+netrw-internal-variables	pi_netrw.txt	/*netrw-internal-variables*
 netrw-intro-browse	pi_netrw.txt	/*netrw-intro-browse*
 netrw-leftmouse	pi_netrw.txt	/*netrw-leftmouse*
 netrw-list	pi_netrw.txt	/*netrw-list*
@@ -1767,6 +1787,7 @@ netrw-listbookmark	pi_netrw.txt	/*netrw-listbookmark*
 netrw-listhack	pi_netrw.txt	/*netrw-listhack*
 netrw-login	pi_netrw.txt	/*netrw-login*
 netrw-mB	pi_netrw.txt	/*netrw-mB*
+netrw-mF	pi_netrw.txt	/*netrw-mF*
 netrw-mT	pi_netrw.txt	/*netrw-mT*
 netrw-mb	pi_netrw.txt	/*netrw-mb*
 netrw-mc	pi_netrw.txt	/*netrw-mc*
@@ -1821,6 +1842,7 @@ netrw-prvwin	pi_netrw.txt	/*netrw-prvwin*
 netrw-pscp	pi_netrw.txt	/*netrw-pscp*
 netrw-psftp	pi_netrw.txt	/*netrw-psftp*
 netrw-putty	pi_netrw.txt	/*netrw-putty*
+netrw-qF	pi_netrw.txt	/*netrw-qF*
 netrw-qb	pi_netrw.txt	/*netrw-qb*
 netrw-qf	pi_netrw.txt	/*netrw-qf*
 netrw-quickcom	pi_netrw.txt	/*netrw-quickcom*
@@ -1837,8 +1859,10 @@ netrw-rexplore	pi_netrw.txt	/*netrw-rexplore*
 netrw-rightmouse	pi_netrw.txt	/*netrw-rightmouse*
 netrw-s	pi_netrw.txt	/*netrw-s*
 netrw-settings	pi_netrw.txt	/*netrw-settings*
+netrw-settings-window	pi_netrw.txt	/*netrw-settings-window*
 netrw-sexplore	pi_netrw.txt	/*netrw-sexplore*
 netrw-sort	pi_netrw.txt	/*netrw-sort*
+netrw-sort-sequence	pi_netrw.txt	/*netrw-sort-sequence*
 netrw-sortsequence	pi_netrw.txt	/*netrw-sortsequence*
 netrw-source	pi_netrw.txt	/*netrw-source*
 netrw-ssh-hack	pi_netrw.txt	/*netrw-ssh-hack*
@@ -1860,6 +1884,8 @@ netrw-v	pi_netrw.txt	/*netrw-v*
 netrw-var	pi_netrw.txt	/*netrw-var*
 netrw-variables	pi_netrw.txt	/*netrw-variables*
 netrw-vexplore	pi_netrw.txt	/*netrw-vexplore*
+netrw-windows-netrc	pi_netrw.txt	/*netrw-windows-netrc*
+netrw-windows-s	pi_netrw.txt	/*netrw-windows-s*
 netrw-write	pi_netrw.txt	/*netrw-write*
 netrw-x	pi_netrw.txt	/*netrw-x*
 netrw-xfer	pi_netrw.txt	/*netrw-xfer*
@@ -1888,11 +1914,14 @@ srchrplchigrp-examples	SrchRplcHiGrp.txt	/*srchrplchigrp-examples*
 tcomment#Comment()	tcomment.txt	/*tcomment#Comment()*
 tcomment#CommentAs()	tcomment.txt	/*tcomment#CommentAs()*
 tcomment#DefineType()	tcomment.txt	/*tcomment#DefineType()*
+tcomment#GuessCommentType()	tcomment.txt	/*tcomment#GuessCommentType()*
 tcomment#Operator()	tcomment.txt	/*tcomment#Operator()*
 tcomment#OperatorAnyway()	tcomment.txt	/*tcomment#OperatorAnyway()*
 tcomment#OperatorLine()	tcomment.txt	/*tcomment#OperatorLine()*
 tcomment#OperatorLineAnyway()	tcomment.txt	/*tcomment#OperatorLineAnyway()*
+tcomment#SetOption()	tcomment.txt	/*tcomment#SetOption()*
 tcomment-maps	tcomment.txt	/*tcomment-maps*
+tcomment-operator	tcomment.txt	/*tcomment-operator*
 tcomment.txt	tcomment.txt	/*tcomment.txt*
 v_[%	matchit.txt	/*v_[%*
 v_]%	matchit.txt	/*v_]%*

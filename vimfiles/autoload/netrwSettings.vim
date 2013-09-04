@@ -1,8 +1,8 @@
 " netrwSettings.vim: makes netrw settings simpler
 " Date:		Sep 03, 2008
-" Maintainer:	Charles E Campbell, Jr <drchipNOSPAM at campbellfamily dot biz>
+" Maintainer:	Charles E Campbell <drchipNOSPAM at campbellfamily dot biz>
 " Version:	13
-" Copyright:    Copyright (C) 1999-2007 Charles E. Campbell, Jr. {{{1
+" Copyright:    Copyright (C) 1999-2007 Charles E. Campbell {{{1
 "               Permission is hereby granted to use and distribute this code,
 "               with or without modifications, provided that this copyright
 "               notice is copied with it. Like anything else that's free,
@@ -63,7 +63,7 @@ fun! netrwSettings#NetrwSettings()
   endif
 
   put ='+ ---------------------------------------------'
-  put ='+  NetrwSettings:  by Charles E. Campbell, Jr.'
+  put ='+  NetrwSettings:  by Charles E. Campbell'
   put ='+ Press <F1> with cursor atop any line for help'
   put ='+ ---------------------------------------------'
   let s:netrw_settings_stop= line(".")
@@ -106,7 +106,7 @@ fun! netrwSettings#NetrwSettings()
    put = 'let g:netrw_browsex_viewer    = (not defined)'
   endif
   put = 'let g:netrw_compress          = '.g:netrw_compress
-  put = 'let g:netrw_cursorline        = '.g:netrw_cursorline
+  put = 'let g:netrw_cursor            = '.g:netrw_cursor
   let decompressline= line("$")
   put ='let g:netrw_decompress...'
   put = 'let g:netrw_dirhistmax        = '.g:netrw_dirhistmax
@@ -125,9 +125,9 @@ fun! netrwSettings#NetrwSettings()
   put = 'let g:netrw_list_hide         = '.g:netrw_list_hide
   put = 'let g:netrw_liststyle         = '.g:netrw_liststyle
   put = 'let g:netrw_localcopycmd      = '.g:netrw_localcopycmd
-  put = 'let g:netrw_local_mkdir       = '.g:netrw_local_mkdir
+  put = 'let g:netrw_localmkdir        = '.g:netrw_localmkdir
   put = 'let g:netrw_localmovecmd      = '.g:netrw_localmovecmd
-  put = 'let g:netrw_local_rmdir       = '.g:netrw_local_rmdir
+  put = 'let g:netrw_localrmdir       = '.g:netrw_localrmdir
   put = 'let g:netrw_maxfilenamelen    = '.g:netrw_maxfilenamelen
   put = 'let g:netrw_menu              = '.g:netrw_menu
   put = 'let g:netrw_mkdir_cmd         = '.g:netrw_mkdir_cmd

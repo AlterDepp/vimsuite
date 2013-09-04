@@ -4,7 +4,10 @@
 " License:    This File is placed in the Public Domain.
 " Revision | Date [DD.MM.YY] | Changes
 " 00.01.00 |       05.07.09  | 01. Revision
+" 00.01.10 |                 | -
 " 00.02.00 |       29.03.10  | Fun added, MakeSrecS5()
+" 00.02.10 |                 | -
+" 00.02.20 |       15.11.12  | Fun added, MakeSrecSet()
 
 if exists("loaded_editsrec")
   finish
@@ -62,23 +65,30 @@ endif
 noremap <unique> <script> <Plug>EditSrecPartCS <SID>AutoPartCS
 noremap <SID>AutoPartCS <Esc>:call <SID>AutoPartCS()<CR>
 
+" M0
+" M1
+" M2
+" M3
+" M4
 " M5 = MakeS5
 if !hasmapto('<Plug>MakeSrecLineS5')
   map <unique> <Leader>m5 <Plug>MakeSrecLineS5
 endif
 noremap <unique> <script> <Plug>MakeSrecLineS5 <SID>MakeSrecS5
 noremap <SID>MakeSrecS5 <Esc>:call <SID>MakeSrecS5()<CR>
+" M6
+" M7
+" M8
+" M9
 
-" obsolete Mappings
-"imap <F5>    <Esc>:call <SID>AutoLineBC()<CR>a
-"imap <F6>    <Esc>:call <SID>AutoLineAD()<CR>a
-"imap <F7>    <Esc>:call <SID>AutoLineDA()<CR>a
-"imap <F8>    <Esc>:call <SID>AutoLineCS()<CR>a
-"imap <C-F5>  <Esc>:call <SID>AutoPartBC()<CR>a
-"imap <C-F6>  <Esc>:call <SID>AutoPartAD()<CR>a
-"imap <C-F7>  <Esc>:call <SID>AutoPartDA()<CR>a
-"imap <C-F8>  <Esc>:call <SID>AutoPartCS()<CR>a
+" MS = MakeSet
+if !hasmapto('<Plug>MakeSet')
+  map <unique> <Leader>ms <Plug>MakeSet
+endif
+noremap <unique> <script> <Plug>MakeSet <SID>MakeSrecSet
+noremap <SID>MakeSrecSet <Esc>:call <SID>MakeSrecSet()<CR>
 
+" Functions
 " create Line from ByteCount
 fun s:AutoLineBC()
   let s:ln = getline(".")
@@ -182,6 +192,124 @@ fun s:MakeSrecS5()
   call setline(".", s:ln)
   
   unlet s:ln
+endfun
+
+" make srec set
+fun s:MakeSrecSet()
+  " Dict for Type of Record
+  let s:dict = { 2: "S1",
+               \ 3: "S2",
+               \ 4: "S3" }
+  
+  let s:ln = getline(".")
+  
+  call inputsave()
+  let s:nodl = input('Num of Data-Lines: ')
+  call inputrestore()
+  call inputsave()
+  let s:nodb = input('Num of Data-Bytes: ')
+  call inputrestore()
+  
+  call inputsave()
+  let s:noab = input('Num of Addr-Bytes: ')
+  call inputrestore()
+  
+  call inputsave()
+  let s:atad = input('at Addr: ')
+  call inputrestore()
+  
+  " check for valid Range, Type of Record
+  if ((s:noab > 1) && (s:noab < 5))
+    let s:tosr = s:dict[s:noab]
+  else
+    let s:tosr = ""
+    " bypass the Loop below
+    let s:nodl = 0
+  endif
+  
+  " Cntr of Data Lines
+  let s:dlct = s:nodl
+  while s:dlct > 0
+    " get Cursor Line
+    let s:cl = line(".")
+    " append Line with Type
+    call append(".", s:tosr)
+    call cursor(s:cl + 1, 1)
+    
+    let s:ln = getline(".")
+    
+    " create ByteCount
+    "-----------------------------------
+    " calc Input for ByteCount
+    let s:hxin = s:nodb + s:noab + 1
+    " convert to Hex Value,
+    "            Hex String without "0x"
+    let s:hxva = "0123456789ABCDEF"
+    let s:srbc = ""
+    while s:hxin
+      let s:srbc = s:hxva[s:hxin % 16] . s:srbc
+      let s:hxin = s:hxin        / 16
+    endwhile
+    
+    " add missing Zeros
+    while strlen(s:srbc) < 2
+      let s:srbc = "0" . s:srbc
+    endwhile
+    " Exception Handling
+    if strlen(s:srbc) > 2
+      " check Number of ByteCount Bytes
+      let s:srbc = "__cNBB__"
+    endif
+    
+    let s:ln = s:ln . s:srbc
+    "-----------------------------------
+    
+    " create Addr, but with running Vals
+    "-----------------------------------
+    " calc Input for Addr
+    let s:hxin = s:atad + ((s:nodl - s:dlct) * s:nodb)
+    " convert to Hex Value,
+    "            Hex String without "0x"
+    let s:hxva = "0123456789ABCDEF"
+    let s:srad = ""
+    while s:hxin
+      let s:srad = s:hxva[s:hxin % 16] . s:srad
+      let s:hxin = s:hxin        / 16
+    endwhile
+    
+    " add missing Zeros
+    while strlen(s:srad) < (2 * s:noab)
+      let s:srad = "0" . s:srad
+    endwhile
+    " Exception Handling
+    if strlen(s:srad) > (2 * s:noab)
+      " check Number of Address Bytes
+      let s:srad = "__cNAB__"
+    endif
+    
+    let s:ln = s:ln . s:srad
+    "-----------------------------------
+    let s:ln = s:ln . libsrec#CrDA(s:ln)
+    let s:ln = s:ln . libsrec#CrCS(s:ln)
+    
+    call setline(".", s:ln)
+    let s:dlct = s:dlct - 1
+    
+    unlet s:srad
+    unlet s:srbc
+    unlet s:hxva
+    unlet s:hxin
+    unlet s:cl
+  endwhile
+  
+  unlet s:dlct
+  unlet s:tosr
+  unlet s:atad
+  unlet s:noab
+  unlet s:nodb
+  unlet s:nodl
+  unlet s:ln
+  unlet s:dict
 endfun
 
 let &cpo = s:save_cpo

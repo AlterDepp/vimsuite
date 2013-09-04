@@ -6,7 +6,9 @@
 " 00.01.00 |       05.07.09  | 01. Revision
 " 00.01.10 |       29.03.10  | BugFix, in libsrec#CrCS()
 "          |                 | leading Zeros in Result
-" 00.02.00 |       29.03.10  | Fun added
+" 00.02.00 |       29.03.10  | Fun added, MakeSrecS5() 
+" 00.02.10 |                 | -
+" 00.02.20 |       16.11.12  | Fun added, MakeSrecSet()
 
 " This File contains Test Cases for the Plugin 'editsrec.vim'
 "                               and its Library 'libsrec.vim'.
@@ -338,11 +340,13 @@ type "<Esc><Leader>pc"
 the following Line will be created
 S9030000FC
 
+
 TestCase for leading Zeros -------
 insert a new Line and type "S30F00000000000000000000000000EE"
 type "<Esc><Leader>lc"
 the following Line will be created
 S30F00000000000000000000000000EE02
+
 
 TestCase for Making S5 Record ----
 insert
@@ -353,4 +357,58 @@ insert a new Line
 type "<Esc><Leader>m5"
 the following Line will be created
 S5030003FC
+
+
+TestCase for Making Set ----------
+type "<Esc><Leader>ms"
+answer the Questions
+Num of Data-Lines: 5
+Num of Data-Bytes: 4
+Num of Addr-Bytes: 2
+at Addr: 0x00
+the following Lines will be created
+S1070000FFFFFFFFFC
+S1070004FFFFFFFFF8
+S1070008FFFFFFFFF4
+S107000CFFFFFFFFF0
+S1070010FFFFFFFFEC
+
+type "<Esc><Leader>ms"
+answer the Questions
+Num of Data-Lines: 5
+Num of Data-Bytes: 4
+Num of Addr-Bytes: 3
+at Addr: 0x00
+the following Lines will be created
+S208000000FFFFFFFFFB
+S208000004FFFFFFFFF7
+S208000008FFFFFFFFF3
+S20800000CFFFFFFFFEF
+S208000010FFFFFFFFEB
+
+type "<Esc><Leader>ms"
+answer the Questions
+Num of Data-Lines: 5
+Num of Data-Bytes: 8
+Num of Addr-Bytes: 4
+at Addr: 0x00
+the following Lines will be created
+S30D00000000FFFFFFFFFFFFFFFFFA
+S30D00000008FFFFFFFFFFFFFFFFF2
+S30D00000010FFFFFFFFFFFFFFFFEA
+S30D00000018FFFFFFFFFFFFFFFFE2
+S30D00000020FFFFFFFFFFFFFFFFDA
+
+type "<Esc><Leader>ms"
+answer the Questions
+Num of Data-Lines: 5
+Num of Data-Bytes: 4
+Num of Addr-Bytes: 3
+at Addr: 0x4000
+the following Lines will be created
+S208004000FFFFFFFFBB
+S208004004FFFFFFFFB7
+S208004008FFFFFFFFB3
+S20800400CFFFFFFFFAF
+S208004010FFFFFFFFAB
 
