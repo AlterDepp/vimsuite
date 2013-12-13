@@ -46,5 +46,5 @@ if has('gui')
     " add toolbar
 "    set guioptions+=T
 
-    colorscheme Stefan
 endif
+colorscheme Stefan

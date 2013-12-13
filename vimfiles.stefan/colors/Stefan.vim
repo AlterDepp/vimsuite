@@ -42,9 +42,9 @@ let colors_name = "Stefan"
 
 hi Normal                                   ctermfg=Grey     ctermbg=Black            guifg=White     guibg=SeaGreen
 
-hi SpecialKey   term=bold                   ctermfg=Blue                              guifg=DarkBlue
-hi NonText      term=NONE       cterm=NONE  ctermfg=Blue                  gui=NONE    guifg=DarkBlue
-hi Directory    term=bold                   ctermfg=Blue                              guifg=Blue
+hi SpecialKey   term=bold                   ctermfg=LightBlue                         guifg=DarkBlue
+hi NonText      term=NONE       cterm=NONE  ctermfg=LightBlue             gui=NONE    guifg=DarkBlue
+hi Directory    term=bold                   ctermfg=LightBlue                         guifg=Blue
 hi ErrorMsg     term=standout   cterm=bold  ctermfg=Grey     ctermbg=Red  gui=bold    guifg=White     guibg=LightRed
 hi IncSearch    term=reverse    cterm=reverse                             gui=reverse
 hi Search       term=reverse                                 ctermbg=Brown                            guibg=Green
@@ -61,10 +61,10 @@ hi VisualNOS    term=bold,underline cterm=bold,underline                  gui=bo
 hi WarningMsg   term=standout               ctermfg=Red                   gui=bold    guifg=Red       guibg=LightGreen
 hi WildMenu     term=standout               ctermfg=Black    ctermbg=Brown            guifg=LightGrey     guibg=Yellow
 hi Folded       term=standout               ctermfg=Black    ctermbg=DarkGreen        guifg=LightGrey     guibg=DarkGreen
-hi FoldColumn   term=standout               ctermfg=Blue     ctermbg=Grey             guifg=DarkBlue  guibg=Gray80
+hi FoldColumn   term=standout               ctermfg=LightBlue ctermbg=Grey            guifg=DarkBlue  guibg=Gray80
 hi DiffAdd      term=bold                                    ctermbg=Red                              guibg=Red
 hi DiffChange   term=bold                                    ctermbg=Magenta                          guibg=DarkGreen
-hi DiffDelete   term=bold       cterm=bold  ctermfg=Blue     ctermbg=White gui=bold   guifg=LightBlue guibg=White
+hi DiffDelete   term=bold       cterm=bold  ctermfg=LightBlue ctermbg=White gui=bold  guifg=LightBlue guibg=White
 hi DiffText     term=reverse    cterm=bold                   ctermbg=Red  gui=bold                    guibg=Red
 hi Cursor                                                                             guifg=bg        guibg=fg
 hi lCursor                                                                            guifg=bg        guibg=fg
@@ -72,17 +72,17 @@ hi lCursor                                                                      
 " Colors for syntax highlighting
 hi Comment      term=bold                   ctermfg=DarkYellow            gui=NONE    guifg=Yellow
 hi Constant     term=underline              ctermfg=DarkMagenta                       guifg=LightGrey
-hi Special      term=bold                   ctermfg=Blue                              guifg=Blue
+hi Special      term=bold                   ctermfg=LightBlue                         guifg=Blue
 hi Identifier   term=underline              ctermfg=DarkCyan                          guifg=Cyan
 hi Statement    term=bold                   ctermfg=DarkCyan              gui=bold    guifg=Cyan
 hi PreProc      term=underline              ctermfg=DarkRed                           guifg=LightRed
 hi Type         term=underline              ctermfg=DarkCyan              gui=bold    guifg=Cyan
 hi Ignore                       cterm=bold  ctermfg=White                             guifg=bg
-hi Error        term=reverse    cterm=bold  ctermfg=White    ctermbg=LightRed gui=bold guifg=White    guibg=LightRed
-hi Todo         term=standout               ctermfg=Blue     ctermbg=Yellow           guifg=Blue      guibg=Yellow
+hi Error        term=reverse    cterm=bold  ctermfg=White     ctermbg=LightRed gui=bold guifg=White    guibg=LightRed
+hi Todo         term=standout               ctermfg=LightBlue ctermbg=Yellow          guifg=Blue      guibg=Yellow
 hi Function     term=bold                   ctermfg=DarkGreen             gui=bold    guifg=Green
-hi Label        term=bold                   ctermfg=Blue                  gui=bold    guifg=Blue
-hi Underlined   term=underline  cterm=underline ctermfg=Blue              gui=underline guifg=Blue
+hi Label        term=bold                   ctermfg=LightBlue             gui=bold    guifg=Blue
+hi Underlined   term=underline  cterm=underline ctermfg=LightBlue         gui=underline guifg=Blue
 hi MatchParen   term=reverse                                                                          guibg=Blue
 
 hi StdFunction                                                            gui=bold    guifg=LightGreen
