@@ -42,8 +42,16 @@ syn keyword damosFunction  exportiereObjekte anlegeEprom schliesseEprom anlegePr
 syn keyword damosFunction  oeffneDatenstand schliesseDatenstand fuelleKompAdr
 syn keyword damosFunction  setzeBezeichnerFormat oeffneEprom schreibeASAP
 syn keyword damosFunction  setzeDokuTyp schreibeDokument schliessePV
+syn keyword damosFunction  holeParameter setzeZeitanzeige pruefeDamosVersion
+syn keyword damosFunction  liesSeverityListe setzeExitStatus naechster
+syn keyword damosFunction  pruefeVeraenderteObjekte setzeFktVersionsInfo
+syn keyword damosFunction  liesXMLAdressDatei loescheFunktion bildeAswFkt
+syn keyword damosFunction  imFehlerfall schreibeVarCod pruefeClsKonsistenz
+syn keyword damosFunction  anfuegeAsw entferne vereinigeAsw anzeige
+syn keyword damosFunction  setzeCSyAsw loescheAsw schreibePrjDatenquelle
+syn keyword damosFunction  fuelleMitDefaultwerten
 
-syn keyword damosCommand   exit Dam DAMOS quellDst IF ENDIF
+syn keyword damosCommand   exit Dam DAMOS quellDst IF ELSE ENDIF
 
 syn match   damosSeperator        "[<>,:]"
 
