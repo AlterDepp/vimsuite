@@ -1,6 +1,13 @@
-let g:Austausch   = expand('//easerv.muc/Organisation/ea-41/Austausch')
-let g:myAustausch = expand(g:Austausch . '/Liebl')
-let g:bmskWA      = expand('c:/wa')
-let g:WA          = expand('c:/wa')
-let g:ccm         = expand('c:/ec-apps/cmsynergy/ccm64/bin/ccm.exe')
+if !exists('g:Austausch')
+    let g:Austausch   = expand('//easerv.muc/Organisation/ea-41/Austausch')
+endif
+if !exists('g:myAustausch')
+    let g:myAustausch = expand(g:Austausch . '/Liebl')
+endif
+if !exists('g:bmskWA')
+    let g:bmskWA      = expand('c:/wa')
+endif
+if !exists('g:WA')
+    let g:WA          = expand('c:/wa')
+endif
 

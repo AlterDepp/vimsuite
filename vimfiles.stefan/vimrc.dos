@@ -33,8 +33,8 @@ let g:wget        = expand(g:vimtools . '/wget.exe')
 if has('gui')
 
     " set Font
-"    set guifont=Lucida_Console:h7
-    set guifont=Terminal:h6
+    set guifont=Lucida_Console:h8
+"    set guifont=Terminal:h6
     "set guifontwide=
 
     " Set standards for GUI
