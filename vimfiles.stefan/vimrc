@@ -156,7 +156,11 @@ nnoremap gb :call GotoLastFile()<CR>
 " -----------
 set sessionoptions=blank,buffers,curdir,folds,help,resize,tabpages,winsize
 " open window size
-autocmd GUIEnter * winsize 100 60
+if &diff
+    autocmd GUIEnter * set lines=60 columns=200
+else
+    autocmd GUIEnter * set lines=60 columns=100
+endif
 " read and write files automatically
 set autoread
 set autowrite

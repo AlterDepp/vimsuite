@@ -179,6 +179,14 @@ Alle Zeilen, die länger als|textwidth|sind, werden rot markiert.
                                                               *:InsertCHeader*
 :InsertCHeader   Fügt das Template ... ein
 
+                                                           *GVimMerge* *Merge*
+gvimmerge                               Tool zur Unterstützung beim mergen
+
+Um GVim als Tool zum Mergen für eine Versionsverwaltung zu verwenden kann 
+dieser dort als Merge-Tool eingetragen werden. Der Eintrag sollte 
+folgendermaßen ausshen:
+.../vimsuite/vimfiles.stefan/tools/gvimmerge.bat <base> <mine> <theirs> <merged>
+
 ==============================================================================
                                                                *cscope_macros*
 

@@ -60,8 +60,10 @@ DelAllMultipleEmptyLines	vimsuite.txt	/*DelAllMultipleEmptyLines*
 DelAllMultipleSameLines	vimsuite.txt	/*DelAllMultipleSameLines*
 DelAllTrailingWhitespace	vimsuite.txt	/*DelAllTrailingWhitespace*
 DirDiff	vimsuite.txt	/*DirDiff*
+GVimMerge	vimsuite.txt	/*GVimMerge*
 GrepDir	vimsuite.txt	/*GrepDir*
 GrepFiles	vimsuite.txt	/*GrepFiles*
+Merge	vimsuite.txt	/*Merge*
 Project	vimsuite.txt	/*Project*
 Projekt	vimsuite.txt	/*Projekt*
 Reformat	vimsuite.txt	/*Reformat*
