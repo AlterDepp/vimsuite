@@ -16,16 +16,22 @@ endfunction
 
 function s:OpenMergeTabs()
     set columns=200
-    call s:OpenDiffTab(1, 4)
+    call s:OpenDiffTab(2, 4)
     call s:FixLineendings()
     setlocal noreadonly modifiable
-    call s:OpenDiffTab(2, 4)
+    call s:OpenDiffTab(1, 4)
     call s:OpenDiffTab(3, 4)
     call s:OpenDiffTab(1, 2)
     call s:OpenDiffTab(1, 3)
     call s:OpenDiffTab(2, 3)
     tabfirst
     tabclose
+    " turn off line formatting
+    setlocal formatoptions=
+    " set search pattern to conflict markers
+    let @/ = "[<>=]\\{7}"
+    " set last command to 'save and close'
+    call histadd('cmd', 'w | qa')
 endfunction
 
 call s:OpenMergeTabs()
