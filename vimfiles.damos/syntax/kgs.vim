@@ -52,6 +52,7 @@ syntax keyword kgsKomponents    minp_x minp_y maxp_x maxp_y
 syntax keyword kgsKomponents    shift_x offset_x shift_y offset_y
 syntax keyword kgsKomponents    test_stuetzstellenp_x test_stuetzstellenp_y
 syntax keyword kgsKomponents    nicht_applizierbar
+syntax keyword kgsKomponents    unwirksamkeitswert
 syntax keyword kgsKomponents    deutsch
 syntax keyword kgsDeprecated    min_w min_x min_y max_w max_x max_y init_wert test_wert
 syntax keyword kgsDeprecated    test_stuetzstellen_x test_stuetzstellen_y
