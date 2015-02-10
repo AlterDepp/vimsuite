@@ -1940,6 +1940,15 @@ matchit-troubleshoot	matchit.txt	/*matchit-troubleshoot*
 matchit-v_%	matchit.txt	/*matchit-v_%*
 matchit.txt	matchit.txt	/*matchit.txt*
 matchit.vim	matchit.txt	/*matchit.vim*
+merginal	merginal.txt	/*merginal*
+merginal-branch-list	merginal.txt	/*merginal-branch-list*
+merginal-diff-files	merginal.txt	/*merginal-diff-files*
+merginal-merge-conflicts	merginal.txt	/*merginal-merge-conflicts*
+merginal-rebase-amend	merginal.txt	/*merginal-rebase-amend*
+merginal-rebase-conflicts	merginal.txt	/*merginal-rebase-conflicts*
+merginal-requirements	merginal.txt	/*merginal-requirements*
+merginal-usage	merginal.txt	/*merginal-usage*
+merginal.txt	merginal.txt	/*merginal.txt*
 n_<Plug>TComment-Comment	tcomment.txt	/*n_<Plug>TComment-Comment*
 n_<Plug>TComment-Commentb	tcomment.txt	/*n_<Plug>TComment-Commentb*
 n_<Plug>TComment-Commentc	tcomment.txt	/*n_<Plug>TComment-Commentc*
