@@ -7,7 +7,7 @@ ScriptID SourceID Filename
 670  16281 visincr.vim (Visual Increment)
 862   2635 cscope_quickfix.vim
 51     171 cscope_macros.vim
-102 22871 DirDiff.vim
+102  22871 DirDiff.vim
 1189 18650 matrix.vim
 948   2878 Scons Compiler plugin
 1709  6421 Scons Syntax file
@@ -38,3 +38,4 @@ ScriptID SourceID Filename
 2975 22815 fugitive.vim
 2830 22798 csv.vim
 3849 22637 git-time-lapse
+4932 22787 diffchar.vim
