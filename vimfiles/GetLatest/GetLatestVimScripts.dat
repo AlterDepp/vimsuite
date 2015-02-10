@@ -7,7 +7,7 @@ ScriptID SourceID Filename
 670  16281 visincr.vim (Visual Increment)
 862   2635 cscope_quickfix.vim
 51     171 cscope_macros.vim
-102  16171 DirDiff.vim
+102 22871 DirDiff.vim
 1189 18650 matrix.vim
 948   2878 Scons Compiler plugin
 1709  6421 Scons Syntax file
@@ -23,16 +23,17 @@ ScriptID SourceID Filename
 39    8196 matchit.vim
 2092  8095 reloaded.vim (matrix colorscheme)
 848  14668 SrchRplcHiGrp.vim (Search/Replace on Syntax Group)
-294 19633 Align.vim
+294  19633 Align.vim
 479   9276 MultipleSearch.vba
 1066  7618 cecutil.vim
 1173 22422 tComment.vim
 2701 18988 editsrec
 3280 14334 Tabbi
-642  15781 :AutoInstall: getscript.vim
-1075 21427 :AutoInstall: netrw.vim
-1502 15362 :AutoInstall: vimball.vim
+642  15781 getscript.vim
+1075 21427 netrw.vim
+1502 15362 vimball.vim
 3304 20505 Gundo
-90 19809 vcscommand
+90   19809 vcscommand
 974   4316 python.vim (indent)
 2975 22815 fugitive.vim
+2830 22798 csv.vim
