@@ -37,3 +37,4 @@ ScriptID SourceID Filename
 974   4316 python.vim (indent)
 2975 22815 fugitive.vim
 2830 22798 csv.vim
+3849 22637 git-time-lapse
