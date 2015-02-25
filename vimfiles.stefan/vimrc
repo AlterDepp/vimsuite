@@ -122,6 +122,8 @@ set listchars=eol:$,tab:>\ ,trail:_,extends:°,precedes:°
 if &diff
     set guioptions+=b
 endif
+" don't switch on DiffChar by default
+let g:DiffExpr = ''
 
 " ------
 " Moving
@@ -269,3 +271,7 @@ let g:DoxygenToolkit_dox_sa = "yes"
 " -----------
 let g:VCSCommandMenuRoot = '&VCS'
 
+" ----
+" gitv
+" ----
+let g:Gitv_OpenHorizontal = 1
