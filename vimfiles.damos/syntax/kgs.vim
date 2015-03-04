@@ -56,7 +56,7 @@ syntax keyword kgsKomponents    unwirksamkeitswert
 syntax keyword kgsKomponents    deutsch
 syntax keyword kgsDeprecated    min_w min_x min_y max_w max_x max_y init_wert test_wert
 syntax keyword kgsDeprecated    test_stuetzstellen_x test_stuetzstellen_y
-syntax keyword kgsDeprecated    kopfdaten_applizierbar
+syntax keyword kgsDeprecated    kopfdaten_applizierbar unwirksamkeitswert
 
 
 highlight def link kgsFunctions Function
