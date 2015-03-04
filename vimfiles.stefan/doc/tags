@@ -59,7 +59,6 @@ CommentInOut	vimsuite.txt	/*CommentInOut*
 DelAllMultipleEmptyLines	vimsuite.txt	/*DelAllMultipleEmptyLines*
 DelAllMultipleSameLines	vimsuite.txt	/*DelAllMultipleSameLines*
 DelAllTrailingWhitespace	vimsuite.txt	/*DelAllTrailingWhitespace*
-DirDiff	vimsuite.txt	/*DirDiff*
 GVimMerge	vimsuite.txt	/*GVimMerge*
 GrepDir	vimsuite.txt	/*GrepDir*
 GrepFiles	vimsuite.txt	/*GrepFiles*
@@ -87,6 +86,7 @@ bmskWA	bmsk.txt	/*bmskWA*
 ccm	ccm.txt	/*ccm*
 ccm.txt	ccm.txt	/*ccm.txt*
 cscope_macros	vimsuite.txt	/*cscope_macros*
+diffchar	vimsuite.txt	/*diffchar*
 g:GrepDir	vimsuite.txt	/*g:GrepDir*
 g:GrepFiles	vimsuite.txt	/*g:GrepFiles*
 g:WA	vimsuite.txt	/*g:WA*
