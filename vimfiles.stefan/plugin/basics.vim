@@ -68,7 +68,7 @@ endfunction
 
 "command -nargs=1 PathNormpath call PathNormpath('<fargs>')
 "function PathNormpath(string)
-"    if (v:version > 602)
+"    if has('python')
 "        try
 "python <<EOF
 "import vim
@@ -107,7 +107,7 @@ function Double_quote(text)
 endfunction
 
 function Eval(expression)
-    if (v:version > 602)
+    if has('python')
         try
 python <<EOF
 import vim
@@ -120,14 +120,13 @@ EOF
             let result = a:expression
         endtry
     else
-        echoerr 'Eval needs python'
-        let result = a:expression
+        let result = eval(a:expression)
     endif
     return result
 endfunction
 
 function ToInt(expression)
-    if (v:version > 602)
+    if has('python')
         try
             let expression = substitute(a:expression, '\.\d\+', '', '')
 python <<EOF
@@ -141,14 +140,13 @@ EOF
             let result = a:expression
         endtry
     else
-        echoerr 'ToInt needs python'
-        let result = a:expression
+        let result = float2nr(a:expression)
     endif
     return result
 endfunction
 
 function ToHex(expression, bits)
-    if (v:version > 602)
+    if has('python')
         try
             let expression = substitute(a:expression, 'L', '', '')
 python <<EOF
@@ -157,18 +155,17 @@ result = hex(long(int(vim.eval('expression'))))
 #print 'result: ', result
 vim.command('let result = \"' + result + '\"')
 EOF
-            if (a:bits != 0)
-                let digits = a:bits / 4
-                let result = substitute(result, '\(0x\)\x*\(\x\{' . digits . '}\>\)', '\1\2', '')
-                "echo 'result:'.result.':'. a:bits digits
-            endif
         catch /^Vim\%((\a\+)\)\=:E370/	" python not available
             throw 'ToHex needs python'
             let result = a:expression
         endtry
     else
-        echoerr 'ToHex needs python'
-        let result = a:expression
+        let result = printf('%x', a:expression)
+    endif
+    if (a:bits != 0)
+        let digits = a:bits / 4
+        let result = substitute(result, '\(0x\)\x*\(\x\{' . digits . '}\>\)', '\1\2', '')
+        "echo 'result:'.result.':'. a:bits digits
     endif
     return result
 endfunction

@@ -227,17 +227,20 @@ function s:GetPolynom(umrechnung)
             if XmlTag['Attributes']['Value'] == a:umrechnung
                 let elements = XmlTag['Elements']
                 for element in elements
-                    let name = element['Name']
-                    if name == 'Mas'
-                        let umr['Mas'] = element['Elements'][0]
-                    else
-                        let nr = substitute(name, 'P\(\d\)', '\1', '')
-                        if nr != name
-                            let p[str2nr(nr)] = element['Elements'][0]
+                    if type(element) == 4
+                        let name = element['Name']
+                        if name == 'Mas'
+                            let umr['Mas'] = element['Elements'][0]
                         else
-                            echoerr 'Unknown attribute' name
+                            let nr = substitute(name, 'P\(\d\)', '\1', '')
+                            if nr != name
+                                let p[str2nr(nr)] = element['Elements'][0]
+                            else
+                                echoerr 'Unknown attribute' name
+                            endif
                         endif
                     endif
+                    unlet element
                 endfor
             else
                 echoerr 'Error: Wrong conversion' XmlTag['Attributes']['n']
