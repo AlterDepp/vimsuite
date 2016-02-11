@@ -231,6 +231,8 @@ function s:GetPolynom(umrechnung)
                         let name = element['Name']
                         if name == 'Mas'
                             let umr['Mas'] = element['Elements'][0]
+                        elseif name == 'AFm'
+                            " ignore
                         else
                             let nr = substitute(name, 'P\(\d\)', '\1', '')
                             if nr != name
@@ -301,15 +303,15 @@ function s:GetOspTestValues()
         let hex = ToHex(int, 16)
         let phys = s:GetOspPolyPhysValue(int, p)
         echo s:formatValues(int, hex, phys, Mas)
-        let int = '2147483647L'
+        let int = '2147483647'
         let hex = ToHex(int, 32)
         let phys = s:GetOspPolyPhysValue(int, p)
         echo s:formatValues(int, hex, phys, Mas)
-        let int = '-2147483648L'
+        let int = '-2147483648'
         let hex = ToHex(int, 32)
         let phys = s:GetOspPolyPhysValue(int, p)
         echo s:formatValues(int, hex, phys, Mas)
-        let int = '4294967295L'
+        let int = '4294967295'
         let hex = '0xffffffff'
         let phys = s:GetOspPolyPhysValue(int, p)
         echo s:formatValues(int, hex, phys, Mas)
