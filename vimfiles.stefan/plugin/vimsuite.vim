@@ -908,6 +908,14 @@ let g:DirDiffCommand = expand($VIMRUNTIME . '/diff')
 let g:DirDiffExcludes = '*.log,*.pyc,.svn,.git*,.asc,_ccmwaid.inf,.static_wa,out,Build,build,tags,cscope.out'
 "let g:DirDiffDynamicDiffText = 1
 
+" settings for diff mode
+if &diff
+    " turn off csv ftplugin in diff mode
+    au! filetypedetect * *.csv,*.dat,*.tsv,*.tab
+endif
+
+
+
 " options for Vimball
 let g:vimball_home = expand(g:vimsuite . '/vimfiles')
 
