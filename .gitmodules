@@ -58,3 +58,7 @@
 	path = pack/xml/opt/xml
 	url = https://github.com/othree/xml.vim
 	ignore = untracked
+[submodule "pack/YouCompleteMe/opt/YouCompleteMe"]
+	path = pack/YouCompleteMe/opt/YouCompleteMe
+	url = https://github.com/Valloric/YouCompleteMe
+	ignore = untracked
