@@ -287,7 +287,7 @@ packadd linediff
 packadd merginal
 packadd rtags
 packadd SrchRplcHiGrp
-"call dein#add('majutsushi/tagbar')
+packadd tagbar
 "call dein#add('tomtom/tcomment_vim')
 "call dein#add('juneedahamed/vc.vim')
 "call dein#add('jreybert/vimagit')

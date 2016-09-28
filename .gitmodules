@@ -34,3 +34,7 @@
 	path = pack/SrchRplcHiGrp/opt/SrchRplcHiGrp
 	url = https://github.com/vim-scripts/SrchRplcHiGrp.vim
 	ignore = untracked
+[submodule "pack/tagbar/opt/tagbar"]
+	path = pack/tagbar/opt/tagbar
+	url = https://github.com/majutsushi/tagbar
+	ignore = untracked
