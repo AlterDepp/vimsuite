@@ -276,6 +276,7 @@ packadd gitv
 packadd gundo
 packadd linediff
 packadd merginal
+packadd pyclewn
 packadd rtags
 packadd SrchRplcHiGrp
 packadd tagbar
@@ -284,6 +285,7 @@ packadd vc
 packadd vimagit
 packadd VisIncr
 packadd xml
+let g:loaded_pyclewn = 1
 
 if exists('g:debug')
     if (g:debug > 0)
