@@ -1,0 +1,4 @@
+[submodule "pack/dirdiff/opt/dirdiff"]
+	path = pack/dirdiff/opt/dirdiff
+	url = https://github.com/will133/vim-dirdiff
+	ignore = untracked

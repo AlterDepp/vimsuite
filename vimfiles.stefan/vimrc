@@ -277,7 +277,7 @@ let g:Gitv_OpenHorizontal = 1
 
 " Add or remove your plugins here:
 "call dein#add('cgdb/cgdb')
-"call dein#add('will133/vim-dirdiff')
+packadd dirdiff
 "call dein#add('vim-scripts/DoxygenToolkit.vim')
 "call dein#add('tpope/vim-fugitive')
 "call dein#add('skibyte/gdb-from-vim', {'rev': 'develop'})
