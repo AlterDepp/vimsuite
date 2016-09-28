@@ -22,3 +22,7 @@
 	path = pack/linediff/opt/linediff
 	url = https://github.com/AndrewRadev/linediff.vim
 	ignore = untracked
+[submodule "pack/merginal/opt/merginal"]
+	path = pack/merginal/opt/merginal
+	url = https://github.com/idanarye/vim-merginal
+	ignore = untracked

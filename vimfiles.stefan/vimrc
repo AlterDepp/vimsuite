@@ -284,8 +284,7 @@ packadd fugitive
 packadd gitv
 packadd gundo
 packadd linediff
-"call dein#add('AndrewRadev/linediff.vim')
-"call dein#add('idanarye/vim-merginal')
+packadd merginal
 "call dein#add('lyuts/vim-rtags')
 "call dein#add('vim-scripts/SrchRplcHiGrp.vim')
 "call dein#add('majutsushi/tagbar')
