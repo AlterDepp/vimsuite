@@ -1,22 +1,23 @@
+" Use Vim settings, rather then Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
 " Setzen des Runtimepath, in dem die Vimfiles gesucht werden:
 let runtimepath_orig = &runtimepath
 let &runtimepath = ''
 
 " zuerst in vimsuite suchen
 let &runtimepath = &runtimepath . ',' . g:vimfiles
-let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles'
-"let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.latex'
-let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.damos'
 
 " dann in vim Installation suchen
 let &runtimepath = &runtimepath . ',' . runtimepath_orig
 
 " dann in vimsuite/after suchen
 let &runtimepath = &runtimepath . ',' . g:vimfiles . '/after'
-let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles/after'
-let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.latex/after'
-let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.damos/after'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.stefan/after'
+
+" packages liegen unter vimsuite/pack
+let &packpath = g:vimsuite
 
 " Laden weiterer Einstellungen:
 if (has("win32") || has("win64"))
@@ -33,9 +34,6 @@ endif
 
 " global settings
 " ---------------
-" Use Vim settings, rather then Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible
 set nobackup            " keep no backup file
 set history=50          " keep 50 lines of command line history
 set ruler               " show the cursor position all the time
@@ -60,6 +58,9 @@ set hlsearch
 set gdefault
 " case sensitive search
 set noignorecase
+" ignore some pattern in filesearch
+set wildignore+=.git
+set wildignore+=.svn
 
 " set very intelligent formatting
 set formatoptions=croqwan2
@@ -67,19 +68,10 @@ set formatoptions=croqwan2
 " --------
 " Changing
 " --------
-" Don't use Ex mode, use Q for formatting
-"map Q gq
 
 " overwrite selected text
 vnoremap p s<C-R>0<ESC>
 vnoremap P s<C-R>0<ESC>
-
-" list tags
-inoremap <C-T> <ESC>:tselect /^<C-R><C-W><CR>
-
-" search for visual block
-vnoremap <silent> g/ y/\V<C-R>=substitute(escape(@@,"/\\"),"\n","\\\\n","ge")<CR><CR>
-vnoremap <silent> g? y?\V<C-R>=substitute(escape(@@,"?\\"),"\n","\\\\n","ge")<CR><CR>
 
 " -------
 " Display
@@ -108,13 +100,17 @@ set showcmd
 "vnoremap g4 vg4
 
 " set textwidth to 78
-set textwidth=78
+set textwidth=100
 
 " special characters
 " list special characters
 set list
 " special characters:
-set listchars=eol:$,tab:>\ ,trail:_,extends:°,precedes:°
+set listchars=eol:$
+set listchars+=tab:>\ 
+set listchars+=trail:_
+set listchars+=extends:°
+set listchars+=precedes:°
 " special characters for keywords
 " set iskeyword+=
 
@@ -135,19 +131,12 @@ set scrolloff=10
 " wrap line at (b=<BS>, s=<space>, h, l, <, >, [, ])
 set whichwrap=
 " backspace deletes: (indent,eol,start)
-set backspace=indent,start
-" find word under cursor
-nnoremap + /<C-R><C-W><CR>
+set backspace=indent
+set backspace+=start
 " mark word under cursor
 nnoremap gm :let @/ = "<C-R><C-W>"<CR>:set hlsearch<CR>
 " go to tag under cursor
-nnoremap <TAB> g<C-]>
-"nnoremap <CR> g<C-]>
-nnoremap <CR> :tag <C-R><C-W><CR>
-" return to previous position
-nnoremap <S-TAB> <C-T>
-nnoremap <BS> <C-T>
-nnoremap <S-CR> <C-T>
+nnoremap tt g<C-]>
 " find next error
 nnoremap <C-N> :cn<CR>
 " go back to previous edited file
@@ -156,7 +145,14 @@ nnoremap gb :call GotoLastFile()<CR>
 " -----------
 " come and go
 " -----------
-set sessionoptions=blank,buffers,curdir,folds,help,resize,tabpages,winsize
+set sessionoptions=blank
+set sessionoptions+=buffers
+set sessionoptions+=curdir
+set sessionoptions+=folds
+set sessionoptions+=help
+set sessionoptions+=resize
+set sessionoptions+=tabpages
+set sessionoptions+=winsize
 " open window size
 if &diff
     autocmd GUIEnter * set lines=60 columns=200
@@ -193,58 +189,46 @@ set noswapfile
 " -----------
 " spell check
 " -----------
-set spelllang=de
-set spellfile=$VIM/myspell.add
-let &spellfile=&spellfile . ',' . g:vimfiles . '/spell/bmsk.add'
-
-if exists('g:debug')
-    if (g:debug > 0)
-        echo 'loaded vimrc'
-    endif
-endif
+set spelllang=de,en
+let &spellfile=g:vimfiles.'/spell/myspell.add'
 
 " ----------
 " Completion
 " ----------
-set completeopt=longest,menuone
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
-  \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-
+set completeopt=longest
+set completeopt+=menuone
 
 " --------------
 " DoxygenToolkit
 " --------------
-let g:DoxygenToolkit_commandTag             = "\\"
-"let g:DoxygenToolkit_authorName            = "Stefan Liebl"
+"let g:DoxygenToolkit_commandTag             = "\\"
+let g:DoxygenToolkit_authorName            = "Stefan Liebl"
 
-let g:DoxygenToolkit_briefTag_pre          = g:DoxygenToolkit_commandTag . "brief    "
+"let g:DoxygenToolkit_briefTag_pre          = g:DoxygenToolkit_commandTag . "brief    "
 "let g:DoxygenToolkit_briefTag_post         = ""
-let g:DoxygenToolkit_paramTag_pre          = g:DoxygenToolkit_commandTag . "param    "
+"let g:DoxygenToolkit_paramTag_pre          = g:DoxygenToolkit_commandTag . "param    "
 "let g:DoxygenToolkit_paramTag_post         = " "
-let g:DoxygenToolkit_returnTag             = g:DoxygenToolkit_commandTag . "return   "
+"let g:DoxygenToolkit_returnTag             = g:DoxygenToolkit_commandTag . "return   "
 "let g:DoxygenToolkit_blockHeader           = ""
 "let g:DoxygenToolkit_blockFooter           = ""
 "let g:DoxygenToolkit_licenseTag            = s:licenseTag
-let g:DoxygenToolkit_fileTag               = g:DoxygenToolkit_commandTag . "file     "
-let g:DoxygenToolkit_authorTag             = g:DoxygenToolkit_commandTag . "author   "
-let g:DoxygenToolkit_dateTag               = g:DoxygenToolkit_commandTag . "date     "
-let g:DoxygenToolkit_dateFormat            = "%d.%m.%Y"
+"let g:DoxygenToolkit_fileTag               = g:DoxygenToolkit_commandTag . "file     "
+"let g:DoxygenToolkit_authorTag             = g:DoxygenToolkit_commandTag . "author   "
+"let g:DoxygenToolkit_dateTag               = g:DoxygenToolkit_commandTag . "date     "
+"let g:DoxygenToolkit_dateFormat            = "%d.%m.%Y"
 "let g:DoxygenToolkit_undocTag              = "DOX_SKIP_BLOCK"
-let g:DoxygenToolkit_blockTag              = g:DoxygenToolkit_commandTag . "name     "
-let g:DoxygenToolkit_classTag              = g:DoxygenToolkit_commandTag . "class    "
+"let g:DoxygenToolkit_blockTag              = g:DoxygenToolkit_commandTag . "name     "
+"let g:DoxygenToolkit_classTag              = g:DoxygenToolkit_commandTag . "class    "
 "let g:DoxygenToolkit_cinoptions            = "c1C1"
-let g:DoxygenToolkit_startCommentTag       = "/****************************************************************//*!"
+"let g:DoxygenToolkit_startCommentTag       = "/****************************************************************//*!"
 
-let g:DoxygenToolkit_startCommentBlock     = "/*! "
+"let g:DoxygenToolkit_startCommentBlock     = "/*! "
 "let g:DoxygenToolkit_interCommentTag       = "* "
-let g:DoxygenToolkit_endCommentTag         = "********************************************************************/"
+"let g:DoxygenToolkit_endCommentTag         = "********************************************************************/"
 "let g:DoxygenToolkit_endCommentBlock       = " */"
-let g:DoxygenToolkit_descriptionTag        = "Beschreibung"
-let g:DoxygenToolkit_attentionTag          = g:DoxygenToolkit_commandTag . "attention "
-let g:DoxygenToolkit_saTag                 = g:DoxygenToolkit_commandTag . "sa        "
+"let g:DoxygenToolkit_descriptionTag        = "Beschreibung"
+"let g:DoxygenToolkit_attentionTag          = g:DoxygenToolkit_commandTag . "attention "
+"let g:DoxygenToolkit_saTag                 = g:DoxygenToolkit_commandTag . "sa        "
 
 "let g:DoxygenToolkit_ignoreForReturn       = "inline static virtual void"
 
@@ -255,23 +239,78 @@ let g:DoxygenToolkit_saTag                 = g:DoxygenToolkit_commandTag . "sa  
 "let g:DoxygenToolkit_briefTag_funcName     = "no"
 
 " Add description to DoxAuthor if you want
-let g:DoxygenToolkit_author_description = "yes"
+"let g:DoxygenToolkit_author_description = "yes"
 
 " Add description to Dox if you want
-let g:DoxygenToolkit_dox_description = "yes"
+"let g:DoxygenToolkit_dox_description = "yes"
 
 " Add attention to Dox if you want
-let g:DoxygenToolkit_dox_attention = "yes"
+"let g:DoxygenToolkit_dox_attention = "yes"
 
 " Add sa to Dox if you want
-let g:DoxygenToolkit_dox_sa = "yes"
+"let g:DoxygenToolkit_dox_sa = "yes"
 
-" -----------
-" VCS Command
-" -----------
-let g:VCSCommandMenuRoot = '&VCS'
+" ---------
+" T-Comment
+" ---------
+let g:tcommentOptions = {'col': 1, 'whitespace': 'no'}
+
+" ---------
+" VC plugin
+" ---------
+let g:vc_log_name = '~/vc.log'
 
 " ----
 " gitv
 " ----
 let g:Gitv_OpenHorizontal = 1
+
+" -------------------
+" DEIN plugin manager
+" -------------------
+" Required:
+"call dein#begin(expand(g:vimsuite . '/plugins/'))
+
+" Let dein manage dein
+" Required:
+"call dein#add('Shougo/dein.vim')
+
+" Add or remove your plugins here:
+"call dein#add('cgdb/cgdb')
+"call dein#add('will133/vim-dirdiff')
+"call dein#add('vim-scripts/DoxygenToolkit.vim')
+"call dein#add('tpope/vim-fugitive')
+"call dein#add('skibyte/gdb-from-vim', {'rev': 'develop'})
+"call dein#add('gregsexton/gitv')
+"call dein#add('sjl/gundo.vim')
+"call dein#add('AndrewRadev/linediff.vim')
+"call dein#add('idanarye/vim-merginal')
+"call dein#add('lyuts/vim-rtags')
+"call dein#add('vim-scripts/SrchRplcHiGrp.vim')
+"call dein#add('majutsushi/tagbar')
+"call dein#add('tomtom/tcomment_vim')
+"call dein#add('juneedahamed/vc.vim')
+"call dein#add('jreybert/vimagit')
+"call dein#add('vim-scripts/VisIncr')
+"call dein#add('othree/xml.vim')
+
+" You can specify revision/branch/tag.
+"call dein#add('Shougo/vimshell', { 'rev': '3787e5' })
+
+" Required:
+"call dein#end()
+
+" Required:
+filetype plugin indent on
+
+" If you want to install not installed plugins on startup.
+"if dein#check_install()
+"  call dein#install()
+"endif
+
+if exists('g:debug')
+    if (g:debug > 0)
+        echo 'loaded vimrc'
+    endif
+endif
+

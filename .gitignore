@@ -1,3 +1,6 @@
+.git
 *.pyc
 .netrwhist
 .VimballRecord
+myspell.add
+myspell.add.spl

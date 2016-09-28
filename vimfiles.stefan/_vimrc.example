@@ -1,4 +1,3 @@
-set nocompatible
 " Verzeichnis, die dem die vimfiles-Verzeichnisse liegen:
 let g:vimsuite = expand($VIM . '/vimsuite')
 "let g:vimsuite = expand($VIM . '/vimfiles.current')
@@ -7,8 +6,10 @@ let g:vimsuite = expand($VIM . '/vimsuite')
 let g:vimfiles = expand(g:vimsuite . '/vimfiles.stefan')
 
 " Einstellungen laden
+let g:WAs = ['~/daten/Programmieren/**']
 execute 'source ' . expand(g:vimfiles . '/vimrc')
 
 " Falls weitere Einstellungen geladen werden sollen, so kann dies hier
 " geschehen
 " source ...
+"colorscheme Stefan

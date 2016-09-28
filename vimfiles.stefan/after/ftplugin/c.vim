@@ -21,9 +21,7 @@ setlocal expandtab
 " setlocal autoindent
 " setlocal smartindent
 setlocal cindent
-setlocal cinoptions=*200,)100,(s,w1,W4
 let &l:shiftwidth = s:tabwidth
-"setlocal formatoptions=croqwl
 
 if (g:os == 'linux')
     setlocal tags+=/usr/include/tags
@@ -31,7 +29,7 @@ if (g:os == 'linux')
     setlocal tags+=/usr/src/include/linux/tags
 
     " filesearching
-    setlocal path=.,/usr/include/**
+"    setlocal path=.,/usr/include/**
 endif
 setlocal suffixesadd=.h
 
@@ -102,3 +100,8 @@ function! ReformatCSpaces()
 "    call AddSpaceAroundOperator('>=')
     call AddSpaceAfter('if')
 endfunction
+
+" use tt for rtags
+map <buffer> tt <Bslash>rj
+map <buffer> <C-T> <C-O>
+

@@ -7,6 +7,7 @@ setlocal shiftwidth=4
 setlocal formatoptions=croq
 
 setlocal tags+=/usr/lib/python/tags
+nnoremap <TAB> :YcmCompleter GoTo<CR>
 " commenting
 let b:commentstring = '#'
 

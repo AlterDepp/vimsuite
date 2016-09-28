@@ -1,8 +1,7 @@
 " ===========================================================================
-"        File: tools.vim
+"        File: vimsuite.vim
 "      Author: Stefan Liebl (S.Liebl@gmx.de)
 " Description: some usefull tools
-" Revision:    $LastChangedRevision: 60 $
 " ===========================================================================
 
 " ----------------
@@ -26,11 +25,6 @@ let g:projectsFile = fnamemodify($VIMRUNTIME . '/../projects.txt', ':p')
 " SetProject
 " ----------
 command -complete=customlist,GetAllProjectFiles -nargs=? SetProject call s:SetProject('<args>')
-" only for backward compatibility
-command -nargs=? SetBmskProject
-            \ execute 'source ' . g:vimfiles . '/tools/bmsk.vim'
-            \ | SetBmskProject <args>
-
 "function GetAllProjectFiles(ArgLead, CmdLine, CursorPos)
 function GetAllProjectFiles(...)
     let makefilePaths = []
@@ -333,11 +327,7 @@ endfunction
 " -------
 " Session
 " -------
-if (v:version > 602)
-    command -complete=custom,GetAllSessions -nargs=? SessionLoad call s:SessionLoad('<args>')
-else
-    command -nargs=? SessionLoad call s:SessionLoad('<args>')
-endif
+command -complete=custom,GetAllSessions -nargs=? SessionLoad call s:SessionLoad('<args>')
 function s:SessionLoad(SessionFile)
     if ((a:SessionFile == '') && has('browse'))
         " Browse for session-file
@@ -345,7 +335,7 @@ function s:SessionLoad(SessionFile)
             let l:browsefilter = b:browsefilter
         endif
         let b:browsefilter = "Vim Sessions (*.vim)\t*.vim\nAll Files (*.*)\t*.*"
-        let SessionFile = browse(0, 'Select Session', $VIMRUNTIME . '/..', '')
+        let SessionFile = browse(0, 'Select Session', '.', '')
         if exists('l:browsefilter')
             let b:browsefilter = l:browsefilter
         endif
@@ -353,11 +343,27 @@ function s:SessionLoad(SessionFile)
         let SessionFile = a:SessionFile
     endif
     if filereadable(SessionFile)
-        execute('source ' . SessionFile)
+        let g:sessionfile = SessionFile
+        " load session
+        execute('source ' . g:sessionfile)
+        " set autocmd to save session on exit
+        autocmd VimLeavePre * execute 'mksession!' g:sessionfile
+        " reset search path to session folder
+        set path+=./**
     else
         echo 'No such File:' SessionFile
     endif
 endfunction
+
+" Load .session.vim, if available in current directory and save on exit
+if argc() == 0 " skip, if command-line-parameters were given
+    if !exists('g:sessionfile') && filereadable('.session.vim')
+        let g:sessionfile = '.session.vim'
+    endif
+    if exists('g:sessionfile') && filereadable(g:sessionfile)
+        call s:SessionLoad(g:sessionfile)
+    endif
+endif
 
 command -nargs=? SessionSave call s:SessionSave('<args>')
 command -nargs=? Exit SessionSave <args>|exit
@@ -369,7 +375,7 @@ function s:SessionSave(SessionName)
                 let l:browsefilter = b:browsefilter
             endif
             let b:browsefilter = "Vim Sessions (*.vim)\t*.vim\nAll Files (*.*)\t*.*"
-            let SessionName = browse(1, 'Select Session File', $VIMRUNTIME . '/..', 'Session.vim')
+            let SessionName = browse(1, 'Select Session File', '.', '.session.vim')
             if exists('l:browsefilter')
                 let b:browsefilter = l:browsefilter
             endif
@@ -408,7 +414,40 @@ endfunction
 
 function s:RedrawSessionMenu()
     call s:DelSessions()
-"    call s:AddAllKnownSessionsToMenu()
+    call s:AddAllKnownSessionsToMenu()
+endfunction
+
+function s:AddAllKnownSessionsToMenu()
+    " set path from g:WAs
+    if exists('g:WAs')
+        for wa in g:WAs
+    "        echom 'wa:' . wa . ':'
+            execute 'set path+=' . wa
+        endfor
+    endif
+
+    " search all session files in path
+    if !exists('g:SessionFileNames')
+        let g:SessionFileNames = [
+                    \ '.session.vim',
+                    \ 'Session.vim',
+                    \]
+    endif
+"    echom 'SessionFileNames:' . join(g:SessionFileNames, ', ') . ':'
+    let sessionfiles_wa = []
+    for SessionFileName in g:SessionFileNames
+        let sessionfiles_wa += findfile('.session.vim', &path, -1)
+"        echom 'sessions:' . join(sessionfiles_wa, ', ') . ':'
+    endfor
+
+    " Add sessions to Gvim menu
+    for sessionfile in sessionfiles_wa
+        let cmd = 'anoremenu '.s:VimSuiteMenuLocation.'.40 '.s:VimSuiteMenuName.
+                    \'Session.Load\ '. escape(sessionfile, '.') . '<tab>:SessionLoad'.
+                    \'   :SessionLoad ' . sessionfile . '<CR>'
+"        echom 'Command:' . cmd . ':'
+        exec cmd
+    endfor
 endfunction
 
 function s:RedrawMenu()
@@ -696,15 +735,6 @@ function ConvertUTF8()
     silent! %s/&#226;&#130;&#172;/€/ " €
 endfunction
 
-" insert history comment
-command HistoryComment call HistComment()
-function HistComment()
-    let l:date = GetDate()
-    execute 'normal O' . l:date . ' IST_LIEBL'
-    execute 'normal o'
-    execute 'normal k$'
-endfunction
-
 " find all non-extern functions in h-files
 function FindDeclaration()
     let bmsk_sw = g:bmsk_sw
@@ -780,30 +810,6 @@ function IndentWordNum(wordNum, pos)
     endif
     " restore cursor position
     call cursor(cursorLine, cursorCol)
-endfunction
-
-" ----------------
-" Comment In / Out
-" ----------------
-nnoremap <C-K> :call CommentInOut(b:commentstring)<CR>j
-command CommentInOut call CommentInOut(b:commentstring)
-function CommentInOut(commentstring)
-	let leadingWhitespace = '^\s\*'
-	let noLeadingWhitespace = '^'
-    let ignoreCase = '\c'
-	let CommentedString = ignoreCase . noLeadingWhitespace . a:commentstring
-	let line = GetLine()
-	let line_nr = line('.')
-	let found = match(line, CommentedString)
-	"echo l:found
-	if (found == -1)
-		"echo 'nicht gefunden'
-		let line = substitute(line, '^', a:commentstring, '')
-	else
-		"echo 'gefunden'
-		let line = substitute(line, a:commentstring, '', '')
-	endif
-	call setline(line_nr, line)
 endfunction
 
 " mark lines longer as textwidth
@@ -893,7 +899,7 @@ endfunction
 " ------------
 " diff options
 " ------------
-set diffopt=filler
+set diffopt=filler,vertical
 
 
 " turn diff off
@@ -967,12 +973,6 @@ endfunction
 "iabbreviate li !IST_LIEBL: */<Left><Left><Left>
 
 
-" ------
-" python
-" ------
-command Batch echo system(expand('%:p:r.bat'))
-command -nargs=* Python execute(':wa | cd ' . GetBmskDir()) | echo system(g:python . ' ' . expand('%:p') . ' <args>')
-
 " ---------
 " templates
 " ---------
@@ -1006,5 +1006,11 @@ function s:OutlookBugfix()
     silent execute ':%s$^\(\%([^,]*,\)\{55}\)"\/o[^,]*\"\(,"EX","[^(]*(\)\([^)]*\)\()",\)$\1"\3"\2\3\4$c'
     silent execute ':%s$^\(\%([^,]*,\)\{47}\)"\/o[^,]*\"\(,"EX","[^(]*(\)\([^)]*\)\()",\)$\1"\3"\2\3\4$c'
 endfunction
+
+" ---------
+" VC plugin
+" ---------
+let g:vc_ignore_repos="-git"
+let g:vc_browse_cach_all = 1
 
 EchoDebug 'loaded tools.vim'
