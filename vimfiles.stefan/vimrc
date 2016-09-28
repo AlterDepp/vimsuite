@@ -282,8 +282,7 @@ packadd DoxygenToolkit
 packadd fugitive
 "call dein#add('skibyte/gdb-from-vim', {'rev': 'develop'})
 packadd gitv
-"call dein#add('gregsexton/gitv')
-"call dein#add('sjl/gundo.vim')
+packadd gundo
 "call dein#add('AndrewRadev/linediff.vim')
 "call dein#add('idanarye/vim-merginal')
 "call dein#add('lyuts/vim-rtags')
