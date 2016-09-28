@@ -26,3 +26,7 @@
 	path = pack/merginal/opt/merginal
 	url = https://github.com/idanarye/vim-merginal
 	ignore = untracked
+[submodule "pack/rtags/opt/rtags"]
+	path = pack/rtags/opt/rtags
+	url = https://github.com/lyuts/vim-rtags
+	ignore = untracked
