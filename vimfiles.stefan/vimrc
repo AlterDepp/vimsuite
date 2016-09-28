@@ -290,7 +290,7 @@ packadd SrchRplcHiGrp
 packadd tagbar
 packadd tcomment
 packadd vc
-"call dein#add('jreybert/vimagit')
+packadd vimagit
 "call dein#add('vim-scripts/VisIncr')
 "call dein#add('othree/xml.vim')
 

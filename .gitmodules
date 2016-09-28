@@ -46,3 +46,7 @@
 	path = pack/vc/opt/vc
 	url = https://github.com/juneedahamed/vc.vim
 	ignore = untracked
+[submodule "pack/vimagit/opt/vimagit"]
+	path = pack/vimagit/opt/vimagit
+	url = https://github.com/jreybert/vimagit
+	ignore = untracked
