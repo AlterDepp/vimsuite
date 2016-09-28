@@ -2,3 +2,7 @@
 	path = pack/dirdiff/opt/dirdiff
 	url = https://github.com/will133/vim-dirdiff
 	ignore = untracked
+[submodule "pack/DoxygenToolkit/opt/DoxygenToolkit"]
+	path = pack/DoxygenToolkit/opt/DoxygenToolkit
+	url = https://github.com/vim-scripts/DoxygenToolkit.vim
+	ignore = untracked
