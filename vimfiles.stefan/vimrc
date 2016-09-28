@@ -288,7 +288,7 @@ packadd merginal
 packadd rtags
 packadd SrchRplcHiGrp
 packadd tagbar
-"call dein#add('tomtom/tcomment_vim')
+packadd tcomment
 "call dein#add('juneedahamed/vc.vim')
 "call dein#add('jreybert/vimagit')
 "call dein#add('vim-scripts/VisIncr')

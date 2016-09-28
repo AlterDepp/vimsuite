@@ -38,3 +38,7 @@
 	path = pack/tagbar/opt/tagbar
 	url = https://github.com/majutsushi/tagbar
 	ignore = untracked
+[submodule "pack/tcomment/opt/tcomment"]
+	path = pack/tcomment/opt/tcomment
+	url = https://github.com/tomtom/tcomment_vim
+	ignore = untracked
