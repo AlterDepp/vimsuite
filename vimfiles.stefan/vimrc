@@ -281,6 +281,7 @@ packadd dirdiff
 packadd DoxygenToolkit
 packadd fugitive
 "call dein#add('skibyte/gdb-from-vim', {'rev': 'develop'})
+packadd gitv
 "call dein#add('gregsexton/gitv')
 "call dein#add('sjl/gundo.vim')
 "call dein#add('AndrewRadev/linediff.vim')
