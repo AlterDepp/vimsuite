@@ -50,3 +50,7 @@
 	path = pack/vimagit/opt/vimagit
 	url = https://github.com/jreybert/vimagit
 	ignore = untracked
+[submodule "pack/VisIncr/opt/VisIncr"]
+	path = pack/VisIncr/opt/VisIncr
+	url = https://github.com/vim-scripts/VisIncr
+	ignore = untracked

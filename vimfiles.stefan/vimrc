@@ -291,7 +291,7 @@ packadd tagbar
 packadd tcomment
 packadd vc
 packadd vimagit
-"call dein#add('vim-scripts/VisIncr')
+packadd VisIncr
 "call dein#add('othree/xml.vim')
 
 " You can specify revision/branch/tag.
