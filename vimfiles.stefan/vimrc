@@ -292,7 +292,7 @@ packadd tcomment
 packadd vc
 packadd vimagit
 packadd VisIncr
-"call dein#add('othree/xml.vim')
+packadd xml
 
 " You can specify revision/branch/tag.
 "call dein#add('Shougo/vimshell', { 'rev': '3787e5' })

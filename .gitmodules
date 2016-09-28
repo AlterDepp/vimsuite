@@ -54,3 +54,7 @@
 	path = pack/VisIncr/opt/VisIncr
 	url = https://github.com/vim-scripts/VisIncr
 	ignore = untracked
+[submodule "pack/xml/opt/xml"]
+	path = pack/xml/opt/xml
+	url = https://github.com/othree/xml.vim
+	ignore = untracked
