@@ -42,3 +42,7 @@
 	path = pack/tcomment/opt/tcomment
 	url = https://github.com/tomtom/tcomment_vim
 	ignore = untracked
+[submodule "pack/vc/opt/vc"]
+	path = pack/vc/opt/vc
+	url = https://github.com/juneedahamed/vc.vim
+	ignore = untracked
