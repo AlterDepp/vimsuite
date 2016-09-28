@@ -6,3 +6,7 @@
 	path = pack/DoxygenToolkit/opt/DoxygenToolkit
 	url = https://github.com/vim-scripts/DoxygenToolkit.vim
 	ignore = untracked
+[submodule "pack/fugitive/opt/fugitive"]
+	path = pack/fugitive/opt/fugitive
+	url = https://github.com/tpope/vim-fugitive
+	ignore = untracked

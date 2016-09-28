@@ -279,7 +279,7 @@ let g:Gitv_OpenHorizontal = 1
 "call dein#add('cgdb/cgdb')
 packadd dirdiff
 packadd DoxygenToolkit
-"call dein#add('tpope/vim-fugitive')
+packadd fugitive
 "call dein#add('skibyte/gdb-from-vim', {'rev': 'develop'})
 "call dein#add('gregsexton/gitv')
 "call dein#add('sjl/gundo.vim')
