@@ -286,7 +286,7 @@ packadd gundo
 packadd linediff
 packadd merginal
 packadd rtags
-"call dein#add('vim-scripts/SrchRplcHiGrp.vim')
+packadd SrchRplcHiGrp
 "call dein#add('majutsushi/tagbar')
 "call dein#add('tomtom/tcomment_vim')
 "call dein#add('juneedahamed/vc.vim')

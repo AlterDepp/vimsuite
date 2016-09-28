@@ -30,3 +30,7 @@
 	path = pack/rtags/opt/rtags
 	url = https://github.com/lyuts/vim-rtags
 	ignore = untracked
+[submodule "pack/SrchRplcHiGrp/opt/SrchRplcHiGrp"]
+	path = pack/SrchRplcHiGrp/opt/SrchRplcHiGrp
+	url = https://github.com/vim-scripts/SrchRplcHiGrp.vim
+	ignore = untracked
