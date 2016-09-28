@@ -18,3 +18,7 @@
 	path = pack/gundo/opt/gundo
 	url = https://github.com/sjl/gundo.vim
 	ignore = untracked
+[submodule "pack/linediff/opt/linediff"]
+	path = pack/linediff/opt/linediff
+	url = https://github.com/AndrewRadev/linediff.vim
+	ignore = untracked
