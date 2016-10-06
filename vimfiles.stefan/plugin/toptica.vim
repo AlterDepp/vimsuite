@@ -14,6 +14,7 @@ function s:ProjectDlcproSet()
     let g:GdbHost = 'dlcpro_stefan'
     let g:GdbPort = '2345'
     let s:GdbSlave = '~/tools/gdb-slave.sh'
+    let g:GdbPath = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
     set spell spelllang=en,de
     set expandtab
     set cinoptions=:2,=2,l1,g2,h2,N-2,t0,+0,(0,w1,Ws,m1,)100,*100
@@ -42,13 +43,6 @@ function s:ProjectDlcproSet()
                 \'~/dlcpro/firmware/.ycm_extra_conf.py',
                 \'!~/tools/vimsuite/vimfiles.YouCompleteMe/*',
                 \]
-
-    " GdbFromVim plugin
-    let g:gdb_from_vim_log = 1
-    let g:gdb_from_vim_path = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
-
-    " DlcPro configuration
-    let g:gdb_slave_script = '~/tools/gdb-slave.sh'
 
 endfunction
  
@@ -94,11 +88,14 @@ endfunction
 function DlcProDebug(program)
     DlcProFirmwareDebug
     let g:pyclewn_terminal = 'konsole, -e'
+    let g:pyclewn_args = '--pgm='.g:GdbPath
     Pyclewn gdb
     Cmapkeys
     sleep 1
     execute 'Ctarget remote ' g:GdbHost.':'.g:GdbPort
     sleep 1
     execute 'Cfile ' g:Program
+"    sleep 1
+"    execute 'C set sysroot '.s:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
 "    Ccontinue
 endfunction

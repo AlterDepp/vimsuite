@@ -49,8 +49,7 @@ function s:init(debugger)
         let s:args .= " --level=info"
     endif
 
-    " Liebl: add --pgm
-    let l:fixed_args = "--editor= --netbeans=" . s:connection . " --pgm=/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb " . " --cargs="
+    let l:fixed_args = "--editor= --netbeans=" . s:connection . " --cargs="
     if s:terminal != ""
         let s:fixed = l:fixed_args
     else
