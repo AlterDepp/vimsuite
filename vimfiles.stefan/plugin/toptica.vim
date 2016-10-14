@@ -1,16 +1,24 @@
-command DlcPro call s:ProjectDlcproSet()
-function s:ProjectDlcproSet()
+command DlcPro call s:ProjectDlcproSet('device-control')
+command DlcProShg call s:ProjectDlcproSet('shg')
+function s:ProjectDlcproSet(project_type)
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware']
     let s:makeopts = ['-j4']
-    let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
+    if (a:project_type == 'device-control')
+        let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
+        let s:Program = '/device-control/device-control'
+        set wildignore+=**/shg-firmware/**
+    else
+        let s:ProjectBaseDir = '/home/liebl/dlcpro/shg-firmware'
+        let s:Program = '/device-control/device-control-shg'
+        set wildignore+=**/firmware/**
+    endif
     let s:ProjectSrcDir = s:ProjectBaseDir.'/src'
-    let s:ProjectBuildDir = s:ProjectBaseDir.'/build'
-    let g:Program = s:ProjectBuildDir.'/device-control/device-control'
+    let g:ProjectBuildDir = s:ProjectBaseDir.'/build'
+    let g:Program = g:ProjectBuildDir.s:Program
     execute 'cd '.s:ProjectSrcDir
     execute 'set path-=./**'
     execute 'set path+=' .  s:ProjectBaseDir.'/**'
-    set wildignore+=**/shg-firmware/**
     let g:GdbHost = 'dlcpro_stefan'
     let g:GdbPort = '2345'
     let s:GdbSlave = '~/tools/gdb-slave.sh'
@@ -31,7 +39,7 @@ function s:ProjectDlcproSet()
 
     " vim-clang
 "    let g:clang_cpp_options = '-std=c++11'
-"    let g:clang_compilation_database = s:ProjectBuildDir
+"    let g:clang_compilation_database = g:ProjectBuildDir
 
     " YouCompleteMe plugin
     "set completeopt-=preview
@@ -67,7 +75,7 @@ function s:Make(args)
     echo a:args
     copen
     let g:asyncrun_exit = 'call MakeOnFinished()'
-    execute 'AsyncRun make --directory=../build ' . s:GetMakeOptions(a:args)
+    execute 'AsyncRun make --directory='.g:ProjectBuildDir.' '.s:GetMakeOptions(a:args)
 "    try
 "        clist
 "    catch /E42/ " list is empty
@@ -88,7 +96,7 @@ function DlcProDebugGfV(program)
     execute 'GdbFromVimRemote ' g:GdbHost ':' g:GdbPort
     execute 'GdbFromVimSymbolFile ' g:Program
     " GdbFromVimContinue
-"    execute 'D set sysroot '.s:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
+"    execute 'D set sysroot '.g:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
 endfunction
 
 function DlcProDebug(program)
@@ -102,6 +110,6 @@ function DlcProDebug(program)
     sleep 1
     execute 'Cfile ' g:Program
 "    sleep 1
-"    execute 'C set sysroot '.s:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
+"    execute 'C set sysroot '.g:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
 "    Ccontinue
 endfunction
