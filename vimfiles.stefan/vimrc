@@ -295,6 +295,7 @@ let g:Gitv_OpenHorizontal = 1
 " packages / plugins
 " ------------------
 packadd asyncrun
+"packadd diffchar
 packadd dirdiff
 packadd DoxygenToolkit
 packadd fugitive
