@@ -65,9 +65,12 @@
 [submodule "pack/asyncrun/opt/asyncrun"]
 	path = pack/asyncrun/opt/asyncrun
 	url = https://github.com/skywind3000/asyncrun.vim.git
+	ignore = untracked
 [submodule "pack/sessionman/opt/sessionman"]
 	path = pack/sessionman/opt/sessionman
 	url = https://github.com/vim-scripts/sessionman.vim.git
+	ignore = untracked
 [submodule "pack/diffchar/opt/diffchar"]
 	path = pack/diffchar/opt/diffchar
 	url = https://github.com/rickhowe/diffchar.vim.git
+	ignore = untracked
