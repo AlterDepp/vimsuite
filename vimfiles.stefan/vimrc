@@ -114,12 +114,33 @@ set listchars+=precedes:°
 " special characters for keywords
 " set iskeyword+=
 
-" horizontal scrollbar in diff-mode
+" ------------
+" diff options
+" ------------
 if &diff
     set guioptions+=b
+    " turn off csv ftplugin in diff mode
+    au! filetypedetect * *.csv,*.dat,*.tsv,*.tab
 endif
+
+" horizontal scrollbar in diff-mode
+set diffopt=filler,vertical
 " don't switch on DiffChar by default
 let g:DiffExpr = ''
+
+" turn diff off
+command DiffClose call DiffClose()
+function DiffClose()
+    diffoff!
+    :quit
+endfunction
+
+" options for DirDiff
+let g:DirDiffCommand = expand($VIMRUNTIME . '/diff')
+let g:DirDiffExcludes = '*.log,*.pyc,.svn,.git*,.asc,_ccmwaid.inf,.static_wa,out,Build,build,tags,cscope.out'
+"let g:DirDiffDynamicDiffText = 1
+
+
 
 " ------
 " Moving
@@ -250,6 +271,11 @@ let g:DoxygenToolkit_authorName            = "Stefan Liebl"
 " Add sa to Dox if you want
 "let g:DoxygenToolkit_dox_sa = "yes"
 
+" -----
+" netrw
+" -----
+"let g:netrw_keepdir = 0
+
 " ---------
 " T-Comment
 " ---------
@@ -279,6 +305,7 @@ packadd linediff
 packadd merginal
 packadd pyclewn
 packadd rtags
+packadd sessionman
 packadd SrchRplcHiGrp
 packadd tagbar
 packadd tcomment

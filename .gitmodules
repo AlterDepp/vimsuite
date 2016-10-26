@@ -65,3 +65,6 @@
 [submodule "pack/asyncrun/opt/asyncrun"]
 	path = pack/asyncrun/opt/asyncrun
 	url = https://github.com/skywind3000/asyncrun.vim.git
+[submodule "pack/sessionman/opt/sessionman"]
+	path = pack/sessionman/opt/sessionman
+	url = https://github.com/vim-scripts/sessionman.vim.git
