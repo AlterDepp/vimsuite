@@ -62,3 +62,6 @@
 	path = pack/YouCompleteMe/opt/YouCompleteMe
 	url = https://github.com/Valloric/YouCompleteMe
 	ignore = untracked
+[submodule "pack/asyncrun/opt/asyncrun"]
+	path = pack/asyncrun/opt/asyncrun
+	url = https://github.com/skywind3000/asyncrun.vim.git

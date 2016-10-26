@@ -58,15 +58,21 @@ function GetAllMakeCompletions(ArgLead, CmdLine, CursorPos)
     return join(s:makegoals + s:makeopts + glob(a:ArgLead.'*', 1, 1), "\n")
 endfunction
 
+function MakeOnFinished()
+    echo "make exit code: " . g:asyncrun_code
+endfunction
+
 function s:Make(args)
+    wa
     echo a:args
-    execute 'cd '.s:ProjectBuildDir.' | make ' . s:GetMakeOptions(a:args) . ' | cd -'
-    execute 'cd '.s:ProjectSrcDir
-    try
-        clist
-    catch /E42/ " list is empty
-        echo 'no output'
-    endtry
+    copen
+    let g:asyncrun_exit = 'call MakeOnFinished()'
+    execute 'AsyncRun make --directory=../build ' . s:GetMakeOptions(a:args)
+"    try
+"        clist
+"    catch /E42/ " list is empty
+"        echo 'no output'
+"    endtry
 endfunction
 
 function CopyFirmware(command)
