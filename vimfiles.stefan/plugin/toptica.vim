@@ -57,30 +57,18 @@ endfunction
 " ====
 " Make
 " ====
-function s:GetMakeOptions(args)
-    let makeopts =  a:args
-    return makeopts
-endfunction
-
 function GetAllMakeCompletions(ArgLead, CmdLine, CursorPos)
     return join(s:makegoals + s:makeopts + glob(a:ArgLead.'*', 1, 1), "\n")
 endfunction
 
-function MakeOnFinished()
-    echo "make exit code: " . g:asyncrun_code
-endfunction
-
 function s:Make(args)
     wa
-    echo a:args
-    copen
-    let g:asyncrun_exit = 'call MakeOnFinished()'
-    execute 'AsyncRun make --directory='.g:ProjectBuildDir.' '.s:GetMakeOptions(a:args)
-"    try
-"        clist
-"    catch /E42/ " list is empty
-"        echo 'no output'
-"    endtry
+    let g:asyncrun_quickfix = 12
+    augroup QuickfixStatus
+        au! BufWinEnter quickfix setlocal 
+                    \ statusline=%t\ [%{g:asyncrun_status}]\ %{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ %P
+    augroup END
+    execute 'AsyncRun -save=1 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
 endfunction
 
 function CopyFirmware(command)
