@@ -1,9 +1,7 @@
 command DlcPro call s:ProjectDlcproSet('device-control')
 command DlcProShg call s:ProjectDlcproSet('shg')
 function s:ProjectDlcproSet(project_type)
-    compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware']
-    let s:makeopts = ['-j4']
+    " directories
     if (a:project_type == 'device-control')
         let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
         let s:Program = '/device-control/device-control'
@@ -15,23 +13,39 @@ function s:ProjectDlcproSet(project_type)
     endif
     let s:ProjectSrcDir = s:ProjectBaseDir.'/src'
     let g:ProjectBuildDir = s:ProjectBaseDir.'/build'
-    let g:Program = g:ProjectBuildDir.s:Program
+
+    " vim path
     execute 'cd '.s:ProjectSrcDir
     execute 'set path-=./**'
     execute 'set path+=' .  s:ProjectBaseDir.'/**'
-    let g:GdbHost = 'dlcpro_stefan'
-    let g:GdbPort = '2345'
-    let s:GdbSlave = '~/tools/gdb-slave.sh'
-    let g:GdbPath = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
+
+    " editor settings
     set spell spelllang=en,de
     set expandtab
     set cinoptions=:2,=2,l1,g2,h2,N-2,t0,+0,(0,w1,Ws,m1,)100,*100
 
+    " compiler
+    compiler gcc
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation']
+    let s:makeopts = ['-j4']
+    let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>')
-    command! DlcProFirmwareUpdate call CopyFirmware('update')
-    command! DlcProFirmwareDebug call CopyFirmware('debug')
-    command! DlcProFirmwareStart call CopyFirmware('start')
-    command! DlcProDebug call DlcProDebug(g:Program)
+
+    " configure quickfix window for asyncrun
+    augroup QuickfixStatus
+        autocmd BufWinEnter quickfix setlocal 
+                    \ statusline=%t\ [%{g:asyncrun_status}]\ %{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ %P
+    augroup END
+
+    " debugger
+    let g:GdbHost = 'dlcpro_stefan'
+    let g:GdbPort = '2345'
+    let s:GdbSlave = '~/tools/gdb-slave.sh'
+    let g:GdbPath = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
+    command! DlcProFirmwareUpdate call s:CopyFirmware('update')
+    command! DlcProFirmwareDebug call s:CopyFirmware('debug')
+    command! DlcProFirmwareStart call s:CopyFirmware('start')
+    command! DlcProDebug call s:DlcProDebug(g:Program)
 
     " vc-plugin
     let g:vc_branch_url = ['https://svn.toptica.com/svn/DiSiRa/SW/firmware/branches']
@@ -51,7 +65,6 @@ function s:ProjectDlcproSet(project_type)
                 \'~/dlcpro/firmware/.ycm_extra_conf.py',
                 \'!~/tools/vimsuite/vimfiles.YouCompleteMe/*',
                 \]
-
 endfunction
  
 " ====
@@ -63,15 +76,11 @@ endfunction
 
 function s:Make(args)
     wa
-    let g:asyncrun_quickfix = 12
-    augroup QuickfixStatus
-        au! BufWinEnter quickfix setlocal 
-                    \ statusline=%t\ [%{g:asyncrun_status}]\ %{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ %P
-    augroup END
+    call asyncrun#quickfix_toggle(10, 1)
     execute 'AsyncRun -save=1 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
 endfunction
 
-function CopyFirmware(command)
+function s:CopyFirmware(command)
     let command = 'bash '.s:GdbSlave.' -h '.g:GdbHost.' '.a:command
     if a:command == 'update'
         let command .= ' '.g:Program
@@ -87,7 +96,7 @@ function DlcProDebugGfV(program)
 "    execute 'D set sysroot '.g:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
 endfunction
 
-function DlcProDebug(program)
+function s:DlcProDebug(program)
     DlcProFirmwareDebug
     let g:pyclewn_terminal = 'konsole, -e'
     let g:pyclewn_args = '--pgm='.g:GdbPath
