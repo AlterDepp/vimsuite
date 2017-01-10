@@ -316,8 +316,6 @@ packadd! VisIncr
 packadd! xml
 packadd! YouCompleteMe
 
-let g:loaded_pyclewn = 1
-
 if exists('g:debug')
     if (g:debug > 0)
         echo 'loaded vimrc'

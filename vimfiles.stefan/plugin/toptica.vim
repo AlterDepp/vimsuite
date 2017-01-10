@@ -11,7 +11,8 @@ function s:ProjectDlcproSet(project_type)
         let s:Program = '/device-control/device-control-shg'
         set wildignore+=**/firmware/**
     endif
-    let s:ProjectSrcDir = s:ProjectBaseDir.'/src'
+    let g:ProjectSrcDirRel = 'src'
+    let s:ProjectSrcDir = s:ProjectBaseDir.'/'.g:ProjectSrcDirRel
     let g:ProjectBuildDir = s:ProjectBaseDir.'/build'
 
     " vim path
@@ -24,12 +25,18 @@ function s:ProjectDlcproSet(project_type)
     set expandtab
     set cinoptions=:2,=2,l1,g2,h2,N-2,t0,+0,(0,w1,Ws,m1,)100,*100
 
+    " python tags
+    execute "set tags+=" . s:ProjectBaseDir . '/tags'
+
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs']
     let s:makeopts = ['-j4']
     let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>')
+
+    " cmake
+    command! -nargs=? Cmake call s:Cmake('<args>')
 
     " configure quickfix window for asyncrun
     augroup QuickfixStatus
@@ -52,8 +59,7 @@ function s:ProjectDlcproSet(project_type)
     let g:vc_trunk_url = 'https://svn.toptica.com/svn/DiSiRa/SW/firmware/trunk'
 
     " vim-clang
-"    let g:clang_cpp_options = '-std=c++11'
-"    let g:clang_compilation_database = g:ProjectBuildDir
+    command! ClangFormat pyfile /usr/share/vim/addons/syntax/clang-format.py
 
     " YouCompleteMe plugin
     "set completeopt-=preview
@@ -78,6 +84,24 @@ function s:Make(args)
     wa
     call asyncrun#quickfix_toggle(10, 1)
     execute 'AsyncRun -save=1 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
+endfunction
+
+function s:Cmake(build_type)
+    if a:build_type == ''
+        let build_type = 'Debug'
+    else
+        let build_type = a:build_type
+    endif
+    call asyncrun#quickfix_toggle(10, 1)
+    let args = ""
+    let args .= " ../".g:ProjectSrcDirRel."/"
+    let args .= " --graphviz=dependencies.dot"
+    let args .= " -DBUILD_TARGET=target"
+    let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
+    let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
+    let args .= " -DCMAKE_BUILD_TYPE=".build_type
+    let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+    execute 'AsyncRun -save=1 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
 function s:CopyFirmware(command)
