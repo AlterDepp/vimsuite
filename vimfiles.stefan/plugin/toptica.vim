@@ -23,7 +23,8 @@ function s:ProjectDlcproSet(project_type)
     " editor settings
     set spell spelllang=en,de
     set expandtab
-    set cinoptions=:2,=2,l1,g2,h2,N-2,t0,+0,(0,w1,Ws,m1,)100,*100
+    set cinoptions=l1,g2,h2,N-2,t0,+0,(0,w1,Ws,m1,)100,*100
+    set textwidth=120
 
     " python tags
     execute "set tags+=" . s:ProjectBaseDir . '/tags'
@@ -59,7 +60,10 @@ function s:ProjectDlcproSet(project_type)
     let g:vc_trunk_url = 'https://svn.toptica.com/svn/DiSiRa/SW/firmware/trunk'
 
     " vim-clang
-    command! ClangFormat pyfile /usr/share/vim/addons/syntax/clang-format.py
+    command! ClangFormat call ClangFormat()
+    " hint: formatexpr=ClangFormat() is set in ft/c.vim
+"    map <C-I> :pyf /usr/share/vim/addons/syntax/clang-format.py<cr>
+"    imap <C-I> <c-o>:pyf /usr/share/vim/addons/syntax/clang-format.py<cr>
 
     " YouCompleteMe plugin
     "set completeopt-=preview
@@ -95,12 +99,13 @@ function s:Cmake(build_type)
     call asyncrun#quickfix_toggle(10, 1)
     let args = ""
     let args .= " ../".g:ProjectSrcDirRel."/"
-    let args .= " --graphviz=dependencies.dot"
+"    let args .= " --graphviz=dependencies.dot"
     let args .= " -DBUILD_TARGET=target"
     let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
     let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
     let args .= " -DCMAKE_BUILD_TYPE=".build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+"    let args .= " -DLICENSE_TOOL=1"
     execute 'AsyncRun -save=1 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
@@ -133,4 +138,15 @@ function s:DlcProDebug(program)
 "    sleep 1
 "    execute 'C set sysroot '.g:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
 "    Ccontinue
+endfunction
+
+function ClangFormat()
+    if (v:count > 0)
+        let startline = v:lnum
+        let endline = v:lnum + v:count
+        let l:lines = startline.':'.endline
+    else
+        let l:lines='all'
+    endif
+    pyf /usr/share/vim/addons/syntax/clang-format.py
 endfunction

@@ -33,6 +33,11 @@ if (g:os == 'linux')
 endif
 setlocal suffixesadd=.h
 
+" set clang-format for gq, if exists
+if exists('*ClangFormat()')
+    setlocal formatexpr=ClangFormat()
+endif
+
 " commenting
 " ----------
 let b:commentstring = "\/\/"

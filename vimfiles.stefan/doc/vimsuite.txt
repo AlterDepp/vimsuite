@@ -4,7 +4,7 @@
 |vimsuite.1|   Bestandteile
 |vimsuite.2|   Installation
 |vimsuite.3|   Einstellungen
-|vimsuite.4|   Projekte
+|vimsuite.4|   Plugins
 |vimsuite.5|   VimSuiteTools
 
 ==============================================================================
@@ -14,7 +14,6 @@ Die VimSuite besteht aus vimscripts von http://www.vim.org und eigenen
 Scripten von Stefan Liebl. Folgende wichtige Scripts sind enthalten:
 
 |VimSuiteTools|Tools zum Programmieren von Stefan Liebl
-|BMSK|         Makros zum Arbeiten mit BMS-K/BMS-KP Quellcode
 |LaTeX| Suite  Tools zum bearbeiten von LaTeX Quelltexten
 |crefvim|      Referenz zur Programmiersprache C (Anleitung in|crefvimdoc|)
 |visincr|      Inkrementieren von Nummern in Spalten
@@ -52,14 +51,10 @@ Einstellungen für die VimSuite können direkt im File _vimrc (bzw. ~/.vimrc)
 gemacht werden. Alternativ kann dort ein eigenes vimrc-File mit|source|geladen 
 werden.
 
-							     *g:WA* *Workarea*
-Die Variable g:WA sollte auf ein Verzeichnis zeigen, in dem die Projekte der 
-VimSuite liegen. Standard ist 'C:/wa'.
-
                                        *b:GrepFiles* *g:GrepFiles* *GrepFiles*
 Die Variable b:GrepFiles kann z.B. in einem|filetype-plugin|gesetzt werden.
 g:GrepFiles ist normalerweise *. Für C-Projekte kann die Variable z.B. >
-	let b:GrepFiles='*.c *.h'
+        let b:GrepFiles='*.c *.h'
 gesetzt werden.
 
                                              *b:GrepDir* *g:GrepDir* *GrepDir*
@@ -74,23 +69,15 @@ Diese Variable wird verwendet, um Code auszukommentieren. Sie sollte in einem
 |filetype-plugin|gesetzt werden.
 
 ==============================================================================
-*vimsuite.4* Projekte  *Projekt* *Project* *VimSuiteProjekt* *VimSuiteProject*
+*vimsuite.4* Plugins                                        *VimSuitePlugins*
 
-Ein Projekt bezieht sich nicht auf eine VIM-Session, sondern auf ein 
-Entwicklungsprojekt. Im Menü VimSuite->Project werden alle erkannten Projekte 
-aufgelistet. Das Projekt kann mit dem Menü oder folgendem Befehl geladen 
-werden:
+Alle Plugins sind als |packages| im Verzeichnis 'pack' installiert. Die 
+meisten sind als git-submodule integriert. Zum aktualisieren kann der Befehl
+>
+    git submodule update --remote --rebase
+    git commit
 
-								 *:SetProject*
-:SetProject [file] (Tab-Erweiterung funktioniert)        Laden eines Projekts.
-
-Ein Projekt sollte die Datei project.vim enthalten. Nach dieser Datei sucht 
-die VimSuite für die Auswahl von Projekten in allen Unterverzeichnissen von 
-|g:WA|.  Eine Beispiel für Projekte, die ihre eigene Konfiguration verändern 
-können ist in project_example.vim und settings_example.vim zu sehen. Die 
-zweite Datei wird über den Make-Befehl 'Make vim-config' erzeugt und von der 
-ersten geladen. Die Datei project.vim kann aber auch beliebig anders aussehen.  
-Sie wird lediglich bei|SetProject| geladen.
+verwendet werden.
 
 ==============================================================================
 *vimsuite.5* VimSuiteTools                                     *VimSuiteTools*
@@ -105,7 +92,7 @@ paar Programme, die auf diesem System üblicherweise nicht vorhanden sind:
   Anschließend können im Explorer zwei Verzeichnisse markiert und mit
  |DirDiff|verglichen werden.
 
-								*:SessionLoad*
+                                                                *:SessionLoad*
 :SessionLoad [Name]                      Laden der Session mit dem Namen Name.
 
 Ruft|:source|Name auf. Falls kein Name angegeben wird, öffnet sich ein 
@@ -138,19 +125,6 @@ Dieser Befehl funktioniert für die meisten Programmiersprachen. In C werden
 hauptsächlich alle Einrückungen korrigiert und alle Tabs zu Spaces 
 konvertiert. Der Befehl funktioniert aber auch einigermaßen für kgs-Files.
 Es kann auch eine|range|angebeben werden (auch|visual|).
-
-                                    *CommentInOut* *Comment* *CTRL-k* *CTRL-K*
-:CommentInOut                         Aus- bzw. Ein-Kommentieren von Quellcode
-
-Die Funktion wird üblicherweise über die Tastenkombination <CTRL-K> 
-aufgerufen. Falls der Code auf der aktuellen Zeile nicht auskommentiert wird, 
-so wird er auskommentiert. Falls er schon auskommentiert ist, so wird der 
-Kommentar entfernt. Anschließend springt der Cursor in die nächste Zeile, so 
-dass große Bereiche sehr einfach aus- oder einkommentiert werden können. Als 
-Kommentarzeichen wird|b:commentstring|verwendet. Um eine Zeile als 
-auskommentiert zu erkennen muss der Kommentar in der ersten Spalte stehen. 
-Echte Kommentare können in einer andreren Spalte stehen und werden dann 
-doppelt auskommentiert.
 
                                                               *:MarkLongLines*
 :MarkLongLines                                     Hebt zu lange Zeilen hervor

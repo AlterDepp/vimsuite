@@ -74,6 +74,7 @@ Synergy/CM	ccm.txt	/*Synergy\/CM*
 VimSuite	vimsuite.txt	/*VimSuite*
 VimSuiteEinstellungen	vimsuite.txt	/*VimSuiteEinstellungen*
 VimSuiteInstallation	vimsuite.txt	/*VimSuiteInstallation*
+VimSuitePlugins	vimsuite.txt	/*VimSuitePlugins*
 VimSuiteProject	vimsuite.txt	/*VimSuiteProject*
 VimSuiteProjekt	vimsuite.txt	/*VimSuiteProjekt*
 VimSuiteTools	vimsuite.txt	/*VimSuiteTools*
@@ -100,4 +101,5 @@ vimsuite.2	vimsuite.txt	/*vimsuite.2*
 vimsuite.3	vimsuite.txt	/*vimsuite.3*
 vimsuite.4	vimsuite.txt	/*vimsuite.4*
 vimsuite.5	vimsuite.txt	/*vimsuite.5*
+vimsuite.6	vimsuite.txt	/*vimsuite.6*
 vimsuite.txt	vimsuite.txt	/*vimsuite.txt*
