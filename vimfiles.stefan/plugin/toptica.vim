@@ -19,6 +19,7 @@ function s:ProjectDlcproSet(project_type)
     execute 'cd '.s:ProjectSrcDir
     execute 'set path-=./**'
     execute 'set path+=' .  s:ProjectBaseDir.'/**'
+    execute 'set path+=/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/sysroot-arm-cortexa8-linux-gnueabi/usr/include'
 
     " editor settings
     set spell spelllang=en,de
@@ -31,7 +32,7 @@ function s:ProjectDlcproSet(project_type)
 
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help']
     let s:makeopts = ['-j4']
     let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>')
@@ -75,8 +76,16 @@ function s:ProjectDlcproSet(project_type)
                 \'~/dlcpro/firmware/.ycm_extra_conf.py',
                 \'!~/tools/vimsuite/vimfiles.YouCompleteMe/*',
                 \]
+
+    " rtags
+    command! RtagsIncludeTree execute('!rc --dependencies %')
+
+    " little helpers
+    command! -nargs=? BuildDirStash call s:BuildDirStash('<args>')
+    command! -nargs=? BuildDirUnStash call s:BuildDirUnStash('<args>')
+
 endfunction
- 
+
 " ====
 " Make
 " ====
@@ -91,10 +100,13 @@ function s:Make(args)
 endfunction
 
 function s:Cmake(build_type)
-    if a:build_type == ''
-        let build_type = 'Debug'
-    else
+    if a:build_type != ''
         let build_type = a:build_type
+    else
+        let build_type = 'Debug'
+    endif
+    if !isdirectory(g:ProjectBuildDir)
+        call mkdir(g:ProjectBuildDir)
     endif
     call asyncrun#quickfix_toggle(10, 1)
     let args = ""
@@ -150,3 +162,38 @@ function ClangFormat()
     endif
     pyf /usr/share/vim/addons/syntax/clang-format.py
 endfunction
+
+" ===============
+" Stash / Unstash
+" ===============
+function s:BuildDirStash(suffix)
+    if a:suffix != ''
+        let suffix = a:suffix
+    else
+        let suffix = fugitive#head()
+    endif
+    let target_dir = g:ProjectBuildDir.'.'.suffix
+    let subverion = 1
+    while isdirectory(target_dir)
+        let target_dir = g:ProjectBuildDir.'.'.suffix.'.'.subsuffix
+        let subsuffix += 1
+    endwhile
+    call rename(g:ProjectBuildDir, target_dir)
+endfunction
+
+function s:BuildDirUnStash(suffix)
+    if a:suffix != ''
+        let suffix = a:suffix
+    else
+        let suffix = fugitive#head()
+    endif
+    let source_dir = g:ProjectBuildDir.'.'.suffix
+    if !isdirectory(source_dir)
+        echoerr 'source directory '.source_dir.' not found'
+    elseif isdirectory(g:ProjectBuildDir)
+        echoerr 'target directory '.g:ProjectBuildDir.' exists'
+    else
+        call rename(source_dir, g:ProjectBuildDir)
+    endif
+endfunction
+

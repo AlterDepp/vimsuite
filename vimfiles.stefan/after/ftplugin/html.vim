@@ -23,11 +23,11 @@ endfunction
 " These mappings and TagSelection function will allow you to place
 " an XML tag around either the current word, or the current selected
 " text
-"nmap _t viw_t
-"vnoremap _t <Esc>:call TagSelection()<CR>
+"nmap <buffer> _t viw_t
+"vnoremap <buffer> _t <Esc>:call TagSelection()<CR>
 "
-"nmap _t viw_t
-"vnoremap _t <Esc>:call TagSelection()<CR>
+"nmap _t <buffer> viw_t
+"vnoremap _t <buffer> <Esc>:call TagSelection()<CR>
 "
 "function! TagSelection()
 "  let l:tag = input("Tag name? ")

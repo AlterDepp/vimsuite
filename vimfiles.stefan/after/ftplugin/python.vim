@@ -20,7 +20,7 @@ endpython
 endfunction
 
 call Set_python_tag_files()
-nnoremap <TAB> :YcmCompleter GoTo<CR>
+nnoremap <buffer> <TAB> :YcmCompleter GoTo<CR>
 " commenting
 let b:commentstring = '#'
 
