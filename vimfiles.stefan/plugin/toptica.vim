@@ -32,13 +32,16 @@ function s:ProjectDlcproSet(project_type)
 
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer']
     let s:makeopts = ['-j4']
     let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>')
 
     " cmake
-    command! -nargs=? Cmake call s:Cmake('<args>')
+    command! -nargs=1 -complete=custom,CmakeBuildTypes Cmake call s:Cmake('<args>')
+    function CmakeBuildTypes(ArgLead, CmdLine, CorsorPos)
+        return join(['Debug', 'Release'], "\n")
+    endfunction
 
     " configure quickfix window for asyncrun
     augroup QuickfixStatus
@@ -100,14 +103,11 @@ function s:Make(args)
 endfunction
 
 function s:Cmake(build_type)
-    if a:build_type != ''
-        let build_type = a:build_type
-    else
-        let build_type = 'Debug'
-    endif
     if !isdirectory(g:ProjectBuildDir)
         call mkdir(g:ProjectBuildDir)
     endif
+    execute "!rm ".g:ProjectBuildDir."/build-type-*"
+    execute "!touch ".g:ProjectBuildDir."/build-type:".build_type
     call asyncrun#quickfix_toggle(10, 1)
     let args = ""
     let args .= " ../".g:ProjectSrcDirRel."/"
@@ -115,7 +115,7 @@ function s:Cmake(build_type)
     let args .= " -DBUILD_TARGET=target"
     let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
     let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
-    let args .= " -DCMAKE_BUILD_TYPE=".build_type
+    let args .= " -DCMAKE_BUILD_TYPE=".a:build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 "    let args .= " -DLICENSE_TOOL=1"
     execute 'AsyncRun -save=1 -cwd='.g:ProjectBuildDir.' @ cmake '.args
