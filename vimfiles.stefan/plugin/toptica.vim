@@ -179,6 +179,11 @@ function s:BuildDirStash(suffix)
         let subsuffix += 1
     endwhile
     call rename(g:ProjectBuildDir, target_dir)
+
+    " create new build dir and copy eclipse files
+    call mkdir(g:ProjectBuildDir)
+    call execute('!cp '.target_dir.'/.cproject '.g:ProjectBuildDir, 'silent!')
+    call execute('!cp '.target_dir.'/.project '.g:ProjectBuildDir, 'silent!')
 endfunction
 
 function s:BuildDirUnStash(suffix)
@@ -190,10 +195,12 @@ function s:BuildDirUnStash(suffix)
     let source_dir = g:ProjectBuildDir.'.'.suffix
     if !isdirectory(source_dir)
         echoerr 'source directory '.source_dir.' not found'
-    elseif isdirectory(g:ProjectBuildDir)
-        echoerr 'target directory '.g:ProjectBuildDir.' exists'
+    elseif isdirectory(g:ProjectBuildDir) && !empty(globpath(g:ProjectBuildDir, '*', 0, 1))
+        echoerr 'target directory '.g:ProjectBuildDir.' exists and is not empty'
     else
-        call rename(source_dir, g:ProjectBuildDir)
+        echom 'restore '.source_dir.' to '.g:ProjectBuildDir
+        call delete(expand(g:ProjectBuildDir), 'rf')
+        call rename(expand(source_dir), expand(g:ProjectBuildDir))
     endif
 endfunction
 
