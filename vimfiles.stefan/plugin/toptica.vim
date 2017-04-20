@@ -1,13 +1,21 @@
-command DlcPro call s:ProjectDlcproSet('device-control')
-command DlcProShg call s:ProjectDlcproSet('shg')
-function s:ProjectDlcproSet(project_type)
+command -nargs=? -complete=dir DlcPro call s:ProjectDlcproSet('device-control', '<args>')
+command -nargs=? -complete=dir DlcProShg call s:ProjectDlcproSet('shg', '<args>')
+function s:ProjectDlcproSet(project_type, project_base_dir)
     " directories
+    if a:project_base_dir != ''
+        let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p')
+    else
+        " defaults
+        if (a:project_type == 'device-control')
+            let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
+        else
+            let s:ProjectBaseDir = '/home/liebl/dlcpro/shg-firmware'
+        endif
+    endif
     if (a:project_type == 'device-control')
-        let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
         let s:Program = '/device-control/device-control'
         set wildignore+=**/shg-firmware/**
     else
-        let s:ProjectBaseDir = '/home/liebl/dlcpro/shg-firmware'
         let s:Program = '/device-control/device-control-shg'
         set wildignore+=**/firmware/**
     endif
@@ -18,7 +26,8 @@ function s:ProjectDlcproSet(project_type)
     " vim path
     execute 'cd '.s:ProjectSrcDir
     execute 'set path-=./**'
-    execute 'set path+=' .  s:ProjectBaseDir.'/**'
+    execute 'set path+=' .  s:ProjectSrcDir.'/**'
+    execute 'set path+=' .  g:ProjectBuildDir.'/**'
     execute 'set path+=/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/sysroot-arm-cortexa8-linux-gnueabi/usr/include'
 
     " editor settings
@@ -32,15 +41,16 @@ function s:ProjectDlcproSet(project_type)
 
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer']
-    let s:makeopts = ['-j4']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+    let s:makeopts = ['-j3', 'VERBOSE=1']
     let g:Program = g:ProjectBuildDir.s:Program
-    command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>')
+    command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
+    command! MakeTestBuild call s:MakeTestBuild()
 
     " cmake
-    command! -nargs=1 -complete=custom,CmakeBuildTypes Cmake call s:Cmake('<args>')
-    function CmakeBuildTypes(ArgLead, CmdLine, CorsorPos)
-        return join(['Debug', 'Release'], "\n")
+    command! -nargs=1 -complete=custom,CmakeBuildTypes Cmake call s:Cmake('<args>', 0)
+    function! CmakeBuildTypes(ArgLead, CmdLine, CorsorPos)
+        return join(['Debug', 'Release', 'RelWithDebInfo'], "\n")
     endfunction
 
     " configure quickfix window for asyncrun
@@ -62,6 +72,9 @@ function s:ProjectDlcproSet(project_type)
     " vc-plugin
     let g:vc_branch_url = ['https://svn.toptica.com/svn/DiSiRa/SW/firmware/branches']
     let g:vc_trunk_url = 'https://svn.toptica.com/svn/DiSiRa/SW/firmware/trunk'
+
+    " update device-contol.xml for Topas-GUI
+    command DlcProUpdateTopasXml '!svnmucc put -m \'update "device-control.xml"\' ".g:ProjectBuildDir.'/device-control/device-control.xml https://svn.toptica.com/svn/topas_dlc_pro/trunk/res/device-control.xml'
 
     " vim-clang
     command! ClangFormat call ClangFormat()
@@ -96,29 +109,37 @@ function GetAllMakeCompletions(ArgLead, CmdLine, CursorPos)
     return join(s:makegoals + s:makeopts + glob(a:ArgLead.'*', 1, 1), "\n")
 endfunction
 
-function s:Make(args)
+function s:Make(args, async_mode)
     wa
     call asyncrun#quickfix_toggle(10, 1)
-    execute 'AsyncRun -save=1 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
+    execute 'AsyncRun -mode='.a:async_mode.' -save=1 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
 endfunction
 
-function s:Cmake(build_type)
+function s:MakeTestBuild()
+    call s:BuildDirStash('save')
+    call s:Cmake('Release', 1)
+    call s:Make('-j4 device-control artifacts doxygen user-interface', 1)
+    call s:BuildDirStash('release-test')
+    call s:BuildDirUnStash('save')
+endfunction
+
+function s:Cmake(build_type, async_mode)
     if !isdirectory(g:ProjectBuildDir)
         call mkdir(g:ProjectBuildDir)
     endif
     execute "!rm ".g:ProjectBuildDir."/build-type-*"
-    execute "!touch ".g:ProjectBuildDir."/build-type:".build_type
+    execute "!touch ".g:ProjectBuildDir."/build-type:".a:build_type
     call asyncrun#quickfix_toggle(10, 1)
     let args = ""
     let args .= " ../".g:ProjectSrcDirRel."/"
-"    let args .= " --graphviz=dependencies.dot"
+    let args .= " --graphviz=dependencies.dot"
     let args .= " -DBUILD_TARGET=target"
     let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
     let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
     let args .= " -DCMAKE_BUILD_TYPE=".a:build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 "    let args .= " -DLICENSE_TOOL=1"
-    execute 'AsyncRun -save=1 -cwd='.g:ProjectBuildDir.' @ cmake '.args
+    execute 'AsyncRun -mode='.a:async_mode.' -save=1 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
 function s:CopyFirmware(command)
@@ -173,7 +194,7 @@ function s:BuildDirStash(suffix)
         let suffix = fugitive#head()
     endif
     let target_dir = g:ProjectBuildDir.'.'.suffix
-    let subverion = 1
+    let subsuffix = 1
     while isdirectory(target_dir)
         let target_dir = g:ProjectBuildDir.'.'.suffix.'.'.subsuffix
         let subsuffix += 1
@@ -203,4 +224,9 @@ function s:BuildDirUnStash(suffix)
         call rename(expand(source_dir), expand(g:ProjectBuildDir))
     endif
 endfunction
+
+" update PDH-firmware
+"/opt/app/bin/jamplayer -sm3 -aconfigure PDD.jam
+"/opt/app/bin/jamplayer -sm3 -aprogram PDD.jam
+"/opt/app/bin/jamplayer -sm3 -areconfigure /opt/app/fpga-configurations/reconfigure.jam
 
