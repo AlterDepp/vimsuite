@@ -3,7 +3,11 @@ command -nargs=? -complete=dir DlcProShg call s:ProjectDlcproSet('shg', '<args>'
 function s:ProjectDlcproSet(project_type, project_base_dir)
     " directories
     if a:project_base_dir != ''
-        let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p')
+        if (isdirectory(fnamemodify(a:project_base_dir, ':p').'/../src'))
+            let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p:h:h')
+        else
+            let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p')
+        endif
     else
         " defaults
         if (a:project_type == 'device-control')
@@ -127,7 +131,7 @@ function s:Cmake(build_type, async_mode)
     if !isdirectory(g:ProjectBuildDir)
         call mkdir(g:ProjectBuildDir)
     endif
-    execute "!rm ".g:ProjectBuildDir."/build-type-*"
+    execute "!rm ".g:ProjectBuildDir."/build-type*"
     execute "!touch ".g:ProjectBuildDir."/build-type:".a:build_type
     call asyncrun#quickfix_toggle(10, 1)
     let args = ""
@@ -230,3 +234,5 @@ endfunction
 "/opt/app/bin/jamplayer -sm3 -aprogram PDD.jam
 "/opt/app/bin/jamplayer -sm3 -areconfigure /opt/app/fpga-configurations/reconfigure.jam
 
+" read/write eeprom
+"/opt/app/bin/eepromio

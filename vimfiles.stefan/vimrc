@@ -203,7 +203,7 @@ autocmd BufReadPost *
 " read all files on got of focus
 " autocmd FocusGained * execute
 " save all files on loss of focus
-autocmd FocusLost * execute ':wa'
+autocmd FocusLost * execute ':silent! wa'
 " since we always save, don't use a swapfile
 set noswapfile
 
