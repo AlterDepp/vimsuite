@@ -49,6 +49,11 @@ setlocal cpoptions-=C
 " spell check
 setlocal spell
 
+" doxygen highlighting
+let b:load_doxygen_syntax = 1
+let g:doxygen_enhanced_color = 1
+let g:doxygen_javadoc_autobrief = 0
+
 " Grep options
 let b:GrepFiles = '*.c *.h'
 
