@@ -114,9 +114,8 @@ function GetAllMakeCompletions(ArgLead, CmdLine, CursorPos)
 endfunction
 
 function s:Make(args, async_mode)
-    wa
     call asyncrun#quickfix_toggle(10, 1)
-    execute 'AsyncRun -mode='.a:async_mode.' -save=1 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
+    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
 endfunction
 
 function s:MakeTestBuild()
@@ -143,7 +142,7 @@ function s:Cmake(build_type, async_mode)
     let args .= " -DCMAKE_BUILD_TYPE=".a:build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
 "    let args .= " -DLICENSE_TOOL=1"
-    execute 'AsyncRun -mode='.a:async_mode.' -save=1 -cwd='.g:ProjectBuildDir.' @ cmake '.args
+    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
 function s:CopyFirmware(command)
