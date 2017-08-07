@@ -1,6 +1,10 @@
-command -nargs=? -complete=dir DlcPro call s:ProjectDlcproSet('device-control', '<args>')
-command -nargs=? -complete=dir DlcProShg call s:ProjectDlcproSet('shg', '<args>')
+command -nargs=1 -complete=dir DlcPro call s:ProjectDlcproSet('device-control', '<args>')
+command -nargs=1 -complete=dir DlcProShg call s:ProjectDlcproSet('shg', '<args>')
+command -nargs=1 -complete=dir Topmode call s:ProjectDlcproSet('topmode', '<args>')
+command -nargs=1 -complete=dir TopmodeGui call s:ProjectDlcproSet('topmode-gui', '<args>')
 function s:ProjectDlcproSet(project_type, project_base_dir)
+    let g:project_type = a:project_type
+
     " directories
     if a:project_base_dir != ''
         if (isdirectory(fnamemodify(a:project_base_dir, ':p').'/../src'))
@@ -10,18 +14,30 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
         endif
     else
         " defaults
-        if (a:project_type == 'device-control')
+        if (g:project_type == 'device-control')
             let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
-        else
+        elseif (g:project_type == 'shg')
             let s:ProjectBaseDir = '/home/liebl/dlcpro/shg-firmware'
+        elseif (g:project_type == 'topmode')
+            let s:ProjectBaseDir = '/home/liebl/topmode/firmware'
+        elseif (g:project_type == 'topmode-gui')
+            let s:ProjectBaseDir = '/home/liebl/topmode/pc-gui'
+        else
+            echo "no project"
         endif
     endif
-    if (a:project_type == 'device-control')
+    if (g:project_type == 'device-control')
         let s:Program = '/device-control/device-control'
         set wildignore+=**/shg-firmware/**
-    else
+    elseif (g:project_type == 'shg')
         let s:Program = '/device-control/device-control-shg'
         set wildignore+=**/firmware/**
+    elseif (g:project_type == 'topmode')
+        let s:Program = '/topmode'
+    elseif (g:project_type == 'topmode-gui')
+        let s:Program = '/TOPAS_Topmode'
+    else
+        echo "no project"
     endif
     let g:ProjectSrcDirRel = 'src'
     let s:ProjectSrcDir = s:ProjectBaseDir.'/'.g:ProjectSrcDirRel
@@ -64,9 +80,14 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     augroup END
 
     " debugger
-    let g:GdbHost = 'dlcpro_stefan'
     let g:GdbPort = '2345'
-    let s:GdbSlave = '~/tools/gdb-slave.sh'
+    if (g:project_type == 'topmode')
+        let g:GdbHost = 'topmode_stefan'
+        let s:GdbSlave = '~/tools/gdb-slave-topmode.sh'
+    else
+        let g:GdbHost = 'dlcpro_stefan'
+        let s:GdbSlave = '~/tools/gdb-slave.sh'
+    endif
     let g:GdbPath = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
     command! DlcProFirmwareUpdate call s:CopyFirmware('update')
     command! DlcProFirmwareDebug call s:CopyFirmware('debug')
@@ -93,7 +114,7 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     "let g:ycm_autoclose_preview_window_after_insertion = 0
     "let g:ycm_key_previous_completion = ['<TAB>', '<Down>', '<Enter>']
     let g:ycm_extra_conf_globlist = [
-                \'~/dlcpro/firmware/.ycm_extra_conf.py',
+                \s:ProjectBaseDir.'/.ycm_extra_conf.py',
                 \'!~/tools/vimsuite/vimfiles.YouCompleteMe/*',
                 \]
 
@@ -136,12 +157,16 @@ function s:Cmake(build_type, async_mode)
     let args = ""
     let args .= " ../".g:ProjectSrcDirRel."/"
     let args .= " --graphviz=dependencies.dot"
-    let args .= " -DBUILD_TARGET=target"
     let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
-    let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
     let args .= " -DCMAKE_BUILD_TYPE=".a:build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
-"    let args .= " -DLICENSE_TOOL=1"
+    if (g:project_type == 'device-control')
+        "let args .= " -DLICENSE_TOOL=1"
+        let args .= " -DBUILD_TARGET=target"
+        let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
+    elseif (g:project_type == 'topmode')
+        let args .= " -DSYSROOT=~/topmode/topmode-sdk/sysroot-target"
+    endif
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
@@ -235,3 +260,7 @@ endfunction
 
 " read/write eeprom
 "/opt/app/bin/eepromio
+
+" update python tags
+" cd ~/dclpro/firmware
+" ctags --recurse --languages=python src

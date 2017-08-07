@@ -183,6 +183,10 @@ func GitGrep(...)
 endfun
 command -nargs=? GitGrep call GitGrep(<f-args>)
 
+" Options for GitV
+let g:Gitv_WipeAllOnClose = 1
+let g:Gitv_TruncateCommitSubjects = 1
+
 " Remove all buffers which are not found by findfile()
 " ----------------------------------------------------
 command BuffersCleanup call s:BuffersCleanup()
