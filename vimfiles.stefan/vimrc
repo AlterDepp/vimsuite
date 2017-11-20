@@ -291,6 +291,11 @@ let g:vc_log_name = '~/vc.log'
 " ----
 let g:Gitv_OpenHorizontal = 1
 
+" ------
+" flake8
+" ------
+command Flake8 call Flake8()
+
 " ------------------
 " packages / plugins
 " ------------------
@@ -298,13 +303,16 @@ packadd! asyncrun
 "packadd! diffchar
 packadd! dirdiff
 packadd! DoxygenToolkit
+packadd! flake8
 packadd! fugitive
 "packadd! gdb-from-vim
 packadd! gitv
 packadd! gundo
+packadd! isort
 packadd! linediff
 packadd! merginal
 packadd! pyclewn
+packadd! pylint
 packadd! rtags
 packadd! sessionman
 packadd! SrchRplcHiGrp
@@ -314,6 +322,7 @@ packadd! vc
 packadd! vimagit
 packadd! VisIncr
 packadd! xml
+packadd! yapf
 packadd! YouCompleteMe
 
 if exists('g:debug')

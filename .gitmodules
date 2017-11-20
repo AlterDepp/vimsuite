@@ -6,6 +6,10 @@
 	path = pack/DoxygenToolkit/opt/DoxygenToolkit
 	url = https://github.com/vim-scripts/DoxygenToolkit.vim
 	ignore = untracked
+[submodule "pack/flake8/opt/flake8"]
+	path = pack/flake8/opt/flake8
+	url = https://github.com/nvie/vim-flake8.git
+	ignore = untracked
 [submodule "pack/fugitive/opt/fugitive"]
 	path = pack/fugitive/opt/fugitive
 	url = https://github.com/tpope/vim-fugitive
@@ -73,4 +77,16 @@
 [submodule "pack/diffchar/opt/diffchar"]
 	path = pack/diffchar/opt/diffchar
 	url = https://github.com/rickhowe/diffchar.vim.git
+	ignore = untracked
+[submodule "pack/yapf/opt/yapf"]
+	path = pack/yapf/opt/yapf
+	url = https://github.com/mindriot101/vim-yapf.git
+	ignore = untracked
+[submodule "pack/pylint/opt/pylint"]
+	path = pack/pylint/opt/pylint
+	url = https://github.com/gryf/pylint-vim.git
+	ignore = untracked
+[submodule "pack/isort/opt/isort"]
+	path = pack/isort/opt/isort
+	url = https://github.com/fisadev/vim-isort.git
 	ignore = untracked
