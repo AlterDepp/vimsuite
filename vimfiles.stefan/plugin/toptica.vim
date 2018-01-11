@@ -31,7 +31,7 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
         set wildignore+=**/shg-firmware/**
     elseif (g:project_type == 'shg')
         let s:Program = '/device-control/device-control-shg'
-        set wildignore+=**/firmware/**
+        set wildignore+=**/firmware/src/device-control/**
     elseif (g:project_type == 'topmode')
         let s:Program = '/topmode'
     elseif (g:project_type == 'topmode-gui')
@@ -210,6 +210,23 @@ function ClangFormat()
         let l:lines='all'
     endif
     pyf /usr/share/vim/addons/syntax/clang-format.py
+endfunction
+
+" ======
+" Pytest
+" ======
+command! -nargs=* Pytest call s:Pytest('<args>')
+function s:Pytest(testscripts)
+    let async_mode = 0
+    let archive_dir = g:ProjectBuildDir."/artifacts"
+    call asyncrun#quickfix_toggle(10, 1)
+    let args = ''
+    let args .= ' --target_ip="'.g:GdbHost.'"'
+    let args .= ' --version_file="'.archive_dir.'/VERSION'.'"'
+    let args .= ' --svnrevision_file="'.archive_dir.'/svnrevision.h'.'"'
+    let args .= ' --firmware_file="'.archive_dir.'/DLCpro-archive.fw'.'"'
+    let args .= ' --capture=no'
+    execute 'AsyncRun -mode='.async_mode.' -save=2 -cwd='.s:ProjectSrcDir.'/test @ python3 -m pytest '.args.' '.a:testscripts
 endfunction
 
 " ===============

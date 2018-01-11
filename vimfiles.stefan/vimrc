@@ -156,6 +156,7 @@ set backspace=indent
 set backspace+=start
 " mark word under cursor
 nnoremap gm :let @/ = "<C-R><C-W>"<CR>:set hlsearch<CR>
+vnoremap gm y:let @/ = "<C-R>0"<CR>:set hlsearch<CR>
 " go to tag under cursor
 nnoremap tt g<C-]>
 " find next error
@@ -317,6 +318,7 @@ packadd! rtags
 packadd! sessionman
 packadd! SrchRplcHiGrp
 packadd! tagbar
+"packadd! tail
 packadd! tcomment
 packadd! vc
 packadd! vimagit

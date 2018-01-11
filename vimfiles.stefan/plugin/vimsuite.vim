@@ -567,4 +567,14 @@ endfunction
 let g:vc_ignore_repos="-git"
 let g:vc_browse_cach_all = 1
 
+" -------
+" Tail -f
+" -------
+command TailOn let g:TailTimer = timer_start(500, 'Tail', {'repeat': -1})
+command TailOff call timer_stop(g:TailTimer)
+function Tail(timer)
+    silent edit
+    silent normal G
+endfunction
+
 EchoDebug 'loaded tools.vim'
