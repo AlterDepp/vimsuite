@@ -90,3 +90,6 @@
 	path = pack/isort/opt/isort
 	url = https://github.com/fisadev/vim-isort.git
 	ignore = untracked
+[submodule "pack/conque/opt/conque"]
+	path = pack/conque/opt/conque
+	url = https://github.com/vim-scripts/Conque-GDB.git

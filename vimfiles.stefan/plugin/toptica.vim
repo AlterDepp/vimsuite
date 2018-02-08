@@ -28,6 +28,7 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     endif
     if (g:project_type == 'device-control')
         let s:Program = '/device-control/device-control'
+        let g:ProgramRemote = '/opt/app/bin/device-control'
         set wildignore+=**/shg-firmware/**
     elseif (g:project_type == 'shg')
         let s:Program = '/device-control/device-control-shg'
@@ -90,7 +91,8 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     endif
     let g:GdbPath = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
     command! DlcProFirmwareUpdate call s:CopyFirmware('update')
-    command! DlcProFirmwareDebug call s:CopyFirmware('debug')
+    command! DlcProFirmwareDebug call s:CopyFirmware('start-debug')
+    command! DlcProFirmwareAttach call s:CopyFirmware('attach-debug')
     command! DlcProFirmwareStart call s:CopyFirmware('start')
     command! DlcProDebug call s:DlcProDebug(g:Program)
 
@@ -172,35 +174,79 @@ endfunction
 
 function s:CopyFirmware(command)
     let command = 'bash '.s:GdbSlave.' -h '.g:GdbHost.' '.a:command
-    if a:command == 'update'
+"    if a:command == 'update' || a:command == 'start-debug'
         let command .= ' '.g:Program
-    endif
+"    endif
     echom command
     call system(command)
 endfunction
 
 function DlcProDebugGfV(program)
-    execute 'GdbFromVimRemote ' g:GdbHost ':' g:GdbPort
-    execute 'GdbFromVimSymbolFile ' g:Program
+    execute 'GdbFromVimRemote '.g:GdbHost.':'.g:GdbPort
+    execute 'GdbFromVimSymbolFile '.g:Program
     " GdbFromVimContinue
 "    execute 'D set sysroot '.g:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
 endfunction
 
 function s:DlcProDebug(program)
     DlcProFirmwareDebug
-    let g:pyclewn_terminal = 'konsole, -e'
-    let g:pyclewn_args = '--pgm='.g:GdbPath
-    Pyclewn gdb
-    Cmapkeys
-    sleep 1
-    execute 'Ctarget remote ' g:GdbHost.':'.g:GdbPort
-    sleep 1
-    execute 'Cfile ' g:Program
-"    sleep 1
-"    execute 'C set sysroot '.g:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
-"    Ccontinue
+    ConqueGdbTab
+"    execute "ConqueGdbCommand file ".g:Program
+"    execute "ConqueGdbCommand target remote ".g:GdbHost.":".g:GdbPort
+"    ConqueGdbCommand break main
+"    ConqueGdbCommand continue
+
+    execute "ConqueGdbCommand target extended-remote ".g:GdbHost.":".g:GdbPort
+    execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
+    execute "ConqueGdbCommand file ".g:Program
+    ConqueGdbCommand break main
+    ConqueGdbCommand run
+
+    "ConqueGdbCommand set sysroot /home/liebl/dlcpro/firmware/build/dlcpro-sdk/sysroot-target/
+    ConqueGdbCommand set sysroot /opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/sysroot-arm-cortexa8-linux-gnueabi
+    ConqueGdbCommand set solib-search-path /opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/arm-cortexa8-linux-gnueabi/lib/
+
 endfunction
 
+" ================
+" Regression Tests
+" ================
+command -nargs=1 DlcProRegtest       call s:DlcProRegtest(g:GdbHost,       "",            "",  "dlpro", "1", "",                  "<args>")
+command -nargs=1 DlcProRegtestDlPro  call s:DlcProRegtest("192.168.54.24", "elad-dlcpro", "2", "dlpro", "1", "",                  "<args>")
+command -nargs=1 DlcProRegtestTaPro  call s:DlcProRegtest("192.168.54.9",  "elad-dlcpro", "3", "tapro", "1", "-m 'not usbstick'", "<args>")
+command -nargs=1 DlcProRegtestCtl    call s:DlcProRegtest("192.168.54.27", "elad-dlcpro", "1", "ctl",   "1", "-m 'not usbstick'", "<args>")
+command -nargs=1 DlcProRegtestDualDl call s:DlcProRegtest("192.168.54.28", "elad-dlcpro", "4", "dlpro", "2", "-m 'not usbstick'", "<args>")
+command -nargs=1 DlcProRegtestShgPro call s:DlcProRegtest("192.168.54.29", "elad-dlcpro", "5", "shg",   "1", "-m 'not usbstick'", "<args>")
+function s:DlcProRegtest(ip, powerswitch_ip, powerplug, tests, laser_no, opts, arguments)
+    let archive_dir = g:ProjectBuildDir."/artifacts"
+    let dlcprolicense_builddir = s:ProjectSrcDir."/build/libdlcprolicense"
+    let dlcprolicensetool = dlcprolicense_builddir."/dlcprolicense-tool"
+    let cmd =
+                \"python3 -u -m pytest ".
+                \"--showlocals --tb=long --verbose --cache-clear  ".
+                \"--junit-xml=".a:tests.".result.xml ".
+                \"--tests=".a:tests." ".
+                \"--laser_no=".a:laser_no." ".
+                \"--connection_type=network ".
+                \"--log_file=".a:tests.".regtest.log ".
+                \"--target_ip=".a:ip." ".
+                \"--powerswitch_ip=".a:powerswitch_ip." ",
+                \"--power_plug=".a:powerplug." ".
+                \"--powerswitch_passwd=nimda ".
+                \"--version_file=".archive_dir."/VERSION ".
+                \"--svnrevision=".archive_dir."/svnrevision.h ".
+                \"--firmware_file=".archive_dir."/DLCpro-archive.fw ".
+                \"--license_tool=".dlcprolicensetool." ".
+                \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
+                \"--shutdown_after_test ".
+                \a:opts." ".a:arguments
+"    echom cmd
+    call term_start(cmd)
+endfunction
+
+" ======
+" Format
+" ======
 function ClangFormat()
     if (v:count > 0)
         let startline = v:lnum
