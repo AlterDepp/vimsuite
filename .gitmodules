@@ -93,3 +93,11 @@
 [submodule "pack/conque/opt/conque"]
 	path = pack/conque/opt/conque
 	url = https://github.com/vim-scripts/Conque-GDB.git
+	ignore = untracked
+[submodule "pack/syntastic/opt/syntastic"]
+	path = pack/syntastic/opt/syntastic
+	url = https://github.com/vim-syntastic/syntastic.git
+	ignore = untracked
+[submodule "pack/python-pep8-indent/opt/python-pep8-indent"]
+	path = pack/python-pep8-indent/opt/python-pep8-indent
+	url = https://github.com/Vimjas/vim-python-pep8-indent.git

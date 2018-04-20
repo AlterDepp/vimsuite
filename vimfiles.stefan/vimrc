@@ -167,7 +167,7 @@ nnoremap gb :call GotoLastFile()<CR>
 " -----------
 " come and go
 " -----------
-set sessionoptions=blank
+set sessionoptions-=blank
 set sessionoptions+=buffers
 set sessionoptions+=curdir
 set sessionoptions+=folds
@@ -296,6 +296,12 @@ let g:Gitv_OpenHorizontal = 1
 " flake8
 " ------
 command Flake8 call Flake8()
+command PyFlake Flake8
+
+" -----
+" Isort
+" -----
+command PyIsort Isort
 
 " ----------
 " Conque GDB
@@ -319,10 +325,12 @@ packadd! isort
 packadd! linediff
 packadd! merginal
 packadd! pyclewn
-packadd! pylint
+"packadd! pylint
+packadd! python-pep8-indent
 packadd! rtags
 packadd! sessionman
 packadd! SrchRplcHiGrp
+packadd! syntastic
 packadd! tagbar
 "packadd! tail
 packadd! tcomment
