@@ -31,7 +31,8 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
         let g:ProgramRemote = '/opt/app/bin/device-control'
         set wildignore+=**/shg-firmware/**
     elseif (g:project_type == 'shg')
-        let s:Program = '/device-control/device-control-shg'
+        let s:Program = '/shg-firmware/device-control/device-control-shg'
+        let g:ProgramRemote = '/opt/app/bin/device-control-shg'
         set wildignore+=**/firmware/src/device-control/**
     elseif (g:project_type == 'topmode')
         let s:Program = '/topmode'
@@ -62,7 +63,7 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
 
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
     let s:makeopts = ['-j3', 'VERBOSE=1']
     let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
@@ -81,13 +82,17 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     augroup END
 
     " debugger
-    let g:GdbPort = '2345'
     if (g:project_type == 'topmode')
         let g:GdbHost = 'topmode_stefan'
         let s:GdbSlave = '~/tools/gdb-slave-topmode.sh'
+    elseif (g:project_type == 'shg')
+        let g:GdbHost = 'dlcpro_stefan'
+        let s:GdbSlave = '~/tools/shgcntl'
+        let g:GdbPort = '6666'
     else
         let g:GdbHost = 'dlcpro_stefan'
         let s:GdbSlave = '~/tools/gdb-slave.sh'
+        let g:GdbPort = '2345'
     endif
     let g:GdbPath = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
     command! DlcProFirmwareUpdate call s:CopyFirmware('update')
@@ -190,13 +195,10 @@ endfunction
 
 function s:DlcProDebug(program)
     DlcProFirmwareDebug
+    sleep 1
     ConqueGdbTab
-"    execute "ConqueGdbCommand file ".g:Program
-"    execute "ConqueGdbCommand target remote ".g:GdbHost.":".g:GdbPort
-"    ConqueGdbCommand break main
-"    ConqueGdbCommand continue
-
-    execute "ConqueGdbCommand target extended-remote ".g:GdbHost.":".g:GdbPort
+"    execute "ConqueGdbCommand target extended-remote ".g:GdbHost.":".g:GdbPort
+    execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
     execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
     execute "ConqueGdbCommand file ".g:Program
     ConqueGdbCommand break main
@@ -211,36 +213,37 @@ endfunction
 " ================
 " Regression Tests
 " ================
-command -nargs=1 DlcProRegtest       call s:DlcProRegtest(g:GdbHost,       "",            "",  "dlpro", "1", "",                  "<args>")
-command -nargs=1 DlcProRegtestDlPro  call s:DlcProRegtest("192.168.54.24", "elad-dlcpro", "2", "dlpro", "1", "",                  "<args>")
-command -nargs=1 DlcProRegtestTaPro  call s:DlcProRegtest("192.168.54.9",  "elad-dlcpro", "3", "tapro", "1", "-m 'not usbstick'", "<args>")
-command -nargs=1 DlcProRegtestCtl    call s:DlcProRegtest("192.168.54.27", "elad-dlcpro", "1", "ctl",   "1", "-m 'not usbstick'", "<args>")
-command -nargs=1 DlcProRegtestDualDl call s:DlcProRegtest("192.168.54.28", "elad-dlcpro", "4", "dlpro", "2", "-m 'not usbstick'", "<args>")
-command -nargs=1 DlcProRegtestShgPro call s:DlcProRegtest("192.168.54.29", "elad-dlcpro", "5", "shg",   "1", "-m 'not usbstick'", "<args>")
+command -nargs=1 -complete=file DlcProRegtest       call s:DlcProRegtest(g:GdbHost,       '',            '0', 'dlpro', '1', '',                  '<args>')
+command -nargs=1 -complete=file DlcProRegtestDlPro  call s:DlcProRegtest('192.168.54.24', 'elab-dlcpro', '2', 'dlpro', '1', '',                  '<args>')
+command -nargs=1 -complete=file DlcProRegtestTaPro  call s:DlcProRegtest('192.168.54.9',  'elab-dlcpro', '3', 'tapro', '1', '-m "not usbstick"', '<args>')
+command -nargs=1 -complete=file DlcProRegtestCtl    call s:DlcProRegtest('192.168.54.27', 'elab-dlcpro', '1', 'ctl',   '1', '-m "not usbstick"', '<args>')
+command -nargs=1 -complete=file DlcProRegtestDualDl call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', 'dlpro', '2', '-m "not usbstick"', '<args>')
+command -nargs=1 -complete=file DlcProRegtestShgPro call s:DlcProRegtest('192.168.54.29', 'elab-dlcpro', '5', 'shg',   '1', '-m "not usbstick"', '<args>')
 function s:DlcProRegtest(ip, powerswitch_ip, powerplug, tests, laser_no, opts, arguments)
+    execute "wa"
     let archive_dir = g:ProjectBuildDir."/artifacts"
     let dlcprolicense_builddir = s:ProjectSrcDir."/build/libdlcprolicense"
     let dlcprolicensetool = dlcprolicense_builddir."/dlcprolicense-tool"
     let cmd =
                 \"python3 -u -m pytest ".
-                \"--showlocals --tb=long --verbose --cache-clear  ".
-                \"--junit-xml=".a:tests.".result.xml ".
+                \"--showlocals --tb=long --verbose --cache-clear ".
+                \"--junit-xml=regtest.".a:tests.".xml ".
                 \"--tests=".a:tests." ".
                 \"--laser_no=".a:laser_no." ".
-                \"--connection_type=network ".
-                \"--log_file=".a:tests.".regtest.log ".
+                \"--log_file=regtest.".a:tests.".log ".
                 \"--target_ip=".a:ip." ".
-                \"--powerswitch_ip=".a:powerswitch_ip." ",
-                \"--power_plug=".a:powerplug." ".
+                \"--powerswitch_ip=".a:powerswitch_ip." ".
                 \"--powerswitch_passwd=nimda ".
+                \"--power_plug=".a:powerplug." ".
+                \"--power_plug_fan=8"." ".
                 \"--version_file=".archive_dir."/VERSION ".
                 \"--svnrevision=".archive_dir."/svnrevision.h ".
                 \"--firmware_file=".archive_dir."/DLCpro-archive.fw ".
                 \"--license_tool=".dlcprolicensetool." ".
                 \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
-                \"--shutdown_after_test ".
+                \"--skip_shutdown_after_test ".
                 \a:opts." ".a:arguments
-"    echom cmd
+    echom cmd
     call term_start(cmd)
 endfunction
 
