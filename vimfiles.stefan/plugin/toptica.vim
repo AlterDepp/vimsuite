@@ -36,6 +36,7 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
         set wildignore+=**/firmware/src/device-control/**
     elseif (g:project_type == 'topmode')
         let s:Program = '/topmode'
+        let g:ProgramRemote = '/usr/toptica/topmode'
     elseif (g:project_type == 'topmode-gui')
         let s:Program = '/TOPAS_Topmode'
     else
@@ -72,7 +73,7 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     " cmake
     command! -nargs=1 -complete=custom,CmakeBuildTypes Cmake call s:Cmake('<args>', 0)
     function! CmakeBuildTypes(ArgLead, CmdLine, CorsorPos)
-        return join(['Debug', 'Release', 'RelWithDebInfo'], "\n")
+        return join(['Debug', 'RelWithDebInfo'], "\n")
     endfunction
 
     " configure quickfix window for asyncrun
@@ -85,21 +86,26 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     if (g:project_type == 'topmode')
         let g:GdbHost = 'topmode_stefan'
         let s:GdbSlave = '~/tools/gdb-slave-topmode.sh'
+        let g:GdbPort = '2345'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
     elseif (g:project_type == 'shg')
         let g:GdbHost = 'dlcpro_stefan'
         let s:GdbSlave = '~/tools/shgcntl'
         let g:GdbPort = '6666'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
     else
         let g:GdbHost = 'dlcpro_stefan'
         let s:GdbSlave = '~/tools/gdb-slave.sh'
         let g:GdbPort = '2345'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
     endif
-    let g:GdbPath = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
+    let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
     command! DlcProFirmwareUpdate call s:CopyFirmware('update')
     command! DlcProFirmwareDebug call s:CopyFirmware('start-debug')
     command! DlcProFirmwareAttach call s:CopyFirmware('attach-debug')
     command! DlcProFirmwareStart call s:CopyFirmware('start')
-    command! DlcProDebug call s:DlcProDebug(g:Program)
+    command! DlcProDebug call s:DlcProDebug(g:Program, 0)
+    command! DlcProDebugAttach call s:DlcProDebug(g:Program, 1)
 
     " vc-plugin
     let g:vc_branch_url = ['https://svn.toptica.com/svn/DiSiRa/SW/firmware/branches']
@@ -168,7 +174,6 @@ function s:Cmake(build_type, async_mode)
     let args .= " -DCMAKE_BUILD_TYPE=".a:build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
     if (g:project_type == 'device-control')
-        "let args .= " -DLICENSE_TOOL=1"
         let args .= " -DBUILD_TARGET=target"
         let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
     elseif (g:project_type == 'topmode')
@@ -186,28 +191,28 @@ function s:CopyFirmware(command)
     call system(command)
 endfunction
 
-function DlcProDebugGfV(program)
-    execute 'GdbFromVimRemote '.g:GdbHost.':'.g:GdbPort
-    execute 'GdbFromVimSymbolFile '.g:Program
-    " GdbFromVimContinue
-"    execute 'D set sysroot '.g:ProjectBuildDir.'/dlcpro-sdk/sysroot-target'
-endfunction
+function s:DlcProDebug(program, attach)
+    if (a:attach == 0)
+        DlcProFirmwareDebug
+        sleep 1
+        ConqueGdbTab
+        execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
+        execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
+        execute "ConqueGdbCommand file ".g:Program
+        ConqueGdbCommand break main
+        ConqueGdbCommand run
+    else
+        DlcProFirmwareAttach
+        sleep 1
+        execute "ConqueGdbTab ".g:Program
+        execute "ConqueGdbCommand target remote localhost:".g:GdbPort
+        " get remote src path with gdb: info sources or gdb: break main
+        " let base_src_path = "/jenkins/workspace/dlcpro--firmware_master-MI572KOOZYUCDMJBCIVUZYNOMEKEXEJCF7BO436VK2FRJ4E32MGQ/source/"
+        " execute "ConqueGdbCommand set substitute-path ".base_src_path. ".s:ProjectSrcDir
+    endif
 
-function s:DlcProDebug(program)
-    DlcProFirmwareDebug
-    sleep 1
-    ConqueGdbTab
-"    execute "ConqueGdbCommand target extended-remote ".g:GdbHost.":".g:GdbPort
-    execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
-    execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
-    execute "ConqueGdbCommand file ".g:Program
-    ConqueGdbCommand break main
-    ConqueGdbCommand run
-
-    "ConqueGdbCommand set sysroot /home/liebl/dlcpro/firmware/build/dlcpro-sdk/sysroot-target/
-    ConqueGdbCommand set sysroot /opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/sysroot-arm-cortexa8-linux-gnueabi
-    ConqueGdbCommand set solib-search-path /opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/arm-cortexa8-linux-gnueabi/lib/
-
+    execute "ConqueGdbCommand set sysroot ".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi"
+    execute "ConqueGdbCommand set solib-search-path ".g:GdbRoot."/arm-cortexa8-linux-gnueabi/lib/"
 endfunction
 
 " ================

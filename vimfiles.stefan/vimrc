@@ -17,7 +17,7 @@ let &runtimepath = &runtimepath . ',' . g:vimfiles . '/after'
 let &runtimepath = &runtimepath . ',' . g:vimsuite . '/vimfiles.stefan/after'
 
 " packages liegen unter vimsuite/pack
-let &packpath = g:vimsuite
+execute "set packpath+=".g:vimsuite
 
 " Laden weiterer Einstellungen:
 if (has("win32") || has("win64"))
@@ -171,9 +171,10 @@ set sessionoptions-=blank
 set sessionoptions+=buffers
 set sessionoptions+=curdir
 set sessionoptions+=folds
-set sessionoptions+=help
+set sessionoptions-=help
 set sessionoptions+=resize
 set sessionoptions+=tabpages
+set sessionoptions-=terminal
 set sessionoptions+=winsize
 " open window size
 if &diff
