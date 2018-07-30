@@ -281,7 +281,7 @@ let g:DoxygenToolkit_authorName            = "Stefan Liebl"
 " ---------
 " T-Comment
 " ---------
-let g:tcommentOptions = {'col': 1, 'whitespace': 'no'}
+let g:tcomment#options = {'col': 1, 'whitespace': 'no'}
 
 " ---------
 " VC plugin
@@ -325,7 +325,7 @@ packadd! gundo
 packadd! isort
 packadd! linediff
 packadd! merginal
-packadd! pyclewn
+"packadd! pyclewn
 "packadd! pylint
 packadd! python-pep8-indent
 packadd! rtags

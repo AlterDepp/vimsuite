@@ -1,5 +1,6 @@
-command -nargs=1 -complete=dir DlcPro call s:ProjectDlcproSet('device-control', '<args>')
+command -nargs=1 -complete=dir DlcPro call s:ProjectDlcproSet('dlcpro', '<args>')
 command -nargs=1 -complete=dir DlcProShg call s:ProjectDlcproSet('shg', '<args>')
+command -nargs=1 -complete=dir DlcProGui call s:ProjectDlcproSet('dlcpro-gui', '<args>')
 command -nargs=1 -complete=dir Topmode call s:ProjectDlcproSet('topmode', '<args>')
 command -nargs=1 -complete=dir TopmodeGui call s:ProjectDlcproSet('topmode-gui', '<args>')
 function s:ProjectDlcproSet(project_type, project_base_dir)
@@ -14,10 +15,12 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
         endif
     else
         " defaults
-        if (g:project_type == 'device-control')
+        if (g:project_type == 'dlcpro')
             let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
         elseif (g:project_type == 'shg')
             let s:ProjectBaseDir = '/home/liebl/dlcpro/shg-firmware'
+        elseif (g:project_type == 'dlcpro-gui')
+            let s:ProjectBaseDir = '/home/liebl/dlcpro/pc-gui'
         elseif (g:project_type == 'topmode')
             let s:ProjectBaseDir = '/home/liebl/topmode/firmware'
         elseif (g:project_type == 'topmode-gui')
@@ -26,7 +29,7 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
             echo "no project"
         endif
     endif
-    if (g:project_type == 'device-control')
+    if (g:project_type == 'dlcpro')
         let s:Program = '/device-control/device-control'
         let g:ProgramRemote = '/opt/app/bin/device-control'
         set wildignore+=**/shg-firmware/**
@@ -34,6 +37,8 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
         let s:Program = '/shg-firmware/device-control/device-control-shg'
         let g:ProgramRemote = '/opt/app/bin/device-control-shg'
         set wildignore+=**/firmware/src/device-control/**
+    elseif (g:project_type == 'dlcpro-gui')
+        let s:Program = '/TOPAS_DLC_pro'
     elseif (g:project_type == 'topmode')
         let s:Program = '/topmode'
         let g:ProgramRemote = '/usr/toptica/topmode'
@@ -173,7 +178,7 @@ function s:Cmake(build_type, async_mode)
     let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
     let args .= " -DCMAKE_BUILD_TYPE=".a:build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
-    if (g:project_type == 'device-control')
+    if (g:project_type == 'dlcpro')
         let args .= " -DBUILD_TARGET=target"
         let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
     elseif (g:project_type == 'topmode')
@@ -207,8 +212,8 @@ function s:DlcProDebug(program, attach)
         execute "ConqueGdbTab ".g:Program
         execute "ConqueGdbCommand target remote localhost:".g:GdbPort
         " get remote src path with gdb: info sources or gdb: break main
-        " let base_src_path = "/jenkins/workspace/dlcpro--firmware_master-MI572KOOZYUCDMJBCIVUZYNOMEKEXEJCF7BO436VK2FRJ4E32MGQ/source/"
-        " execute "ConqueGdbCommand set substitute-path ".base_src_path. ".s:ProjectSrcDir
+        let base_src_path = "/jenkins/workspace/mware--pull-requests_PR-510-FENW6VLWHE2IDLEHIF74CPFEHK5ZUDCI6TII2WIO55KE2YPDM7MA/source/"
+        execute "ConqueGdbCommand set substitute-path ".base_src_path." ".s:ProjectSrcDir
     endif
 
     execute "ConqueGdbCommand set sysroot ".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi"
