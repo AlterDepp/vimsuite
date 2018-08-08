@@ -328,6 +328,7 @@ packadd! merginal
 "packadd! pyclewn
 "packadd! pylint
 packadd! python-pep8-indent
+packadd! qml
 packadd! rtags
 packadd! sessionman
 packadd! SrchRplcHiGrp

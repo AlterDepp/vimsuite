@@ -101,3 +101,6 @@
 [submodule "pack/python-pep8-indent/opt/python-pep8-indent"]
 	path = pack/python-pep8-indent/opt/python-pep8-indent
 	url = https://github.com/Vimjas/vim-python-pep8-indent.git
+[submodule "pack/qml/opt/qml"]
+	path = pack/qml/opt/qml
+	url = https://github.com/peterhoeg/vim-qml.git
