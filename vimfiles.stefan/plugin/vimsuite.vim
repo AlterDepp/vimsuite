@@ -210,6 +210,19 @@ endfunction
 " Formatting Functions
 " --------------------
 
+" hint: formatexpr=ClangFormat() is set in ft/c.vim
+command! ClangFormat call ClangFormat()
+function ClangFormat()
+    if (v:count > 0)
+        let startline = v:lnum
+        let endline = v:lnum + v:count
+        let l:lines = startline.':'.endline
+    else
+        let l:lines='all'
+    endif
+    pyf /usr/share/vim/addons/syntax/clang-format.py
+endfunction
+
 " delete all multiple empty lines
 command -range=% DelAllMultipleEmptyLines call DelAllMultipleEmptyLines(<line1>,<line2>)
 function DelAllMultipleEmptyLines(fromline, toline)

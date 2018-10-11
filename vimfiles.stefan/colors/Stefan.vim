@@ -102,3 +102,7 @@ hi DiffText   ctermbg=Red ctermfg=DarkBlue
 
 " Netrw
 hi netrwMarkFile                                                          gui=bold    guifg=Magenta
+
+" Termdebug
+hi debugPC                                                                                              guibg=darkgreen
+hi debugBreakpoint                                                                                      guibg=red

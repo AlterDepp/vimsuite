@@ -119,12 +119,6 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
     " update device-contol.xml for Topas-GUI
     command DlcProUpdateTopasXml '!svnmucc put -m \'update "device-control.xml"\' ".g:ProjectBuildDir.'/device-control/device-control.xml https://svn.toptica.com/svn/topas_dlc_pro/trunk/res/device-control.xml'
 
-    " vim-clang
-    command! ClangFormat call ClangFormat()
-    " hint: formatexpr=ClangFormat() is set in ft/c.vim
-"    map <C-I> :pyf /usr/share/vim/addons/syntax/clang-format.py<cr>
-"    imap <C-I> <c-o>:pyf /usr/share/vim/addons/syntax/clang-format.py<cr>
-
     " YouCompleteMe plugin
     "set completeopt-=preview
     "let g:ycm_add_preview_to_completeopt = 0
@@ -196,6 +190,7 @@ function s:CopyFirmware(command)
     call system(command)
 endfunction
 
+let g:DlcProBasePath = "/jenkins/workspace/pro--firmware_release_1.9.0-DCESJ5C5R577IG5QFEWTML22UFDDZCJDGFLMDA4DCD3V2ZAGVEJA/source/"
 function s:DlcProDebug(program, attach)
     if (a:attach == 0)
         DlcProFirmwareDebug
@@ -212,63 +207,69 @@ function s:DlcProDebug(program, attach)
         execute "ConqueGdbTab ".g:Program
         execute "ConqueGdbCommand target remote localhost:".g:GdbPort
         " get remote src path with gdb: info sources or gdb: break main
-        let base_src_path = "/jenkins/workspace/mware--pull-requests_PR-510-FENW6VLWHE2IDLEHIF74CPFEHK5ZUDCI6TII2WIO55KE2YPDM7MA/source/"
-        execute "ConqueGdbCommand set substitute-path ".base_src_path." ".s:ProjectSrcDir
+        execute "ConqueGdbCommand set substitute-path ".g:DlcProBasePath." ".s:ProjectSrcDir
     endif
 
     execute "ConqueGdbCommand set sysroot ".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi"
     execute "ConqueGdbCommand set solib-search-path ".g:GdbRoot."/arm-cortexa8-linux-gnueabi/lib/"
+    ConqueGdbCommand set can-use-hw-watchpoints 0
 endfunction
 
 " ================
 " Regression Tests
 " ================
-command -nargs=1 -complete=file DlcProRegtest       call s:DlcProRegtest(g:GdbHost,       '',            '0', 'dlpro', '1', '',                  '<args>')
-command -nargs=1 -complete=file DlcProRegtestDlPro  call s:DlcProRegtest('192.168.54.24', 'elab-dlcpro', '2', 'dlpro', '1', '',                  '<args>')
-command -nargs=1 -complete=file DlcProRegtestTaPro  call s:DlcProRegtest('192.168.54.9',  'elab-dlcpro', '3', 'tapro', '1', '-m "not usbstick"', '<args>')
-command -nargs=1 -complete=file DlcProRegtestCtl    call s:DlcProRegtest('192.168.54.27', 'elab-dlcpro', '1', 'ctl',   '1', '-m "not usbstick"', '<args>')
-command -nargs=1 -complete=file DlcProRegtestDualDl call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', 'dlpro', '2', '-m "not usbstick"', '<args>')
-command -nargs=1 -complete=file DlcProRegtestShgPro call s:DlcProRegtest('192.168.54.29', 'elab-dlcpro', '5', 'shg',   '1', '-m "not usbstick"', '<args>')
-function s:DlcProRegtest(ip, powerswitch_ip, powerplug, tests, laser_no, opts, arguments)
+command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest('g:GdbHost',     '',            '0', '1', 'DLpro',     '--capture=no --skip_fw_update', '<args>')
+command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest('192.168.54.24', 'elab-dlcpro', '2', '1', 'DLpro',     '',                              '<f-args>')
+command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest('192.168.54.9',  'elab-dlcpro', '3', '1', 'TApro',     '-m "not usb and not usbstick"', '<f-args>')
+command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', '<f-args>')
+command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
+command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
+command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest('192.168.54.29', 'elab-dlcpro', '5', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', '<f-args>')
+function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type, opts, arguments)
     execute "wa"
+    if (a:ip == 'g:GdbHost')
+        let ip = g:GdbHost
+    else
+        let ip = a:ip
+    endif
     let archive_dir = g:ProjectBuildDir."/artifacts"
-    let dlcprolicense_builddir = s:ProjectSrcDir."/build/libdlcprolicense"
-    let dlcprolicensetool = dlcprolicense_builddir."/dlcprolicense-tool"
-    let cmd =
+
+    " Build license tool
+    let license_builddir = s:ProjectBaseDir.'/build.license'
+    let licensetool = license_builddir."/libdlcprolicense/dlcprolicense-tool"
+    let license_cmake = "cmake -DLICENSE_TOOL=1 -DCMAKE_BUILD_TYPE=Release ".s:ProjectSrcDir."/license"
+    let license_make = "make dlcprolicense-tool"
+    if !executable(licensetool)
+        call mkdir(license_builddir, "p")
+        call term_start(license_cmake, {'cwd' : license_builddir})
+        sleep 2
+        call term_start(license_make, {'cwd' : license_builddir})
+        sleep 5
+    endif
+
+    " Execute pytest
+    let test_dir = s:ProjectSrcDir."/test"
+    let test_cmd =
                 \"python3 -u -m pytest ".
                 \"--showlocals --tb=long --verbose --cache-clear ".
-                \"--junit-xml=regtest.".a:tests.".xml ".
-                \"--tests=".a:tests." ".
-                \"--laser_no=".a:laser_no." ".
-                \"--log_file=regtest.".a:tests.".log ".
-                \"--target_ip=".a:ip." ".
+                \"--junit-xml=regtest.".a:laser_type.".xml ".
+                \"--laser_count=".a:laser_count." ".
+                \"--laser_type=".a:laser_type." ".
+                \"--log_file=regtest.".a:laser_type.".log ".
+                \"--target_ip=".ip." ".
                 \"--powerswitch_ip=".a:powerswitch_ip." ".
                 \"--powerswitch_passwd=nimda ".
                 \"--power_plug=".a:powerplug." ".
                 \"--power_plug_fan=8"." ".
                 \"--version_file=".archive_dir."/VERSION ".
-                \"--svnrevision=".archive_dir."/svnrevision.h ".
+                \"--vcsid_file=".archive_dir."/vcsid.h ".
                 \"--firmware_file=".archive_dir."/DLCpro-archive.fw ".
-                \"--license_tool=".dlcprolicensetool." ".
+                \"--license_tool=".licensetool." ".
                 \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
                 \"--skip_shutdown_after_test ".
                 \a:opts." ".a:arguments
-    echom cmd
-    call term_start(cmd)
-endfunction
-
-" ======
-" Format
-" ======
-function ClangFormat()
-    if (v:count > 0)
-        let startline = v:lnum
-        let endline = v:lnum + v:count
-        let l:lines = startline.':'.endline
-    else
-        let l:lines='all'
-    endif
-    pyf /usr/share/vim/addons/syntax/clang-format.py
+    echom test_cmd
+    call term_start(test_cmd, {'cwd' : test_dir})
 endfunction
 
 " ======

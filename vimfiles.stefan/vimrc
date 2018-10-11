@@ -336,6 +336,7 @@ packadd! syntastic
 packadd! tagbar
 "packadd! tail
 packadd! tcomment
+packadd! termdebug
 packadd! vc
 packadd! vimagit
 packadd! VisIncr
