@@ -341,3 +341,8 @@ endfunction
 " update python tags
 " cd ~/dclpro/firmware
 " ctags --recurse --languages=python src
+
+" ------
+" Pandoc
+" ------
+command TopticaBeamer execute('!pandoc -s -t beamer -H toptica-style.tex -o %:r.pdf %')
