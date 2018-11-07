@@ -289,6 +289,28 @@ function s:Pytest(testscripts)
     execute 'AsyncRun -mode='.async_mode.' -save=2 -cwd='.s:ProjectSrcDir.'/test @ python3 -m pytest '.args.' '.a:testscripts
 endfunction
 
+" -------------
+" YouCompleteMe
+" -------------
+let g:ycm_max_diagnostics_to_display = 1000
+let g:ycm_filter_diagnostics = {
+            \ "cpp": {
+            \   "regex": [
+            \       "'auto_ptr<boost::signals2::detail::foreign_weak_ptr_impl_base>' is deprecated",
+            \       "'boost/tuple.hpp' file not found",
+            \       "no template named 'tuple' in namespace 'boost'",
+            \       "no matching function for call to 'throw_exception'",
+            \       "variable templates are a C\\+\\+14 extension",
+            \       "inline variables are a C\\+\\+17 extension",
+            \       "expected ',' or '>' in template-parameter-list",
+            \       "expected a qualified name after 'typename'",
+            \       "expected ';' at end of declaration list",
+            \       "'std::unordered_set::_Hashtable' \\(aka 'int'\\) is not a class, namespace, or enumeration",
+            \       "no template named '__uset_hashtable'",
+            \   ],
+            \ }
+            \}
+
 " ===============
 " Stash / Unstash
 " ===============
