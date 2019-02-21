@@ -1,15 +1,17 @@
-command -nargs=1 -complete=dir DlcPro call s:ProjectDlcproSet('dlcpro', '<args>')
-command -nargs=1 -complete=dir DlcProShg call s:ProjectDlcproSet('shg', '<args>')
-command -nargs=1 -complete=dir DlcProGui call s:ProjectDlcproSet('dlcpro-gui', '<args>')
-command -nargs=1 -complete=dir Topmode call s:ProjectDlcproSet('topmode', '<args>')
-command -nargs=1 -complete=dir TopmodeGui call s:ProjectDlcproSet('topmode-gui', '<args>')
-function s:ProjectDlcproSet(project_type, project_base_dir)
+command -nargs=1 -complete=dir DlcPro call s:ProjectSet('dlcpro', '<args>')
+command -nargs=1 -complete=dir DlcProShg call s:ProjectSet('shg', '<args>')
+command -nargs=1 -complete=dir DlcProGui call s:ProjectSet('dlcpro-gui', '<args>')
+command -nargs=1 -complete=dir Topmode call s:ProjectSet('topmode', '<args>')
+command -nargs=1 -complete=dir TopmodeGui call s:ProjectSet('topmode-gui', '<args>')
+function s:ProjectSet(project_type, project_base_dir)
     let g:project_type = a:project_type
 
     " directories
     if a:project_base_dir != ''
-        if (isdirectory(fnamemodify(a:project_base_dir, ':p').'/../src'))
+        if (isdirectory(fnamemodify(a:project_base_dir, ':p:h:h').'/src'))
             let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p:h:h')
+        elseif (isdirectory(fnamemodify(a:project_base_dir, ':p:h').'/src'))
+            let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p:h')
         else
             let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p')
         endif
@@ -89,35 +91,35 @@ function s:ProjectDlcproSet(project_type, project_base_dir)
 
     " debugger
     if (g:project_type == 'topmode')
-        let g:GdbHost = 'topmode_stefan'
-        let s:GdbSlave = '~/tools/gdb-slave-topmode.sh'
+        let g:DeviceIP = 'topmode_stefan'
         let g:GdbPort = '2345'
         let g:GdbRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
+        let g:SshOpts = ""
+        let g:SshOpts2 = ""
     elseif (g:project_type == 'shg')
-        let g:GdbHost = 'dlcpro_stefan'
-        let s:GdbSlave = '~/tools/shgcntl'
+        let g:DeviceIP = 'dlcpro_stefan'
         let g:GdbPort = '6666'
         let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:SshOpts = '-o ForwardAgent=yes -o ProxyCommand="ssh -q -W shg:22 root@%h" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+        let g:SshOpts2 = "-L localhost:1998:localhost:1998 -L localhost:1999:localhost:1999"
     else
-        let g:GdbHost = 'dlcpro_stefan'
-        let s:GdbSlave = '~/tools/gdb-slave.sh'
+        let g:DeviceIP = 'dlcpro_stefan'
         let g:GdbPort = '2345'
         let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:SshOpts = ""
+        let g:SshOpts2 = ""
     endif
     let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
-    command! DlcProFirmwareUpdate call s:CopyFirmware('update')
-    command! DlcProFirmwareDebug call s:CopyFirmware('start-debug')
-    command! DlcProFirmwareAttach call s:CopyFirmware('attach-debug')
-    command! DlcProFirmwareStart call s:CopyFirmware('start')
-    command! DlcProDebug call s:DlcProDebug(g:Program, 0)
-    command! DlcProDebugAttach call s:DlcProDebug(g:Program, 1)
+    command! DeviceFirmwareUpdate call s:DeviceFirmwareUpdateStart()
+    command! DeviceDebug call s:DeviceDebug(0)
+    command! DeviceDebugAttach call s:DeviceDebug(1)
 
     " vc-plugin
     let g:vc_branch_url = ['https://svn.toptica.com/svn/DiSiRa/SW/firmware/branches']
     let g:vc_trunk_url = 'https://svn.toptica.com/svn/DiSiRa/SW/firmware/trunk'
 
     " update device-contol.xml for Topas-GUI
-    command DlcProUpdateTopasXml '!svnmucc put -m \'update "device-control.xml"\' ".g:ProjectBuildDir.'/device-control/device-control.xml https://svn.toptica.com/svn/topas_dlc_pro/trunk/res/device-control.xml'
+    command! DlcProUpdateTopasXml '!svnmucc put -m \'update "device-control.xml"\' ".g:ProjectBuildDir.'/device-control/device-control.xml https://svn.toptica.com/svn/topas_dlc_pro/trunk/res/device-control.xml'
 
     " YouCompleteMe plugin
     "set completeopt-=preview
@@ -169,40 +171,83 @@ function s:Cmake(build_type, async_mode)
     let args = ""
     let args .= " ../".g:ProjectSrcDirRel."/"
     let args .= " --graphviz=dependencies.dot"
-    let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
     let args .= " -DCMAKE_BUILD_TYPE=".a:build_type
     let args .= " -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
     if (g:project_type == 'dlcpro')
+        let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
         let args .= " -DBUILD_TARGET=target"
         let args .= " -DQT5_INSTALL_PATH=dlcpro-sdk/sysroot-target/usr/local/Qt-5.4.1"
     elseif (g:project_type == 'topmode')
+        let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
         let args .= " -DSYSROOT=~/topmode/topmode-sdk/sysroot-target"
+    elseif (g:project_type == 'topmode-gui')
     endif
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
-function s:CopyFirmware(command)
-    let command = 'bash '.s:GdbSlave.' -h '.g:GdbHost.' '.a:command
-"    if a:command == 'update' || a:command == 'start-debug'
-        let command .= ' '.g:Program
-"    endif
-    echom command
-    call system(command)
+"function s:CopyFirmware(command)
+"    let command = 'bash '.s:GdbSlave.' -h '.g:DeviceIP.' '.a:command
+""    if a:command == 'update' || a:command == 'start-debug'
+"        let command .= ' '.g:Program
+""    endif
+"    echom command
+"    call system(command)
+"endfunction
+
+function s:DeviceUpdateProgram()
+    let cmd = 'ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'; sleep 2; killall -q -9 gdbserver start-dc.sh '.g:ProgramRemote.'"'
+    echom cmd
+    call system(cmd)
+    let cmd = 'ssh '.g:SshOpts.' root@'.g:DeviceIP.' "mount -o rw,remount / && rm -f '.g:ProgramRemote.'" && scp '.g:SshOpts.' "'.g:Program.'" "root@'.g:DeviceIP.':'.g:ProgramRemote.'"'
+    echom cmd
+    let r = system(cmd)
+    let e = v:shell_error
+    if (e != 0)
+        echo r
+        echo 'failed to upload program '.g:Program.' to host '.g:DeviceIP
+    endif
+    return v:shell_error
+endfunction
+
+function s:DeviceFirmwareUpdateStart()
+    let r = s:DeviceUpdateProgram()
+    if (r == 0)
+        let cmd = 'ssh '.g:SshOpts.' -f root@'.g:DeviceIP.' "{ exec '.g:ProgramRemote.' 2>&1 | logger -t "'.g:ProgramRemote.'" -p user.err; } &"'
+        echom cmd
+        call system(cmd)
+    endif
+endfunction
+
+function s:DeviceFirmwareDebug()
+    let cmd = 'ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' gdbserver --multi localhost:'.g:GdbPort.' &'
+    echom cmd
+    call system(cmd)
+endfunction
+
+function s:DeviceFirmwareAttach()
+    let cmd = 'ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"'
+    echom cmd
+    call system(cmd)
 endfunction
 
 let g:DlcProBasePath = "/jenkins/workspace/pro--firmware_release_1.9.0-DCESJ5C5R577IG5QFEWTML22UFDDZCJDGFLMDA4DCD3V2ZAGVEJA/source/"
-function s:DlcProDebug(program, attach)
+function s:DeviceDebug(attach)
     if (a:attach == 0)
-        DlcProFirmwareDebug
-        sleep 1
-        ConqueGdbTab
-        execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
-        execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
-        execute "ConqueGdbCommand file ".g:Program
-        ConqueGdbCommand break main
-        ConqueGdbCommand run
+        let r = s:DeviceUpdateProgram()
+        if (r != 0)
+            echoerr "DeviceUpdateProgram() failed!"
+        else
+            call s:DeviceFirmwareDebug()
+            sleep 2
+            ConqueGdbTab
+            execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
+            execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
+            execute "ConqueGdbCommand file ".g:Program
+            ConqueGdbCommand break main
+            ConqueGdbCommand run
+        endif
     else
-        DlcProFirmwareAttach
+        call s:DeviceFirmwareAttach()
         sleep 1
         execute "ConqueGdbTab ".g:Program
         execute "ConqueGdbCommand target remote localhost:".g:GdbPort
@@ -210,15 +255,14 @@ function s:DlcProDebug(program, attach)
         execute "ConqueGdbCommand set substitute-path ".g:DlcProBasePath." ".s:ProjectSrcDir
     endif
 
-    execute "ConqueGdbCommand set sysroot ".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi"
-    execute "ConqueGdbCommand set solib-search-path ".g:GdbRoot."/arm-cortexa8-linux-gnueabi/lib/"
+    execute "ConqueGdbCommand set solib-search-path ".g:GdbRoot."/arm-cortexa8-linux-gnueabi/lib/".":".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi/lib/".":".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi/usr/lib/"
     ConqueGdbCommand set can-use-hw-watchpoints 0
 endfunction
 
 " ================
 " Regression Tests
 " ================
-command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest('g:GdbHost',     '',            '0', '1', 'DLpro',     '--capture=no --skip_fw_update', '<args>')
+command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest('g:DeviceIP',    '',            '0', '1', 'DLpro',     '--capture=no',                  '<args>')
 command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest('192.168.54.24', 'elab-dlcpro', '2', '1', 'DLpro',     '',                              '<f-args>')
 command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest('192.168.54.9',  'elab-dlcpro', '3', '1', 'TApro',     '-m "not usb and not usbstick"', '<f-args>')
 command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', '<f-args>')
@@ -227,8 +271,8 @@ command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest('192.1
 command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest('192.168.54.29', 'elab-dlcpro', '5', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', '<f-args>')
 function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type, opts, arguments)
     execute "wa"
-    if (a:ip == 'g:GdbHost')
-        let ip = g:GdbHost
+    if (a:ip == 'g:DeviceIP')
+        let ip = g:DeviceIP
     else
         let ip = a:ip
     endif
@@ -254,7 +298,7 @@ function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type,
                 \"--showlocals --tb=long --verbose --cache-clear ".
                 \"--junit-xml=regtest.".a:laser_type.".xml ".
                 \"--laser_count=".a:laser_count." ".
-                \"--laser_type=".a:laser_type." ".
+                \"--laser1_type=".a:laser_type." ".
                 \"--log_file=regtest.".a:laser_type.".log ".
                 \"--target_ip=".ip." ".
                 \"--powerswitch_ip=".a:powerswitch_ip." ".
@@ -267,6 +311,7 @@ function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type,
                 \"--license_tool=".licensetool." ".
                 \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
                 \"--skip_shutdown_after_test ".
+                \"--skip_fw_update ".
                 \a:opts." ".a:arguments
     echom test_cmd
     call term_start(test_cmd, {'cwd' : test_dir})
@@ -275,13 +320,13 @@ endfunction
 " ======
 " Pytest
 " ======
-command! -nargs=* Pytest call s:Pytest('<args>')
+command -nargs=* Pytest call s:Pytest('<args>')
 function s:Pytest(testscripts)
     let async_mode = 0
     let archive_dir = g:ProjectBuildDir."/artifacts"
     call asyncrun#quickfix_toggle(10, 1)
     let args = ''
-    let args .= ' --target_ip="'.g:GdbHost.'"'
+    let args .= ' --target_ip="'.g:DeviceIP.'"'
     let args .= ' --version_file="'.archive_dir.'/VERSION'.'"'
     let args .= ' --svnrevision_file="'.archive_dir.'/svnrevision.h'.'"'
     let args .= ' --firmware_file="'.archive_dir.'/DLCpro-archive.fw'.'"'
