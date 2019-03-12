@@ -219,12 +219,18 @@ function s:DeviceFirmwareUpdateStart()
 endfunction
 
 function s:DeviceFirmwareDebug()
+    let cmd = 'killall ssh'
+    echom cmd
+    call system(cmd)
     let cmd = 'ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' gdbserver --multi localhost:'.g:GdbPort.' &'
     echom cmd
     call system(cmd)
 endfunction
 
 function s:DeviceFirmwareAttach()
+    let cmd = 'killall ssh'
+    echom cmd
+    call system(cmd)
     let cmd = 'ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"'
     echom cmd
     call system(cmd)
@@ -312,6 +318,7 @@ function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type,
                 \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
                 \"--skip_shutdown_after_test ".
                 \"--skip_fw_update ".
+                \"--override log_cli=1 --override log_cli_level=DEBUG --override log_file_level=DEBUG ".
                 \a:opts." ".a:arguments
     echom test_cmd
     call term_start(test_cmd, {'cwd' : test_dir})
