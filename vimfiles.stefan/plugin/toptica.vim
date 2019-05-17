@@ -1,6 +1,9 @@
 command -nargs=1 -complete=dir DlcPro call s:ProjectSet('dlcpro', '<args>')
 command -nargs=1 -complete=dir DlcProShg call s:ProjectSet('shg', '<args>')
 command -nargs=1 -complete=dir DlcProGui call s:ProjectSet('dlcpro-gui', '<args>')
+command -nargs=1 -complete=dir DlcProCan call s:ProjectSet('dlcpro-can', '<args>')
+command DlcproEmissionOn call s:DlcproEmission('1')
+command DlcproEmissionOff call s:DlcproEmission('0')
 command -nargs=1 -complete=dir Topmode call s:ProjectSet('topmode', '<args>')
 command -nargs=1 -complete=dir TopmodeGui call s:ProjectSet('topmode-gui', '<args>')
 function s:ProjectSet(project_type, project_base_dir)
@@ -19,6 +22,8 @@ function s:ProjectSet(project_type, project_base_dir)
         " defaults
         if (g:project_type == 'dlcpro')
             let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
+        elseif (g:project_type == 'dlcpro-can')
+            let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
         elseif (g:project_type == 'shg')
             let s:ProjectBaseDir = '/home/liebl/dlcpro/shg-firmware'
         elseif (g:project_type == 'dlcpro-gui')
@@ -34,6 +39,10 @@ function s:ProjectSet(project_type, project_base_dir)
     if (g:project_type == 'dlcpro')
         let s:Program = '/device-control/device-control'
         let g:ProgramRemote = '/opt/app/bin/device-control'
+        set wildignore+=**/shg-firmware/**
+    elseif (g:project_type == 'dlcpro-can')
+        let s:Program = '/canopen/can-updater'
+        let g:ProgramRemote = '/opt/app/bin/can-updater'
         set wildignore+=**/shg-firmware/**
     elseif (g:project_type == 'shg')
         let s:Program = '/shg-firmware/device-control/device-control-shg'
@@ -71,7 +80,7 @@ function s:ProjectSet(project_type, project_base_dir)
 
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
     let s:makeopts = ['-j3', 'VERBOSE=1']
     let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
@@ -185,6 +194,16 @@ function s:Cmake(build_type, async_mode)
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
+function s:Call_and_log(cmd)
+    echom a:cmd
+    let r = system(a:cmd)
+    let e = v:shell_error
+    if (e != 0)
+        echom 'return value: '.e.', output: "'.r.'"'
+    endif
+    return v:shell_error
+endfunction
+
 "function s:CopyFirmware(command)
 "    let command = 'bash '.s:GdbSlave.' -h '.g:DeviceIP.' '.a:command
 ""    if a:command == 'update' || a:command == 'start-debug'
@@ -194,46 +213,34 @@ endfunction
 "    call system(command)
 "endfunction
 
+function s:DlcproEmission(state)
+    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "echo '.state.' > /sys/bus/i2c/devices/200-0028/emission_button_state"')
+endfunction
+
 function s:DeviceUpdateProgram()
-    let cmd = 'ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'; sleep 2; killall -q -9 gdbserver start-dc.sh '.g:ProgramRemote.'"'
-    echom cmd
-    call system(cmd)
-    let cmd = 'ssh '.g:SshOpts.' root@'.g:DeviceIP.' "mount -o rw,remount / && rm -f '.g:ProgramRemote.'" && scp '.g:SshOpts.' "'.g:Program.'" "root@'.g:DeviceIP.':'.g:ProgramRemote.'"'
-    echom cmd
-    let r = system(cmd)
-    let e = v:shell_error
-    if (e != 0)
-        echo r
-        echo 'failed to upload program '.g:Program.' to host '.g:DeviceIP
-    endif
-    return v:shell_error
+    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'"')
+    sleep 2
+"    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q -9 gdbserver start-dc.sh '.g:ProgramRemote.'"')
+    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q -9 gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'"')
+    let r = s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "mount -o rw,remount / && rm -f '.g:ProgramRemote.'" && scp '.g:SshOpts.' "'.g:Program.'" "root@'.g:DeviceIP.':'.g:ProgramRemote.'"')
+    return r
 endfunction
 
 function s:DeviceFirmwareUpdateStart()
     let r = s:DeviceUpdateProgram()
     if (r == 0)
-        let cmd = 'ssh '.g:SshOpts.' -f root@'.g:DeviceIP.' "{ exec '.g:ProgramRemote.' 2>&1 | logger -t "'.g:ProgramRemote.'" -p user.err; } &"'
-        echom cmd
-        call system(cmd)
+        call s:Call_and_log('ssh '.g:SshOpts.' -f root@'.g:DeviceIP.' "{ exec '.g:ProgramRemote.' 2>&1 | logger -t "'.g:ProgramRemote.'" -p user.err; } &"')
     endif
 endfunction
 
 function s:DeviceFirmwareDebug()
-    let cmd = 'killall ssh'
-    echom cmd
-    call system(cmd)
-    let cmd = 'ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' gdbserver --multi localhost:'.g:GdbPort.' &'
-    echom cmd
-    call system(cmd)
+    call s:Call_and_log('pkill --full gdbserver')
+    call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' gdbserver --multi localhost:'.g:GdbPort.' &')
 endfunction
 
 function s:DeviceFirmwareAttach()
-    let cmd = 'killall ssh'
-    echom cmd
-    call system(cmd)
-    let cmd = 'ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"'
-    echom cmd
-    call system(cmd)
+    call s:Call_and_log('pkill --full gdbserver')
+    call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"')
 endfunction
 
 let g:DlcProBasePath = "/jenkins/workspace/pro--firmware_release_1.9.0-DCESJ5C5R577IG5QFEWTML22UFDDZCJDGFLMDA4DCD3V2ZAGVEJA/source/"
