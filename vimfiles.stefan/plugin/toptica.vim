@@ -2,6 +2,7 @@ command -nargs=1 -complete=dir DlcPro call s:ProjectSet('dlcpro', '<args>')
 command -nargs=1 -complete=dir DlcProShg call s:ProjectSet('shg', '<args>')
 command -nargs=1 -complete=dir DlcProGui call s:ProjectSet('dlcpro-gui', '<args>')
 command -nargs=1 -complete=dir DlcProCan call s:ProjectSet('dlcpro-can', '<args>')
+command -nargs=1 -complete=dir DlcProSpecalyser call s:ProjectSet('dlcpro-specalyser', '<args>')
 command DlcproEmissionOn call s:DlcproEmission('1')
 command DlcproEmissionOff call s:DlcproEmission('0')
 command -nargs=1 -complete=dir Topmode call s:ProjectSet('topmode', '<args>')
@@ -21,17 +22,19 @@ function s:ProjectSet(project_type, project_base_dir)
     else
         " defaults
         if (g:project_type == 'dlcpro')
-            let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/firmware'
         elseif (g:project_type == 'dlcpro-can')
-            let s:ProjectBaseDir = '/home/liebl/dlcpro/firmware'
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/firmware'
+        elseif (g:project_type == 'dlcpro-specalyser')
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/firmware'
         elseif (g:project_type == 'shg')
-            let s:ProjectBaseDir = '/home/liebl/dlcpro/shg-firmware'
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/shg-firmware'
         elseif (g:project_type == 'dlcpro-gui')
-            let s:ProjectBaseDir = '/home/liebl/dlcpro/pc-gui'
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/pc-gui'
         elseif (g:project_type == 'topmode')
-            let s:ProjectBaseDir = '/home/liebl/topmode/firmware'
+            let s:ProjectBaseDir = '/home/stefan/topmode/firmware'
         elseif (g:project_type == 'topmode-gui')
-            let s:ProjectBaseDir = '/home/liebl/topmode/pc-gui'
+            let s:ProjectBaseDir = '/home/stefan/topmode/pc-gui'
         else
             echo "no project"
         endif
@@ -43,6 +46,10 @@ function s:ProjectSet(project_type, project_base_dir)
     elseif (g:project_type == 'dlcpro-can')
         let s:Program = '/canopen/can-updater'
         let g:ProgramRemote = '/opt/app/bin/can-updater'
+        set wildignore+=**/shg-firmware/**
+    elseif (g:project_type == 'dlcpro-specalyser')
+        let s:Program = '/specalyser/specalyser'
+        let g:ProgramRemote = '/opt/app/bin/specalyser'
         set wildignore+=**/shg-firmware/**
     elseif (g:project_type == 'shg')
         let s:Program = '/shg-firmware/device-control/device-control-shg'
@@ -80,7 +87,7 @@ function s:ProjectSet(project_type, project_base_dir)
 
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
     let s:makeopts = ['-j3', 'VERBOSE=1']
     let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
@@ -122,6 +129,8 @@ function s:ProjectSet(project_type, project_base_dir)
     command! DeviceFirmwareUpdate call s:DeviceFirmwareUpdateStart()
     command! DeviceDebug call s:DeviceDebug(0)
     command! DeviceDebugAttach call s:DeviceDebug(1)
+    command! DeviceGdbDebug call s:DeviceGdbDebug()
+    command! DeviceGdbDebugAttach call s:DeviceGdbDebugAttach()
 
     " vc-plugin
     let g:vc_branch_url = ['https://svn.toptica.com/svn/DiSiRa/SW/firmware/branches']
@@ -233,12 +242,13 @@ function s:DeviceFirmwareUpdateStart()
     endif
 endfunction
 
-function s:DeviceFirmwareDebug()
+function s:DeviceGdbDebug()
     call s:Call_and_log('pkill --full gdbserver')
+    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q -9 gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'"')
     call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' gdbserver --multi localhost:'.g:GdbPort.' &')
 endfunction
 
-function s:DeviceFirmwareAttach()
+function s:DeviceGdbDebugAttach()
     call s:Call_and_log('pkill --full gdbserver')
     call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"')
 endfunction
@@ -250,7 +260,7 @@ function s:DeviceDebug(attach)
         if (r != 0)
             echoerr "DeviceUpdateProgram() failed!"
         else
-            call s:DeviceFirmwareDebug()
+            call s:DeviceGdbDebug()
             sleep 2
             ConqueGdbTab
             execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
@@ -260,7 +270,7 @@ function s:DeviceDebug(attach)
             ConqueGdbCommand run
         endif
     else
-        call s:DeviceFirmwareAttach()
+        call s:DeviceGdbDebugAttach()
         sleep 1
         execute "ConqueGdbTab ".g:Program
         execute "ConqueGdbCommand target remote localhost:".g:GdbPort

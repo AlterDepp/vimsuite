@@ -1,7 +1,9 @@
-tags
-.session.vim
 *.pyc
-.netrwhist
 .VimballRecord
+.directory
+.netrwbook
+.netrwhist
+.session.vim
 myspell.add
 myspell.add.spl
+tags

@@ -29,7 +29,7 @@ let g:noccmmenu = 1
 if has('gui')
 
     " set Font
-    set guifont=Andale\ Mono\ 8
+    set guifont=Liberation\ Mono\ 9
     "set guifontwide=
 
     " Set standards for GUI
