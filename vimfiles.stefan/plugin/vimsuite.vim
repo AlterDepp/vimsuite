@@ -220,7 +220,7 @@ function ClangFormat()
     else
         let l:lines='all'
     endif
-    pyf /usr/share/vim/addons/syntax/clang-format.py
+    py3file /usr/share/vim/addons/syntax/clang-format.py
 endfunction
 
 " delete all multiple empty lines

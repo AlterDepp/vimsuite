@@ -7,7 +7,7 @@ setlocal shiftwidth=4
 setlocal formatoptions=croq
 
 function! Set_python_tag_files()
-python << endpython
+python3 << endpython
 import vim
 import sys
 import os

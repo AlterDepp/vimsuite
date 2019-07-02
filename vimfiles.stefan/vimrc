@@ -298,6 +298,7 @@ let g:Gitv_OpenHorizontal = 1
 " ------
 command Flake8 call Flake8()
 command PyFlake Flake8
+" Flake8 options are stored in ~/.config/flake8
 
 " -----
 " Isort
