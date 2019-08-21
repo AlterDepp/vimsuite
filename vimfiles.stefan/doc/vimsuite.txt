@@ -75,8 +75,8 @@ Alle Plugins sind als |packages| im Verzeichnis 'pack' installiert. Die
 meisten sind als git-submodule integriert. Zum aktualisieren kann der Befehl
 >
     git submodule update --remote --recursive
+    git commit --all -m "update packages"
     git submodule update --recursive
-    git commit
 
 verwendet werden.
 
