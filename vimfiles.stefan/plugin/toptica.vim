@@ -9,6 +9,7 @@ command -nargs=1 -complete=dir Topmode call s:ProjectSet('topmode', '<args>')
 command -nargs=1 -complete=dir TopmodeGui call s:ProjectSet('topmode-gui', '<args>')
 command -nargs=1 -complete=dir DigiFalc call s:ProjectSet('digifalc', '<args>')
 command -nargs=1 -complete=dir ServoBoard call s:ProjectSet('servoboard', '<args>')
+command DeviceFirmwareUpdate call s:DeviceFirmwareUpdate()
 function s:ProjectSet(project_type, project_base_dir)
     let g:project_type = a:project_type
 
@@ -59,55 +60,96 @@ function s:ProjectSet(project_type, project_base_dir)
     execute 'set path+=' .  g:ProjectBuildDir.'/**'
     if (g:project_type == 'dlcpro')
         let s:Program = '/device-control/device-control'
+        let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/device-control'
         set wildignore+=**/shg-firmware/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+        let g:DeviceIP = 'dlcpro_stefan'
+        let g:GdbPort = '2345'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:SshOpts = ""
+        let g:SshOpts2 = ""
     elseif (g:project_type == 'dlcpro-can')
         let s:Program = '/canopen/can-updater'
+        let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/can-updater'
         set wildignore+=**/shg-firmware/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = []
+        let g:DeviceIP = 'dlcpro_stefan'
+        let g:GdbPort = '2345'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:SshOpts = ""
+        let g:SshOpts2 = ""
     elseif (g:project_type == 'dlcpro-specalyser')
         let s:Program = '/specalyser/specalyser'
+        let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/specalyser'
         set wildignore+=**/shg-firmware/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = []
+        let g:DeviceIP = 'dlcpro_stefan'
+        let g:GdbPort = '2345'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:SshOpts = ""
+        let g:SshOpts2 = ""
     elseif (g:project_type == 'shg')
         let s:Program = '/shg-firmware/device-control/device-control-shg'
+        let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/device-control-shg'
         set wildignore+=**/firmware/src/device-control/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+        let g:DeviceIP = 'dlcpro_stefan'
+        let g:GdbPort = '6666'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:SshOpts = '-o ForwardAgent=yes -o ProxyCommand="ssh -q -W shg:22 root@%h" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
+        let g:SshOpts2 = "-L localhost:1998:localhost:1998 -L localhost:1999:localhost:1999"
     elseif (g:project_type == 'dlcpro-gui')
         let s:Program = '/TOPAS_DLC_pro'
+        let s:Elffile = s:Program
         let s:makegoals = []
     elseif (g:project_type == 'topmode')
         let s:Program = '/topmode'
+        let s:Elffile = s:Program
         let g:ProgramRemote = '/usr/toptica/topmode'
         execute 'set path+=' . s:include_oselas
         let s:makegoals = []
+        let g:DeviceIP = 'topmode_stefan'
+        let g:GdbPort = '2345'
+        let g:GdbRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
+        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:SshOpts = ""
+        let g:SshOpts2 = ""
     elseif (g:project_type == 'topmode-gui')
         let s:Program = '/TOPAS_Topmode'
+        let s:Elffile = s:Program
         let s:makegoals = []
     elseif (g:project_type == 'digifalc')
         let s:Program = '/digifalc-image.bin'
-        let s:base_arm = '/opt/gcc-arm-none-eabi-7-2018-q2-update'
-        let s:include_arm = s:base_arm.'/arm-none-eabi/include'
-        execute 'set path+=' . s:include_arm
+        let s:Elffile = '/application/digifalc.elf'
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'digifalc.elf', 'bootloader.elf']
-        " use cmake --build instead of make
         let &makeprg = 'cmake --build . --target'
+        let g:GdbPort = '2331'
+        let g:GdbRoot = '/opt/gcc-arm-none-eabi-7-2018-q2-update'
+        let g:ConqueGdb_GdbExe = g:GdbRoot.'/arm-none-eabi-gdb'
+        let s:include_arm = g:GdbRoot.'/arm-none-eabi/include'
+        execute 'set path+=' . g:GdbRoot
     elseif (g:project_type == 'servoboard')
         let s:Program = '/servo-board-image.bin'
-        let s:base_arm = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
-        let s:include_arm = s:base_arm.'/arm-none-eabi/include'
-        execute 'set path+=' . s:include_arm
+        let s:Elffile = '/application/servo-board.elf'
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'servo-board.elf', 'bootloader.elf']
-        " use cmake --build instead of make
         let &makeprg = 'cmake --build . --target'
+        let g:GdbPort = '2331'
+        let g:GdbRoot = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
+        let g:ConqueGdb_GdbExe = g:GdbRoot.'/arm-none-eabi-gdb'
+        let s:include_arm = g:GdbRoot.'/arm-none-eabi/include'
+        execute 'set path+=' . g:GdbRoot
     else
         echo "no project"
     endif
@@ -125,6 +167,7 @@ function s:ProjectSet(project_type, project_base_dir)
     compiler gcc
     let s:makeopts = ['-j3', 'VERBOSE=1']
     let g:Program = g:ProjectBuildDir.s:Program
+    let g:Elffile = g:ProjectBuildDir.s:Elffile
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
     command! MakeTestBuild call s:MakeTestBuild()
 
@@ -140,38 +183,20 @@ function s:ProjectSet(project_type, project_base_dir)
                     \ statusline=%t\ [%{g:asyncrun_status}]\ %{exists('w:quickfix_title')?\ '\ '.w:quickfix_title\ :\ ''}\ %=%-15(%l,%c%V%)\ %P
     augroup END
 
-    " debugger
-    if (g:project_type == 'topmode')
-        let g:DeviceIP = 'topmode_stefan'
-        let g:GdbPort = '2345'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
-        let g:SshOpts = ""
-        let g:SshOpts2 = ""
-    elseif (g:project_type == 'shg')
-        let g:DeviceIP = 'dlcpro_stefan'
-        let g:GdbPort = '6666'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
-        let g:SshOpts = '-o ForwardAgent=yes -o ProxyCommand="ssh -q -W shg:22 root@%h" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
-        let g:SshOpts2 = "-L localhost:1998:localhost:1998 -L localhost:1999:localhost:1999"
-    else
-        let g:DeviceIP = 'dlcpro_stefan'
-        let g:GdbPort = '2345'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
-        let g:SshOpts = ""
-        let g:SshOpts2 = ""
-    endif
-    if (g:project_type == 'dlcpro-can')
-        command! DeviceFirmwareUpdate call s:DeviceUpdateProgram()
-    elseif ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
-        command! DeviceFirmwareUpdate call s:JLinkFlashProgram()
-    else
-        command! DeviceFirmwareUpdate call s:DeviceFirmwareUpdateStart()
-    endif
-    let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+    function! s:DeviceFirmwareUpdate()
+        if (g:project_type == 'dlcpro-can')
+            call s:DeviceUpdateProgramLinux()
+        elseif ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
+            call s:JLinkFlashProgram()
+        else
+            call s:DeviceFirmwareUpdateStartLinux()
+        endif
+    endfunction
+
     command! DeviceDebug call s:DeviceDebug(0)
     command! DeviceDebugAttach call s:DeviceDebug(1)
-    command! DeviceGdbDebug call s:DeviceGdbDebug()
-    command! DeviceGdbDebugAttach call s:DeviceGdbDebugAttach()
+    command! DeviceStartGdbServer call s:DeviceStartGdbServer()
+    command! DeviceStartGdbServerAttach call s:DeviceStartGdbServerAttach()
 
     " update device-contol.xml for Topas-GUI
     command! DlcProUpdateTopasXml '!svnmucc put -m \'update "device-control.xml"\' ".g:ProjectBuildDir.'/device-control/device-control.xml https://svn.toptica.com/svn/topas_dlc_pro/trunk/res/device-control.xml'
@@ -273,10 +298,10 @@ function s:DlcproEmission(state)
 endfunction
 
 function s:JLinkFlashProgram()
-    call term_start('sudo '.s:ProjectSrcDir.'/flash_firmware.py -j /opt/SEGGER/JLink/JLinkExe -a 0x8000000 '.g:Program)
+    call term_start(s:ProjectSrcDir.'/flash_firmware.py -j /opt/SEGGER/JLink/JLinkExe -a 0x8000000 '.g:Program)
 endfunction
 
-function s:DeviceUpdateProgram()
+function s:DeviceUpdateProgramLinux()
     call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'"')
     sleep 2
 "    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q -9 gdbserver start-dc.sh '.g:ProgramRemote.'"')
@@ -285,44 +310,54 @@ function s:DeviceUpdateProgram()
     return r
 endfunction
 
-function s:DeviceFirmwareUpdateStart()
-    let r = s:DeviceUpdateProgram()
+function s:DeviceFirmwareUpdateStartLinux()
+    let r = s:DeviceUpdateProgramLinux()
     if (r == 0)
         call s:Call_and_log('ssh '.g:SshOpts.' -f root@'.g:DeviceIP.' "{ exec '.g:ProgramRemote.' 2>&1 | logger -t "'.g:ProgramRemote.'" -p user.err; } &"')
     endif
 endfunction
 
-function s:DeviceGdbDebug()
-    call s:Call_and_log('pkill --full gdbserver')
-    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q -9 gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'"')
-    call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' gdbserver --multi localhost:'.g:GdbPort.' &')
+function s:DeviceStartGdbServer()
+    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
+        call s:Call_and_log('pkill --full JLinkGDBServer')
+        call s:Call_and_log('/opt/SEGGER/JLink/JLinkGDBServer -if SWD -device STM32H743XI &')
+    else
+        call s:Call_and_log('pkill --full gdbserver')
+        call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q -9 gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'"')
+        call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' gdbserver --multi localhost:'.g:GdbPort.' &')
+    endif
 endfunction
 
-function s:DeviceGdbDebugAttach()
-    call s:Call_and_log('pkill --full gdbserver')
-    call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"')
+function s:DeviceStartGdbServerAttach()
+    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
+    else
+        call s:Call_and_log('pkill --full gdbserver')
+        call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"')
+    endif
 endfunction
 
 let g:DlcProBasePath = "/jenkins/workspace/pro--firmware_release_1.9.0-DCESJ5C5R577IG5QFEWTML22UFDDZCJDGFLMDA4DCD3V2ZAGVEJA/source/"
 function s:DeviceDebug(attach)
     if (a:attach == 0)
-        let r = s:DeviceUpdateProgram()
+        let r = s:DeviceFirmwareUpdate()
         if (r != 0)
-            echoerr "DeviceUpdateProgram() failed!"
+            echoerr "DeviceFirmwareUpdate() failed!"
         else
-            call s:DeviceGdbDebug()
+            call s:DeviceStartGdbServer()
             sleep 2
             ConqueGdbTab
             execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
-            execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
-            execute "ConqueGdbCommand file ".g:Program
+            if exists("g:ProgramRemote")
+                execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
+            endif
+            execute "ConqueGdbCommand file ".g:Elffile
             ConqueGdbCommand break main
             ConqueGdbCommand run
         endif
     else
-        call s:DeviceGdbDebugAttach()
+        call s:DeviceStartGdbServerAttach()
         sleep 1
-        execute "ConqueGdbTab ".g:Program
+        execute "ConqueGdbTab ".g:Elffile
         execute "ConqueGdbCommand target remote localhost:".g:GdbPort
         " get remote src path with gdb: info sources or gdb: break main
         execute "ConqueGdbCommand set substitute-path ".g:DlcProBasePath." ".s:ProjectSrcDir
