@@ -7,10 +7,13 @@ command DlcproEmissionOn call s:DlcproEmission('1')
 command DlcproEmissionOff call s:DlcproEmission('0')
 command -nargs=1 -complete=dir Topmode call s:ProjectSet('topmode', '<args>')
 command -nargs=1 -complete=dir TopmodeGui call s:ProjectSet('topmode-gui', '<args>')
+command -nargs=1 -complete=dir DigiFalc call s:ProjectSet('digifalc', '<args>')
+command -nargs=1 -complete=dir ServoBoard call s:ProjectSet('servoboard', '<args>')
 function s:ProjectSet(project_type, project_base_dir)
     let g:project_type = a:project_type
 
     " directories
+    let s:include_oselas = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/sysroot-arm-cortexa8-linux-gnueabi/usr/include'
     if a:project_base_dir != ''
         if (isdirectory(fnamemodify(a:project_base_dir, ':p:h:h').'/src'))
             let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p:h:h')
@@ -35,36 +38,15 @@ function s:ProjectSet(project_type, project_base_dir)
             let s:ProjectBaseDir = '/home/stefan/topmode/firmware'
         elseif (g:project_type == 'topmode-gui')
             let s:ProjectBaseDir = '/home/stefan/topmode/pc-gui'
+        elseif (g:project_type == 'digifalc')
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/falc/firmware'
+        elseif (g:project_type == 'servoboard')
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/mta/firmware'
         else
             echo "no project"
         endif
     endif
-    if (g:project_type == 'dlcpro')
-        let s:Program = '/device-control/device-control'
-        let g:ProgramRemote = '/opt/app/bin/device-control'
-        set wildignore+=**/shg-firmware/**
-    elseif (g:project_type == 'dlcpro-can')
-        let s:Program = '/canopen/can-updater'
-        let g:ProgramRemote = '/opt/app/bin/can-updater'
-        set wildignore+=**/shg-firmware/**
-    elseif (g:project_type == 'dlcpro-specalyser')
-        let s:Program = '/specalyser/specalyser'
-        let g:ProgramRemote = '/opt/app/bin/specalyser'
-        set wildignore+=**/shg-firmware/**
-    elseif (g:project_type == 'shg')
-        let s:Program = '/shg-firmware/device-control/device-control-shg'
-        let g:ProgramRemote = '/opt/app/bin/device-control-shg'
-        set wildignore+=**/firmware/src/device-control/**
-    elseif (g:project_type == 'dlcpro-gui')
-        let s:Program = '/TOPAS_DLC_pro'
-    elseif (g:project_type == 'topmode')
-        let s:Program = '/topmode'
-        let g:ProgramRemote = '/usr/toptica/topmode'
-    elseif (g:project_type == 'topmode-gui')
-        let s:Program = '/TOPAS_Topmode'
-    else
-        echo "no project"
-    endif
+
     let g:ProjectSrcDirRel = 'src'
     let s:ProjectSrcDir = s:ProjectBaseDir.'/'.g:ProjectSrcDirRel
     let g:ProjectBuildDir = s:ProjectBaseDir.'/build'
@@ -73,8 +55,62 @@ function s:ProjectSet(project_type, project_base_dir)
     execute 'cd '.s:ProjectSrcDir
     execute 'set path-=./**'
     execute 'set path+=' .  s:ProjectSrcDir.'/**'
+
     execute 'set path+=' .  g:ProjectBuildDir.'/**'
-    execute 'set path+=/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/sysroot-arm-cortexa8-linux-gnueabi/usr/include'
+    if (g:project_type == 'dlcpro')
+        let s:Program = '/device-control/device-control'
+        let g:ProgramRemote = '/opt/app/bin/device-control'
+        set wildignore+=**/shg-firmware/**
+        execute 'set path+=' . s:include_oselas
+        let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+    elseif (g:project_type == 'dlcpro-can')
+        let s:Program = '/canopen/can-updater'
+        let g:ProgramRemote = '/opt/app/bin/can-updater'
+        set wildignore+=**/shg-firmware/**
+        execute 'set path+=' . s:include_oselas
+        let s:makegoals = []
+    elseif (g:project_type == 'dlcpro-specalyser')
+        let s:Program = '/specalyser/specalyser'
+        let g:ProgramRemote = '/opt/app/bin/specalyser'
+        set wildignore+=**/shg-firmware/**
+        execute 'set path+=' . s:include_oselas
+        let s:makegoals = []
+    elseif (g:project_type == 'shg')
+        let s:Program = '/shg-firmware/device-control/device-control-shg'
+        let g:ProgramRemote = '/opt/app/bin/device-control-shg'
+        set wildignore+=**/firmware/src/device-control/**
+        execute 'set path+=' . s:include_oselas
+        let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+    elseif (g:project_type == 'dlcpro-gui')
+        let s:Program = '/TOPAS_DLC_pro'
+        let s:makegoals = []
+    elseif (g:project_type == 'topmode')
+        let s:Program = '/topmode'
+        let g:ProgramRemote = '/usr/toptica/topmode'
+        execute 'set path+=' . s:include_oselas
+        let s:makegoals = []
+    elseif (g:project_type == 'topmode-gui')
+        let s:Program = '/TOPAS_Topmode'
+        let s:makegoals = []
+    elseif (g:project_type == 'digifalc')
+        let s:Program = '/digifalc-image.bin'
+        let s:base_arm = '/opt/gcc-arm-none-eabi-7-2018-q2-update'
+        let s:include_arm = s:base_arm.'/arm-none-eabi/include'
+        execute 'set path+=' . s:include_arm
+        let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'digifalc.elf', 'bootloader.elf']
+        " use cmake --build instead of make
+        let &makeprg = 'cmake --build . --target'
+    elseif (g:project_type == 'servoboard')
+        let s:Program = '/servo-board-image.bin'
+        let s:base_arm = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
+        let s:include_arm = s:base_arm.'/arm-none-eabi/include'
+        execute 'set path+=' . s:include_arm
+        let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'servo-board.elf', 'bootloader.elf']
+        " use cmake --build instead of make
+        let &makeprg = 'cmake --build . --target'
+    else
+        echo "no project"
+    endif
 
     " editor settings
     set spell spelllang=en,de
@@ -87,7 +123,6 @@ function s:ProjectSet(project_type, project_base_dir)
 
     " compiler
     compiler gcc
-    let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
     let s:makeopts = ['-j3', 'VERBOSE=1']
     let g:Program = g:ProjectBuildDir.s:Program
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
@@ -125,16 +160,18 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = ""
         let g:SshOpts2 = ""
     endif
+    if (g:project_type == 'dlcpro-can')
+        command! DeviceFirmwareUpdate call s:DeviceUpdateProgram()
+    elseif ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
+        command! DeviceFirmwareUpdate call s:JLinkFlashProgram()
+    else
+        command! DeviceFirmwareUpdate call s:DeviceFirmwareUpdateStart()
+    endif
     let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
-    command! DeviceFirmwareUpdate call s:DeviceFirmwareUpdateStart()
     command! DeviceDebug call s:DeviceDebug(0)
     command! DeviceDebugAttach call s:DeviceDebug(1)
     command! DeviceGdbDebug call s:DeviceGdbDebug()
     command! DeviceGdbDebugAttach call s:DeviceGdbDebugAttach()
-
-    " vc-plugin
-    let g:vc_branch_url = ['https://svn.toptica.com/svn/DiSiRa/SW/firmware/branches']
-    let g:vc_trunk_url = 'https://svn.toptica.com/svn/DiSiRa/SW/firmware/trunk'
 
     " update device-contol.xml for Topas-GUI
     command! DlcProUpdateTopasXml '!svnmucc put -m \'update "device-control.xml"\' ".g:ProjectBuildDir.'/device-control/device-control.xml https://svn.toptica.com/svn/topas_dlc_pro/trunk/res/device-control.xml'
@@ -168,7 +205,8 @@ endfunction
 
 function s:Make(args, async_mode)
     call asyncrun#quickfix_toggle(10, 1)
-    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
+"    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
+    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -program=make -cwd='.g:ProjectBuildDir. ' @ '.a:args
 endfunction
 
 function s:MakeTestBuild()
@@ -199,6 +237,14 @@ function s:Cmake(build_type, async_mode)
         let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
         let args .= " -DSYSROOT=~/topmode/topmode-sdk/sysroot-target"
     elseif (g:project_type == 'topmode-gui')
+    elseif (g:project_type == 'digifalc')
+        let args .= " -G Ninja"
+        let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/GNU\\ Arm\\ Embedded.toolchain.cmake"
+        let $PATH = $PATH.':'.s:base_arm.'/bin'
+    elseif (g:project_type == 'servoboard')
+        let args .= " -G Ninja"
+        let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/GNU\\ Arm\\ Embedded.toolchain.cmake"
+        let $PATH = $PATH.':'.s:base_arm.'/bin'
     endif
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
@@ -224,6 +270,10 @@ endfunction
 
 function s:DlcproEmission(state)
     call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "echo '.state.' > /sys/bus/i2c/devices/200-0028/emission_button_state"')
+endfunction
+
+function s:JLinkFlashProgram()
+    call term_start('sudo '.s:ProjectSrcDir.'/flash_firmware.py -j /opt/SEGGER/JLink/JLinkExe -a 0x8000000 '.g:Program)
 endfunction
 
 function s:DeviceUpdateProgram()
@@ -291,7 +341,9 @@ command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest('192.1
 command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', '<f-args>')
 command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
 command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
-command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest('192.168.54.29', 'elab-dlcpro', '5', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', '<f-args>')
+command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest('192.168.54.29', 'elab-dlcpro', '6', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', '<f-args>')
+let g:DlcProRegtest_fast_restart = 1
+
 function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type, opts, arguments)
     execute "wa"
     if (a:ip == 'g:DeviceIP')
@@ -335,10 +387,15 @@ function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type,
                 \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
                 \"--skip_shutdown_after_test ".
                 \"--skip_fw_update ".
-                \"--override log_cli=1 --override log_cli_level=DEBUG --override log_file_level=DEBUG ".
-                \a:opts." ".a:arguments
+                \"--override log_cli=1 --override log_cli_level=DEBUG --override log_file_level=DEBUG "
+    if (g:DlcProRegtest_fast_restart == 1)
+        let test_cmd .= "--fast_restart "
+    endif
+
+    let test_cmd .= a:opts." ".a:arguments
     echom test_cmd
     call term_start(test_cmd, {'cwd' : test_dir})
+    " hint: --collect-only
 endfunction
 
 " ======
