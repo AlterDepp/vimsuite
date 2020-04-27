@@ -62,6 +62,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:Program = '/device-control/device-control'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/device-control'
+        set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
@@ -75,6 +76,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:Program = '/canopen/can-updater'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/can-updater'
+        set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = []
@@ -88,6 +90,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:Program = '/specalyser/specalyser'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/specalyser'
+        set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = []
@@ -101,6 +104,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:Program = '/shg-firmware/device-control/device-control-shg'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/device-control-shg'
+        set wildignore-=**/shg-firmware/**
         set wildignore+=**/firmware/src/device-control/**
         execute 'set path+=' . s:include_oselas
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
