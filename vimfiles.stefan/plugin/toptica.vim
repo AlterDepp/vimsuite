@@ -174,6 +174,7 @@ function s:ProjectSet(project_type, project_base_dir)
     let g:Elffile = g:ProjectBuildDir.s:Elffile
     command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
     command! MakeTestBuild call s:MakeTestBuild()
+    command! Ctest call s:Ctest()
 
     " cmake
     command! -nargs=1 -complete=custom,CmakeBuildTypes Cmake call s:Cmake('<args>', 0)
@@ -276,6 +277,13 @@ function s:Cmake(build_type, async_mode)
         let $PATH = $PATH.':'.s:base_arm.'/bin'
     endif
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
+endfunction
+
+function s:Ctest()
+"    let cmd = 'ctest --build-and-test ./src unit-tests --build-generator "Unix Makefiles" --build-target unit_tests --test-command ctest --nocompress-output -T Test'
+    let cmd = 'ctest --build-and-test ./src unit-tests --build-generator "Unix Makefiles" --build-target unit_tests --nocompress-output -T Test --build-options -DCMAKE_BUILD_TYPE=Debug --test-command ctest'
+    call asyncrun#quickfix_toggle(10, 0)
+    execute 'AsyncRun -mode=1 -save=2 -cwd='.s:ProjectBaseDir.' @ ' . cmd
 endfunction
 
 function s:Call_and_log(cmd)
