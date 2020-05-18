@@ -14,7 +14,6 @@ function s:ProjectSet(project_type, project_base_dir)
     let g:project_type = a:project_type
 
     " directories
-    let s:include_oselas = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/sysroot-arm-cortexa8-linux-gnueabi/usr/include'
     if a:project_base_dir != ''
         if (isdirectory(fnamemodify(a:project_base_dir, ':p:h:h').'/src'))
             let s:ProjectBaseDir = fnamemodify(a:project_base_dir, ':p:h:h')
@@ -56,104 +55,115 @@ function s:ProjectSet(project_type, project_base_dir)
     execute 'cd '.s:ProjectSrcDir
     execute 'set path-=./**'
     execute 'set path+=' .  s:ProjectSrcDir.'/**'
-
     execute 'set path+=' .  g:ProjectBuildDir.'/**'
+    let s:oselas_include = '/sysroot-arm-cortexa8-linux-gnueabi/usr/include'
+    let s:oselas_gdb = "/opt/OSELAS.Toolchain-2018.12.0/arm-v7a-linux-gnueabi/gcc-8.2.1-glibc-2.28-binutils-2.31.1-kernel-3.6-sanitized/bin/arm-v7a-linux-gnueabi-gdb"
+
     if (g:project_type == 'dlcpro')
         let s:Program = '/device-control/device-control'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/device-control'
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
-        execute 'set path+=' . s:include_oselas
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
         let g:DeviceIP = 'dlcpro_stefan'
         let g:GdbPort = '2345'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
-        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:termdebugger = s:oselas_gdb
+"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
+        execute 'set path+=' .  g:GccRoot . s:oselas_include
     elseif (g:project_type == 'dlcpro-can')
         let s:Program = '/canopen/can-updater'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/can-updater'
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
-        execute 'set path+=' . s:include_oselas
         let s:makegoals = []
         let g:DeviceIP = 'dlcpro_stefan'
         let g:GdbPort = '2345'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
-        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:termdebugger = s:oselas_gdb
+"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
+        execute 'set path+=' .  g:GccRoot . s:oselas_include
     elseif (g:project_type == 'dlcpro-specalyser')
         let s:Program = '/specalyser/specalyser'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/specalyser'
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
-        execute 'set path+=' . s:include_oselas
         let s:makegoals = []
         let g:DeviceIP = 'dlcpro_stefan'
         let g:GdbPort = '2345'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
-        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:termdebugger = s:oselas_gdb
+"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
+        execute 'set path+=' .  g:GccRoot . s:oselas_include
     elseif (g:project_type == 'shg')
         let s:Program = '/shg-firmware/device-control/device-control-shg'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/opt/app/bin/device-control-shg'
         set wildignore-=**/shg-firmware/**
         set wildignore+=**/firmware/src/device-control/**
-        execute 'set path+=' . s:include_oselas
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
         let g:DeviceIP = 'dlcpro_stefan'
         let g:GdbPort = '6666'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
-        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
+        let g:termdebugger = s:oselas_gdb
+"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = '-o ForwardAgent=yes -o ProxyCommand="ssh -q -W shg:22 root@%h" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
         let g:SshOpts2 = "-L localhost:1998:localhost:1998 -L localhost:1999:localhost:1999"
+        execute 'set path+=' .  g:GccRoot . s:oselas_include
     elseif (g:project_type == 'dlcpro-gui')
         let s:Program = '/TOPAS_DLC_pro'
         let s:Elffile = s:Program
         let s:makegoals = []
+        let g:termdebugger = 'gdb'
     elseif (g:project_type == 'topmode')
         let s:Program = '/topmode'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/usr/toptica/topmode'
-        execute 'set path+=' . s:include_oselas
         let s:makegoals = []
         let g:DeviceIP = 'topmode_stefan'
         let g:GdbPort = '2345'
-        let g:GdbRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
-        let g:ConqueGdb_GdbExe = g:GdbRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:GccRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
+        let g:termdebugger = s:oselas_gdb
+"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
+        execute 'set path+=' .  g:GccRoot . s:oselas_include
     elseif (g:project_type == 'topmode-gui')
         let s:Program = '/TOPAS_Topmode'
         let s:Elffile = s:Program
         let s:makegoals = []
+        let g:termdebugger = 'gdb'
     elseif (g:project_type == 'digifalc')
         let s:Program = '/digifalc-image.bin'
         let s:Elffile = '/application/digifalc.elf'
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'digifalc.elf', 'bootloader.elf']
         let &makeprg = 'cmake --build . --target'
         let g:GdbPort = '2331'
-        let g:GdbRoot = '/opt/gcc-arm-none-eabi-7-2018-q2-update'
-        let g:ConqueGdb_GdbExe = g:GdbRoot.'/arm-none-eabi-gdb'
-        let s:include_arm = g:GdbRoot.'/arm-none-eabi/include'
-        execute 'set path+=' . g:GdbRoot
+        let g:GccRoot = '/opt/gcc-arm-none-eabi-7-2018-q2-update'
+        let g:termdebugger = s:oselas_gdb
+"        let g:ConqueGdb_GdbExe = g:GccRoot.'/arm-none-eabi-gdb'
+        let s:include_arm = g:GccRoot.'/arm-none-eabi/include'
+        execute 'set path+=' . g:GccRoot
     elseif (g:project_type == 'servoboard')
         let s:Program = '/servo-board-image.bin'
         let s:Elffile = '/application/servo-board.elf'
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'servo-board.elf', 'bootloader.elf']
         let &makeprg = 'cmake --build . --target'
         let g:GdbPort = '2331'
-        let g:GdbRoot = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
-        let g:ConqueGdb_GdbExe = g:GdbRoot.'/arm-none-eabi-gdb'
-        let s:include_arm = g:GdbRoot.'/arm-none-eabi/include'
-        execute 'set path+=' . g:GdbRoot
+        let g:GccRoot = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
+        let g:termdebugger = s:oselas_gdb
+"        let g:ConqueGdb_GdbExe = g:GccRoot.'/arm-none-eabi-gdb'
+        let s:include_arm = g:GccRoot.'/arm-none-eabi/include'
+        execute 'set path+=' . g:GccRoot
     else
         echo "no project"
     endif
@@ -270,11 +280,11 @@ function s:Cmake(build_type, async_mode)
     elseif (g:project_type == 'digifalc')
         let args .= " -G Ninja"
         let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/GNU\\ Arm\\ Embedded.toolchain.cmake"
-        let $PATH = $PATH.':'.s:base_arm.'/bin'
+        let $PATH = $PATH.':'.g:GccRoot.'/bin'
     elseif (g:project_type == 'servoboard')
         let args .= " -G Ninja"
         let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/GNU\\ Arm\\ Embedded.toolchain.cmake"
-        let $PATH = $PATH.':'.s:base_arm.'/bin'
+        let $PATH = $PATH.':'.g:GccRoot.'/bin'
     endif
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
@@ -348,6 +358,26 @@ function s:DeviceStartGdbServerAttach()
     endif
 endfunction
 
+function s:SendToTerm(command)
+    call term_sendkeys('', a:command . "\n")
+    sleep 1
+endfunction
+
+function s:SendToConque(command)
+    execute 'ConqueGdbCommand ' . a:command
+endfunction
+
+function s:SendToDebugger(command)
+"    call s:SendToTerm(a:command)
+    call s:SendToConque(a:command)
+endfunction
+
+"command StartDebugger Termdebug
+"command StartDebuggerAttach execute 'Termdebug ' . g:Elffile
+
+command StartDebugger ConqueGdbTab
+command StartDebuggerAttach execute 'ConqueGdbTab '.g:Elffile
+
 let g:DlcProBasePath = "/jenkins/workspace/pro--firmware_release_1.9.0-DCESJ5C5R577IG5QFEWTML22UFDDZCJDGFLMDA4DCD3V2ZAGVEJA/source/"
 function s:DeviceDebug(attach)
     if (a:attach == 0)
@@ -357,26 +387,28 @@ function s:DeviceDebug(attach)
         else
             call s:DeviceStartGdbServer()
             sleep 2
-            ConqueGdbTab
-            execute "ConqueGdbCommand target extended-remote localhost:".g:GdbPort
+            StartDebugger
+"            call s:SendToDebugger('')
+            call s:SendToDebugger('target extended-remote localhost:'.g:GdbPort)
             if exists("g:ProgramRemote")
-                execute "ConqueGdbCommand set remote exec-file ".g:ProgramRemote
+                call s:SendToDebugger('set remote exec-file '.g:ProgramRemote)
             endif
-            execute "ConqueGdbCommand file ".g:Elffile
-            ConqueGdbCommand break main
-            ConqueGdbCommand run
+            call s:SendToDebugger('file '.g:Elffile)
+            sleep 3
+            call s:SendToDebugger('break main')
+            call s:SendToDebugger('run')
         endif
     else
         call s:DeviceStartGdbServerAttach()
         sleep 1
-        execute "ConqueGdbTab ".g:Elffile
-        execute "ConqueGdbCommand target remote localhost:".g:GdbPort
+        StartDebuggerAttach
+        call s:SendToDebugger('target remote localhost:'.g:GdbPort)
         " get remote src path with gdb: info sources or gdb: break main
-        execute "ConqueGdbCommand set substitute-path ".g:DlcProBasePath." ".s:ProjectSrcDir
+        call s:SendToDebugger('set substitute-path '.g:DlcProBasePath.' '.s:ProjectSrcDir)
     endif
 
-    execute "ConqueGdbCommand set solib-search-path ".g:GdbRoot."/arm-cortexa8-linux-gnueabi/lib/".":".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi/lib/".":".g:GdbRoot."/sysroot-arm-cortexa8-linux-gnueabi/usr/lib/"
-    ConqueGdbCommand set can-use-hw-watchpoints 0
+    call s:SendToDebugger('set solib-search-path '.g:GccRoot.'/arm-cortexa8-linux-gnueabi/lib/'.':'.g:GccRoot.'/sysroot-arm-cortexa8-linux-gnueabi/lib/'.':'.g:GccRoot.'/sysroot-arm-cortexa8-linux-gnueabi/usr/lib/')
+    call s:SendToDebugger('set can-use-hw-watchpoints 0')
 endfunction
 
 " ================
