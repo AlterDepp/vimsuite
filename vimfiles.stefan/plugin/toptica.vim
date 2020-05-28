@@ -448,7 +448,7 @@ function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type,
     " Execute pytest
     let test_dir = s:ProjectSrcDir."/test"
     let test_cmd =
-                \"python3 -u -m pytest ".
+                \test_dir."/python-env/bin/python -u -m pytest ".
                 \"--showlocals --tb=long --verbose --cache-clear ".
                 \"--junit-xml=regtest.".a:laser_type.".xml ".
                 \"--laser_count=".a:laser_count." ".
