@@ -32,6 +32,41 @@ if !exists('nobmsk')
     execute 'source ' . expand(g:vimfiles . '/vimrc.bmsk')
 endif
 
+" ------------------
+" packages / plugins
+" ------------------
+packadd! asyncrun
+packadd! conque
+"packadd! diffchar
+packadd! dirdiff
+packadd! DoxygenToolkit
+packadd! flake8
+packadd! flog
+packadd! fugitive
+"packadd! gdb-from-vim
+packadd! gundo
+packadd! isort
+packadd! linediff
+packadd! merginal
+"packadd! pyclewn
+"packadd! pylint
+packadd! python-pep8-indent
+packadd! qml
+packadd! rtags
+packadd! sessionman
+packadd! SrchRplcHiGrp
+packadd! syntastic
+packadd! tagbar
+"packadd! tail
+packadd! tcomment
+packadd! termdebug
+packadd! vc
+packadd! vimagit
+packadd! VisIncr
+packadd! xml
+packadd! yapf
+packadd! YouCompleteMe
+
 " global settings
 " ---------------
 set nobackup            " keep no backup file
@@ -244,11 +279,6 @@ let g:tcomment#options = {'col': 1, 'whitespace': 'no'}
 " ---------
 let g:vc_log_name = '~/vc.log'
 
-" ----
-" gitv
-" ----
-let g:Gitv_OpenHorizontal = 1
-
 " ------
 " flake8
 " ------
@@ -266,40 +296,11 @@ command PyIsort Isort
 " ----------
 let g:ConqueGdb_GdbExe = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
 
-" ------------------
-" packages / plugins
-" ------------------
-packadd! asyncrun
-packadd! conque
-"packadd! diffchar
-packadd! dirdiff
-packadd! DoxygenToolkit
-packadd! flake8
-packadd! fugitive
-"packadd! gdb-from-vim
-packadd! gitv
-packadd! gundo
-packadd! isort
-packadd! linediff
-packadd! merginal
-"packadd! pyclewn
-"packadd! pylint
-packadd! python-pep8-indent
-packadd! qml
-packadd! rtags
-packadd! sessionman
-packadd! SrchRplcHiGrp
-packadd! syntastic
-packadd! tagbar
-"packadd! tail
-packadd! tcomment
-packadd! termdebug
-packadd! vc
-packadd! vimagit
-packadd! VisIncr
-packadd! xml
-packadd! yapf
-packadd! YouCompleteMe
+" -------------
+" YouCompleteMe
+" -------------
+let g:ycm_clangd_binary_path = '/usr/bin/clangd'
+"let g:ycm_clangd_binary_path = '/opt/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clangd'
 
 if exists('g:debug')
     if (g:debug > 0)

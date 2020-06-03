@@ -104,3 +104,6 @@
 [submodule "pack/qml/opt/qml"]
 	path = pack/qml/opt/qml
 	url = https://github.com/peterhoeg/vim-qml.git
+[submodule "pack/flog/opt/flog"]
+	path = pack/flog/opt/flog
+	url = https://github.com/rbong/vim-flog.git
