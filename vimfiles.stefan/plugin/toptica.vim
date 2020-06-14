@@ -89,6 +89,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
+        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'dlcpro-specalyser')
         let s:Program = '/specalyser/specalyser'
         let s:Elffile = s:Program
@@ -104,6 +105,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
+        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'shg')
         let s:Program = '/shg-firmware/device-control/device-control-shg'
         let s:Elffile = s:Program
@@ -119,6 +121,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = '-o ForwardAgent=yes -o ProxyCommand="ssh -q -W shg:22 root@%h" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
         let g:SshOpts2 = "-L localhost:1998:localhost:1998 -L localhost:1999:localhost:1999"
         execute 'set path+=' .  g:GccRoot . s:oselas_include
+        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'dlcpro-gui')
         let s:Program = '/TOPAS_DLC_pro'
         let s:Elffile = s:Program
@@ -137,6 +140,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
+        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'topmode-gui')
         let s:Program = '/TOPAS_Topmode'
         let s:Elffile = s:Program
@@ -182,7 +186,7 @@ function s:ProjectSet(project_type, project_base_dir)
     let s:makeopts = ['-j3', 'VERBOSE=1']
     let g:Program = g:ProjectBuildDir.s:Program
     let g:Elffile = g:ProjectBuildDir.s:Elffile
-    command! -complete=custom,GetAllMakeCompletions -nargs=* Make call s:Make('<args>', 0)
+    command! -complete=custom,GetAllMakeCompletions -nargs=* MakeCmd call s:Make('<args>', 0)
     command! MakeTestBuild call s:MakeTestBuild()
     command! Ctest call s:Ctest()
 
@@ -222,13 +226,10 @@ function s:ProjectSet(project_type, project_base_dir)
     "let g:ycm_autoclose_preview_window_after_completion = 0
     "let g:ycm_autoclose_preview_window_after_insertion = 0
     "let g:ycm_key_previous_completion = ['<TAB>', '<Down>', '<Enter>']
-    let g:ycm_extra_conf_globlist = [
-                \s:ProjectBaseDir.'/.ycm_extra_conf.py',
-                \'!~/tools/vimsuite/vimfiles.YouCompleteMe/*',
-                \]
-
-    " rtags
-    command! RtagsIncludeTree execute('!rc --dependencies %')
+"    let g:ycm_extra_conf_globlist = [
+"                \s:ProjectBaseDir.'/.ycm_extra_conf.py',
+"                \'!~/tools/vimsuite/vimfiles.YouCompleteMe/*',
+"                \]
 
     " little helpers
     command! -nargs=? BuildDirStash call s:BuildDirStash('<args>')
@@ -414,23 +415,85 @@ endfunction
 " ================
 " Regression Tests
 " ================
-command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest('g:DeviceIP',    '',            '0', '1', 'DLpro',     '--capture=no',                  '<args>')
-command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest('192.168.54.24', 'elab-dlcpro', '2', '1', 'DLpro',     '',                              '<f-args>')
-command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest('192.168.54.9',  'elab-dlcpro', '3', '1', 'TApro',     '-m "not usb and not usbstick"', '<f-args>')
-command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', '<f-args>')
-command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
-command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest('192.168.54.28', 'elab-dlcpro', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
-command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest('192.168.54.29', 'elab-dlcpro', '7', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', '<f-args>')
-let g:DlcProRegtest_fast_restart = 1
+function DlcProRegtestCmd()
+    return s:DlcProRegtestCmd('g:DeviceIP',    '',            '0', '1', 'DLpro',     '--capture=no',                  '<args>')
+endfunction
+function DlcProRegtestDlProCmd()
+    return s:DlcProRegtestCmd('192.168.54.24', 'elab-dlcpro', '2', '1', 'DLpro',     '',                              '<f-args>')
+endfunction
+function DlcProRegtestTaProCmd()
+    return s:DlcProRegtestCmd('192.168.54.9',  'elab-dlcpro', '3', '1', 'TApro',     '-m "not usb and not usbstick"', '<f-args>')
+endfunction
+function DlcProRegtestCtlCmd()
+    return s:DlcProRegtestCmd('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', '<f-args>')
+endfunction
+function DlcProRegtestDualDlCmd()
+    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
+endfunction
+function DlcProRegtestDualDl1Cmd()
+    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
+endfunction
+function DlcProRegtestShgProCmd()
+    return s:DlcProRegtestCmd('192.168.54.29', 'elab-dlcpro', '7', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', '<f-args>')
+endfunction
 
-function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type, opts, arguments)
-    execute "wa"
+command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest(DlcProRegtestCmd())
+command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest(DlcProRegtestDlProCmd())
+command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest(DlcProRegtestTaProCmd())
+command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest(DlcProRegtestCtlCmd())
+command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest(DlcProRegtestDualDl1Cmd())
+command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest(DlcProRegtestDualDl1Cmd())
+command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest(DlcProRegtestShgProCmd())
+
+let g:DlcProRegtest_fast_restart = 1
+let g:DlcProRegtest_marks = "not not_yet_active and not usb and not usbstick and not si1 and not servo_control and not eom"
+
+function s:DlcProRegtestCmd(ip, powerswitch_ip, powerplug, laser_count, laser_type, opts, arguments)
     if (a:ip == 'g:DeviceIP')
         let ip = g:DeviceIP
     else
         let ip = a:ip
     endif
     let archive_dir = g:ProjectBuildDir."/artifacts"
+    let license_builddir = s:ProjectBaseDir.'/build.license'
+    let licensetool = license_builddir."/libdlcprolicense/dlcprolicense-tool"
+
+    let test_cmd =
+                \s:ProjectSrcDir."/test/python-env/bin/python -u -m pytest ".
+                \"--showlocals --tb=long --verbose --cache-clear ".
+                \"-o junit_family=xunit1 ".
+                \"--junit-xml=regtest.".a:laser_type.".xml ".
+                \"--debug_build ".
+                \"--laser_count=".a:laser_count." ".
+                \"--laser1_type=".a:laser_type." ".
+                \"--log_file=regtest.".a:laser_type.".log ".
+                \"--target_ip=".ip." ".
+                \"--powerswitch_ip=".a:powerswitch_ip." ".
+                \"--powerswitch_passwd=nimda ".
+                \"--power_plug=".a:powerplug." ".
+                \"--power_plug_fan=8"." ".
+                \"--version_file=".archive_dir."/VERSION ".
+                \"--firmware_file=".archive_dir."/DLCpro-archive.fw ".
+                \"--license_tool=".licensetool." ".
+                \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
+                \"--skip_shutdown_after_test ".
+                \"--skip_fw_update ".
+                \"--log-cli-level=DEBUG --log-file-level=DEBUG "
+                \""
+
+    if (g:DlcProRegtest_fast_restart == 1)
+        let test_cmd .= "--fast_restart "
+    endif
+
+    " hint: --collect-only
+
+    let test_cmd .= a:opts." ".a:arguments." ". g:DlcProRegtest_marks
+    let @+ = test_cmd
+    return test_cmd
+endfunction
+
+function s:DlcProRegtest(test_cmd)
+    execute "wa"
 
     " Build license tool
     let license_builddir = s:ProjectBaseDir.'/build.license'
@@ -445,59 +508,19 @@ function s:DlcProRegtest(ip, powerswitch_ip, powerplug, laser_count, laser_type,
         sleep 5
     endif
 
+    " Build command
+    echom a:test_cmd
+
     " Execute pytest
-    let test_dir = s:ProjectSrcDir."/test"
-    let test_cmd =
-                \test_dir."/python-env/bin/python -u -m pytest ".
-                \"--showlocals --tb=long --verbose --cache-clear ".
-                \"--junit-xml=regtest.".a:laser_type.".xml ".
-                \"--laser_count=".a:laser_count." ".
-                \"--laser1_type=".a:laser_type." ".
-                \"--log_file=regtest.".a:laser_type.".log ".
-                \"--target_ip=".ip." ".
-                \"--powerswitch_ip=".a:powerswitch_ip." ".
-                \"--powerswitch_passwd=nimda ".
-                \"--power_plug=".a:powerplug." ".
-                \"--power_plug_fan=8"." ".
-                \"--version_file=".archive_dir."/VERSION ".
-                \"--vcsid_file=".archive_dir."/vcsid.h ".
-                \"--firmware_file=".archive_dir."/DLCpro-archive.fw ".
-                \"--license_tool=".licensetool." ".
-                \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
-                \"--skip_shutdown_after_test ".
-                \"--skip_fw_update ".
-                \"--override log_cli=1 --override log_cli_level=DEBUG --override log_file_level=DEBUG "
-    if (g:DlcProRegtest_fast_restart == 1)
-        let test_cmd .= "--fast_restart "
-    endif
-
-    let test_cmd .= a:opts." ".a:arguments
-    echom test_cmd
-    call term_start(test_cmd, {'cwd' : test_dir})
-    " hint: --collect-only
-endfunction
-
-" ======
-" Pytest
-" ======
-command -nargs=* Pytest call s:Pytest('<args>')
-function s:Pytest(testscripts)
-    let async_mode = 0
-    let archive_dir = g:ProjectBuildDir."/artifacts"
-    call asyncrun#quickfix_toggle(10, 1)
-    let args = ''
-    let args .= ' --target_ip="'.g:DeviceIP.'"'
-    let args .= ' --version_file="'.archive_dir.'/VERSION'.'"'
-    let args .= ' --svnrevision_file="'.archive_dir.'/svnrevision.h'.'"'
-    let args .= ' --firmware_file="'.archive_dir.'/DLCpro-archive.fw'.'"'
-    let args .= ' --capture=no'
-    execute 'AsyncRun -mode='.async_mode.' -save=2 -cwd='.s:ProjectSrcDir.'/test @ python3 -m pytest '.args.' '.a:testscripts
+    call term_start(a:test_cmd, {'cwd' : s:ProjectSrcDir."/test"})
 endfunction
 
 " -------------
 " YouCompleteMe
 " -------------
 let g:ycm_max_diagnostics_to_display = 1000
+let g:ycm_clangd_uses_ycmd_caching = 0
+let g:ycm_cache_omnifunc = 0
 let g:ycm_filter_diagnostics = {
             \ "cpp": {
             \   "regex": [

@@ -111,7 +111,7 @@ function! ReformatCSpaces()
     call AddSpaceAfter('if')
 endfunction
 
-" use tt for rtags
-map <buffer> tt <Bslash>rj
-map <buffer> <C-T> <C-O>
+" use tt for YCM
+nnoremap <buffer> tt :YcmCompleter GoTo<CR>
+"map <buffer> <C-T> <C-O>
 
