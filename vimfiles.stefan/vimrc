@@ -240,6 +240,8 @@ autocmd BufReadPost *
 " autocmd FocusGained * execute
 " save all files on loss of focus
 autocmd FocusLost * execute ':silent! wa'
+" save session if available
+autocmd FocusLost * execute ':if v:this_session != "" | SessionSave'
 " since we always save, don't use a swapfile
 set noswapfile
 
@@ -298,8 +300,11 @@ let g:ConqueGdb_GdbExe = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnu
 " -------------
 " YouCompleteMe
 " -------------
-let g:ycm_clangd_binary_path = '/usr/bin/clangd'
-"let g:ycm_clangd_binary_path = '/opt/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clangd'
+let g:ycm_clangd_binary_path = exepath('clangd')
+let g:ycm_clangd_uses_ycmd_caching = 0 " Let clangd fully control code completion
+"let g:ycm_clangd_args = ['--all-scopes-completion', '--clang-tidy', '--header-insertion=iwyu', '--suggest-missing-includes', '--enable-config']
+let g:ycm_clangd_args = ['--all-scopes-completion', '--header-insertion=iwyu', '--suggest-missing-includes', '--enable-config']
+
 
 if exists('g:debug')
     if (g:debug > 0)

@@ -5,10 +5,12 @@ command -nargs=1 -complete=dir DlcProCan call s:ProjectSet('dlcpro-can', '<args>
 command -nargs=1 -complete=dir DlcProSpecalyser call s:ProjectSet('dlcpro-specalyser', '<args>')
 command DlcproEmissionOn call s:DlcproEmission('1')
 command DlcproEmissionOff call s:DlcproEmission('0')
+command DlcproShutup call s:DlcproShutup()
 command -nargs=1 -complete=dir Topmode call s:ProjectSet('topmode', '<args>')
 command -nargs=1 -complete=dir TopmodeGui call s:ProjectSet('topmode-gui', '<args>')
 command -nargs=1 -complete=dir DigiFalc call s:ProjectSet('digifalc', '<args>')
 command -nargs=1 -complete=dir ServoBoard call s:ProjectSet('servoboard', '<args>')
+command -nargs=1 -complete=dir DlMotor call s:ProjectSet('dl-motor', '<args>')
 command DeviceFirmwareUpdate call s:DeviceFirmwareUpdate()
 function s:ProjectSet(project_type, project_base_dir)
     let g:project_type = a:project_type
@@ -42,6 +44,8 @@ function s:ProjectSet(project_type, project_base_dir)
             let s:ProjectBaseDir = '/home/stefan/dlcpro/falc/firmware'
         elseif (g:project_type == 'servoboard')
             let s:ProjectBaseDir = '/home/stefan/dlcpro/mta/firmware'
+        elseif (g:project_type == 'dl-motor')
+            let s:ProjectBaseDir = '/home/stefan/dlcpro/dl-motor'
         else
             echo "no project"
         endif
@@ -57,7 +61,11 @@ function s:ProjectSet(project_type, project_base_dir)
     execute 'set path+=' .  s:ProjectSrcDir.'/**'
     execute 'set path+=' .  g:ProjectBuildDir.'/**'
     let s:oselas_include = '/sysroot-arm-cortexa8-linux-gnueabi/usr/include'
-    let s:oselas_gdb = "/opt/OSELAS.Toolchain-2018.12.0/arm-v7a-linux-gnueabi/gcc-8.2.1-glibc-2.28-binutils-2.31.1-kernel-3.6-sanitized/bin/arm-v7a-linux-gnueabi-gdb"
+"    let s:oselas_gdb = '/opt/OSELAS.Toolchain-2018.12.0/arm-v7a-linux-gnueabi/gcc-8.2.1-glibc-2.28-binutils-2.31.1-kernel-3.6-sanitized/bin/arm-v7a-linux-gnueabi-gdb'
+    let s:oselas_gdb = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
+"    let s:oselas_gdb = '/opt/OSELAS.Toolchain-2020.08.0/arm-v7a-linux-gnueabi/gcc-10.2.1-clang-10.0.1-glibc-2.32-binutils-2.35-kernel-5.8-sanitized/bin/arm-v7a-linux-gnueabi-gdb'
+    let s:jlink_path = '/home/stefan/opt/JLink_Linux_V654a_x86_64'
+"    let s:jlink_path = '/home/stefan/opt/JLink_Linux_V688b_x86_64'
 
     if (g:project_type == 'dlcpro')
         let s:Program = '/device-control/device-control'
@@ -66,7 +74,7 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
-        let g:DeviceIP = 'dlcpro_stefan'
+        let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
@@ -81,7 +89,7 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         let s:makegoals = []
-        let g:DeviceIP = 'dlcpro_stefan'
+        let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
@@ -89,7 +97,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
-        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
+"        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'dlcpro-specalyser')
         let s:Program = '/specalyser/specalyser'
         let s:Elffile = s:Program
@@ -97,7 +105,7 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         let s:makegoals = []
-        let g:DeviceIP = 'dlcpro_stefan'
+        let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
@@ -105,7 +113,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
-        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
+"        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'shg')
         let s:Program = '/shg-firmware/device-control/device-control-shg'
         let s:Elffile = s:Program
@@ -113,7 +121,7 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/shg-firmware/**
         set wildignore+=**/firmware/src/device-control/**
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
-        let g:DeviceIP = 'dlcpro_stefan'
+        let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '6666'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
@@ -121,7 +129,7 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:SshOpts = '-o ForwardAgent=yes -o ProxyCommand="ssh -q -W shg:22 root@%h" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
         let g:SshOpts2 = "-L localhost:1998:localhost:1998 -L localhost:1999:localhost:1999"
         execute 'set path+=' .  g:GccRoot . s:oselas_include
-        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
+"        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'dlcpro-gui')
         let s:Program = '/TOPAS_DLC_pro'
         let s:Elffile = s:Program
@@ -136,11 +144,11 @@ function s:ProjectSet(project_type, project_base_dir)
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
         let g:termdebugger = s:oselas_gdb
-"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
-        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
+"        let g:ycm_clangd_args = ['-I'.g:GccRoot . s:oselas_include]
     elseif (g:project_type == 'topmode-gui')
         let s:Program = '/TOPAS_Topmode'
         let s:Elffile = s:Program
@@ -152,11 +160,9 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'digifalc.elf', 'bootloader.elf']
         let &makeprg = 'cmake --build . --target'
         let g:GdbPort = '2331'
-        let g:GccRoot = '/opt/gcc-arm-none-eabi-7-2018-q2-update'
-        let g:termdebugger = s:oselas_gdb
-"        let g:ConqueGdb_GdbExe = g:GccRoot.'/arm-none-eabi-gdb'
-        let s:include_arm = g:GccRoot.'/arm-none-eabi/include'
-        execute 'set path+=' . g:GccRoot
+        let g:GccRoot = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
+        let g:termdebugger = g:GccRoot.'/bin/arm-none-eabi-gdb'
+        let $PATH = $PATH.':'.g:GccRoot.'/bin'
     elseif (g:project_type == 'servoboard')
         let s:Program = '/servo-board-image.bin'
         let s:Elffile = '/application/servo-board.elf'
@@ -164,10 +170,17 @@ function s:ProjectSet(project_type, project_base_dir)
         let &makeprg = 'cmake --build . --target'
         let g:GdbPort = '2331'
         let g:GccRoot = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
-        let g:termdebugger = s:oselas_gdb
-"        let g:ConqueGdb_GdbExe = g:GccRoot.'/arm-none-eabi-gdb'
-        let s:include_arm = g:GccRoot.'/arm-none-eabi/include'
-        execute 'set path+=' . g:GccRoot
+        let g:termdebugger = g:GccRoot.'/bin/arm-none-eabi-gdb'
+        let $PATH = $PATH.':'.g:GccRoot.'/bin'
+    elseif (g:project_type == 'dl-motor')
+        let s:Program = '/dl-motor-image.bin'
+        let s:Elffile = '/application/dl-motor.elf'
+        let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'dl-motor.elf', 'bootloader.elf']
+        let &makeprg = 'cmake --build . --target'
+        let g:GdbPort = '2331'
+        let g:GccRoot = '/home/stefan/opt/gcc/gcc-arm-none-eabi-9-2020-q2-update'
+        let g:termdebugger = g:GccRoot.'/bin/arm-none-eabi-gdb'
+        let $PATH = g:GccRoot.'/bin'.':'.$PATH
     else
         echo "no project"
     endif
@@ -188,7 +201,7 @@ function s:ProjectSet(project_type, project_base_dir)
     let g:Elffile = g:ProjectBuildDir.s:Elffile
     command! -complete=custom,GetAllMakeCompletions -nargs=* MakeCmd call s:Make('<args>', 0)
     command! MakeTestBuild call s:MakeTestBuild()
-    command! Ctest call s:Ctest()
+    command! -nargs=* Ctest call s:Ctest('<args>')
 
     " cmake
     command! -nargs=1 -complete=custom,CmakeBuildTypes Cmake call s:Cmake('<args>', 0)
@@ -205,7 +218,7 @@ function s:ProjectSet(project_type, project_base_dir)
     function! s:DeviceFirmwareUpdate()
         if (g:project_type == 'dlcpro-can')
             call s:DeviceUpdateProgramLinux()
-        elseif ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
+        elseif ((g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
             call s:JLinkFlashProgram()
         else
             call s:DeviceFirmwareUpdateStartLinux()
@@ -278,23 +291,17 @@ function s:Cmake(build_type, async_mode)
         let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/Toolchain-target.cmake"
         let args .= " -DSYSROOT=~/topmode/topmode-sdk/sysroot-target"
     elseif (g:project_type == 'topmode-gui')
-    elseif (g:project_type == 'digifalc')
+    elseif ((g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
         let args .= " -G Ninja"
         let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/GNU\\ Arm\\ Embedded.toolchain.cmake"
-        let $PATH = $PATH.':'.g:GccRoot.'/bin'
-    elseif (g:project_type == 'servoboard')
-        let args .= " -G Ninja"
-        let args .= " -DCMAKE_TOOLCHAIN_FILE=../".g:ProjectSrcDirRel."/GNU\\ Arm\\ Embedded.toolchain.cmake"
-        let $PATH = $PATH.':'.g:GccRoot.'/bin'
     endif
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
-function s:Ctest()
-"    let cmd = 'ctest --build-and-test ./src unit-tests --build-generator "Unix Makefiles" --build-target unit_tests --test-command ctest --nocompress-output -T Test'
+function s:Ctest(args)
     let cmd = 'ctest --build-and-test ./src unit-tests --build-generator "Unix Makefiles" --build-target unit_tests --nocompress-output -T Test --build-options -DCMAKE_BUILD_TYPE=Debug --test-command ctest'
     call asyncrun#quickfix_toggle(10, 0)
-    execute 'AsyncRun -mode=1 -save=2 -cwd='.s:ProjectBaseDir.' @ ' . cmd
+    execute 'AsyncRun -mode=1 -save=2 -cwd='.s:ProjectBaseDir.' @ ' . cmd .' '. a:args
 endfunction
 
 function s:Call_and_log(cmd)
@@ -320,8 +327,12 @@ function s:DlcproEmission(state)
     call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "echo '.state.' > /sys/bus/i2c/devices/200-0028/emission_button_state"')
 endfunction
 
+function s:DlcproShutup()
+    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "modprobe -r tam3517_busser"')
+endfunction
+
 function s:JLinkFlashProgram()
-    call term_start(s:ProjectSrcDir.'/flash_firmware.py -j /opt/SEGGER/JLink/JLinkExe -a 0x8000000 '.g:Program)
+    call term_start(s:ProjectSrcDir.'/flash_firmware.py -j '.s:jlink_path.'/JLinkExe -a 0x8000000 '.g:Program)
 endfunction
 
 function s:DeviceUpdateProgramLinux()
@@ -341,9 +352,12 @@ function s:DeviceFirmwareUpdateStartLinux()
 endfunction
 
 function s:DeviceStartGdbServer()
-    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
+    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
         call s:Call_and_log('pkill --full JLinkGDBServer')
-        call s:Call_and_log('/opt/SEGGER/JLink/JLinkGDBServer -if SWD -device STM32H743XI &')
+"        call s:Call_and_log('/opt/SEGGER/JLink/JLinkGDBServer -if SWD -device STM32H743XI &')
+"        call s:Call_and_log('/opt/SEGGER/JLink/JLinkGDBServer -if SWD -device STM32H743ZI2 &')
+"        call s:Call_and_log('/opt/SEGGER/JLink/JLinkGDBServer -if SWD -device STM32H743ZI &')
+        call s:Call_and_log(s:jlink_path.'/JLinkGDBServer -if SWD -device STM32H743ZI &')
     else
         call s:Call_and_log('pkill --full gdbserver')
         call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "killall -q -9 gdbserver start-dc.sh '.fnamemodify(g:ProgramRemote, ':t').'"')
@@ -352,7 +366,7 @@ function s:DeviceStartGdbServer()
 endfunction
 
 function s:DeviceStartGdbServerAttach()
-    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard'))
+    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
     else
         call s:Call_and_log('pkill --full gdbserver')
         call s:Call_and_log('ssh '.g:SshOpts.' -L localhost:'.g:GdbPort.':localhost:'.g:GdbPort.' "root@'.g:DeviceIP.'" '.g:SshOpts2.' "gdbserver localhost:'.g:GdbPort.' --attach \`pidof '.fnamemodify(g:ProgramRemote, ':t').'\` &"')
@@ -369,91 +383,122 @@ function s:SendToConque(command)
 endfunction
 
 function s:SendToDebugger(command)
-"    call s:SendToTerm(a:command)
-    call s:SendToConque(a:command)
+    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
+        call s:SendToTerm(a:command)
+    else
+        call s:SendToConque(a:command)
+    endif
 endfunction
 
-"command StartDebugger Termdebug
-"command StartDebuggerAttach execute 'Termdebug ' . g:Elffile
-
-command StartDebugger ConqueGdbTab
-command StartDebuggerAttach execute 'ConqueGdbTab '.g:Elffile
+function s:StartDebugger(elffile, attach)
+    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
+        if (a:attach == 0)
+            Termdebug
+        else
+            execute 'Termdebug ' . a:elffile
+        endif
+    else
+        if (a:attach == 0)
+            ConqueGdbTab
+        else
+            execute 'ConqueGdbTab '.a:elffile
+        endif
+    endif
+endfunction
 
 let g:DlcProBasePath = "/jenkins/workspace/pro--firmware_release_1.9.0-DCESJ5C5R577IG5QFEWTML22UFDDZCJDGFLMDA4DCD3V2ZAGVEJA/source/"
 function s:DeviceDebug(attach)
     if (a:attach == 0)
-        let r = s:DeviceFirmwareUpdate()
+"        let r = s:DeviceFirmwareUpdate()
+        let r = 0
         if (r != 0)
             echoerr "DeviceFirmwareUpdate() failed!"
         else
+            sleep 2
             call s:DeviceStartGdbServer()
             sleep 2
-            StartDebugger
+            call s:StartDebugger(g:Elffile, a:attach)
 "            call s:SendToDebugger('')
             call s:SendToDebugger('target extended-remote localhost:'.g:GdbPort)
             if exists("g:ProgramRemote")
                 call s:SendToDebugger('set remote exec-file '.g:ProgramRemote)
             endif
             call s:SendToDebugger('file '.g:Elffile)
+"            call s:SendToDebugger('y')
             sleep 3
             call s:SendToDebugger('break main')
             call s:SendToDebugger('run')
+"            call s:SendToDebugger('y')
         endif
     else
         call s:DeviceStartGdbServerAttach()
         sleep 1
-        StartDebuggerAttach
+        call s:StartDebugger(a:attach)
         call s:SendToDebugger('target remote localhost:'.g:GdbPort)
         " get remote src path with gdb: info sources or gdb: break main
         call s:SendToDebugger('set substitute-path '.g:DlcProBasePath.' '.s:ProjectSrcDir)
     endif
 
-    call s:SendToDebugger('set solib-search-path '.g:GccRoot.'/arm-cortexa8-linux-gnueabi/lib/'.':'.g:GccRoot.'/sysroot-arm-cortexa8-linux-gnueabi/lib/'.':'.g:GccRoot.'/sysroot-arm-cortexa8-linux-gnueabi/usr/lib/')
-    call s:SendToDebugger('set can-use-hw-watchpoints 0')
+"    call s:SendToDebugger('set solib-search-path '.g:GccRoot.'/arm-cortexa8-linux-gnueabi/lib/'.':'.g:GccRoot.'/sysroot-arm-cortexa8-linux-gnueabi/lib/'.':'.g:GccRoot.'/sysroot-arm-cortexa8-linux-gnueabi/usr/lib/')
+"    call s:SendToDebugger('set can-use-hw-watchpoints 0')
 endfunction
 
 " ================
 " Regression Tests
 " ================
-function DlcProRegtestCmd()
-    return s:DlcProRegtestCmd('g:DeviceIP',    '',            '0', '1', 'DLpro',     '--capture=no',                  '<args>')
+function g:DlcProRegtestCmd(arguments)
+    return s:DlcProRegtestCmd('',              '',            '0', '1', '',          '--capture=no',                  a:arguments)
 endfunction
-function DlcProRegtestDlProCmd()
-    return s:DlcProRegtestCmd('192.168.54.24', 'elab-dlcpro', '2', '1', 'DLpro',     '',                              '<f-args>')
+function g:DlcProRegtestDlProCmd(arguments)
+    return s:DlcProRegtestCmd('192.168.54.24', 'elab-dlcpro', '2', '1', 'DLpro',     '',                              a:arguments)
 endfunction
-function DlcProRegtestTaProCmd()
-    return s:DlcProRegtestCmd('192.168.54.9',  'elab-dlcpro', '3', '1', 'TApro',     '-m "not usb and not usbstick"', '<f-args>')
+function g:DlcProRegtestTaProCmd(arguments)
+    return s:DlcProRegtestCmd('192.168.54.9',  'elab-dlcpro', '3', '1', 'TApro',     '-m "not usb and not usbstick"', a:arguments)
 endfunction
-function DlcProRegtestCtlCmd()
-    return s:DlcProRegtestCmd('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', '<f-args>')
+function g:DlcProRegtestCtlCmd(arguments)
+    return s:DlcProRegtestCmd('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', a:arguments)
 endfunction
-function DlcProRegtestDualDlCmd()
-    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
+function g:DlcProRegtestDualDlCmd(arguments)
+    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', a:arguments)
 endfunction
-function DlcProRegtestDualDl1Cmd()
-    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', '<f-args>')
+function g:DlcProRegtestDualDl1Cmd(arguments)
+    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', a:arguments)
 endfunction
-function DlcProRegtestShgProCmd()
-    return s:DlcProRegtestCmd('192.168.54.29', 'elab-dlcpro', '7', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', '<f-args>')
+function g:DlcProRegtestShgProCmd(arguments)
+    return s:DlcProRegtestCmd('192.168.54.29', 'elab-dlcpro', '7', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', a:arguments)
 endfunction
 
-command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest(DlcProRegtestCmd())
-command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest(DlcProRegtestDlProCmd())
-command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest(DlcProRegtestTaProCmd())
-command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest(DlcProRegtestCtlCmd())
-command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest(DlcProRegtestDualDl1Cmd())
-command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest(DlcProRegtestDualDl1Cmd())
-command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest(DlcProRegtestShgProCmd())
+command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest(g:DlcProRegtestCmd('<args>'))
+command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest(g:DlcProRegtestDlProCmd()'args')
+command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest(g:DlcProRegtestTaProCmd()'args')
+command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest(g:DlcProRegtestCtlCmd()'args')
+command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest(g:DlcProRegtestDualDl1Cmd()'args')
+command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest(g:DlcProRegtestDualDl1Cmd()'args')
+command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest(g:DlcProRegtestShgProCmd()'args')
 
 let g:DlcProRegtest_fast_restart = 1
-let g:DlcProRegtest_marks = "not not_yet_active and not usb and not usbstick and not si1 and not servo_control and not eom"
+"let g:DlcProRegtest_marks = "-m (not not_yet_active and not usb and not usbstick and not si1 and not servo_control and not eom)"
+let g:DlcProRegtest_marks = ""
+let g:DlcProRegtest_lasertype = "DLpro"
+let g:DlcProRegtest_powerswitch_ip = ""
 
 function s:DlcProRegtestCmd(ip, powerswitch_ip, powerplug, laser_count, laser_type, opts, arguments)
-    if (a:ip == 'g:DeviceIP')
+    if (a:ip == '')
         let ip = g:DeviceIP
     else
         let ip = a:ip
     endif
+    if (a:laser_type == '')
+        let laser_type = g:DlcProRegtest_lasertype
+    else
+        let laser_type = a:laser_type
+    endif
+    if (a:powerswitch_ip == '')
+        let powerswitch_ip = g:DlcProRegtest_powerswitch_ip
+    else
+        let powerswitch_ip = a:powerswitch_ip
+    endif
+
     let archive_dir = g:ProjectBuildDir."/artifacts"
     let license_builddir = s:ProjectBaseDir.'/build.license'
     let licensetool = license_builddir."/libdlcprolicense/dlcprolicense-tool"
@@ -462,13 +507,13 @@ function s:DlcProRegtestCmd(ip, powerswitch_ip, powerplug, laser_count, laser_ty
                 \s:ProjectSrcDir."/test/python-env/bin/python -u -m pytest ".
                 \"--showlocals --tb=long --verbose --cache-clear ".
                 \"-o junit_family=xunit1 ".
-                \"--junit-xml=regtest.".a:laser_type.".xml ".
+                \"--junit-xml=regtest.".laser_type.".xml ".
                 \"--debug_build ".
                 \"--laser_count=".a:laser_count." ".
-                \"--laser1_type=".a:laser_type." ".
-                \"--log_file=regtest.".a:laser_type.".log ".
+                \"--laser1_type=".laser_type." ".
+                \"--log_file=regtest.".laser_type.".log ".
                 \"--target_ip=".ip." ".
-                \"--powerswitch_ip=".a:powerswitch_ip." ".
+                \"--powerswitch_ip=".powerswitch_ip." ".
                 \"--powerswitch_passwd=nimda ".
                 \"--power_plug=".a:powerplug." ".
                 \"--power_plug_fan=8"." ".
@@ -478,7 +523,7 @@ function s:DlcProRegtestCmd(ip, powerswitch_ip, powerplug, laser_count, laser_ty
                 \"--license_keyfile=".s:ProjectSrcDir."/license/libdlcprolicense/rsa-private.key ".
                 \"--skip_shutdown_after_test ".
                 \"--skip_fw_update ".
-                \"--log-cli-level=DEBUG --log-file-level=DEBUG "
+                \"--log-file-level=DEBUG "
                 \""
 
     if (g:DlcProRegtest_fast_restart == 1)
@@ -486,6 +531,7 @@ function s:DlcProRegtestCmd(ip, powerswitch_ip, powerplug, laser_count, laser_ty
     endif
 
     " hint: --collect-only
+    "--log-cli-level=DEBUG --log-file-level=DEBUG
 
     let test_cmd .= a:opts." ".a:arguments." ". g:DlcProRegtest_marks
     let @+ = test_cmd
@@ -512,32 +558,33 @@ function s:DlcProRegtest(test_cmd)
     echom a:test_cmd
 
     " Execute pytest
-    call term_start(a:test_cmd, {'cwd' : s:ProjectSrcDir."/test"})
+    execute "terminal ++shell cd " s:ProjectSrcDir. "/test && " . a:test_cmd
+"    call term_start(a:test_cmd, {'cwd' : s:ProjectSrcDir."/test"})
 endfunction
 
 " -------------
 " YouCompleteMe
 " -------------
-let g:ycm_max_diagnostics_to_display = 1000
-let g:ycm_clangd_uses_ycmd_caching = 0
-let g:ycm_cache_omnifunc = 0
-let g:ycm_filter_diagnostics = {
-            \ "cpp": {
-            \   "regex": [
-            \       "'auto_ptr<boost::signals2::detail::foreign_weak_ptr_impl_base>' is deprecated",
-            \       "'boost/tuple.hpp' file not found",
-            \       "no template named 'tuple' in namespace 'boost'",
-            \       "no matching function for call to 'throw_exception'",
-            \       "variable templates are a C\\+\\+14 extension",
-            \       "inline variables are a C\\+\\+17 extension",
-            \       "expected ',' or '>' in template-parameter-list",
-            \       "expected a qualified name after 'typename'",
-            \       "expected ';' at end of declaration list",
-            \       "'std::unordered_set::_Hashtable' \\(aka 'int'\\) is not a class, namespace, or enumeration",
-            \       "no template named '__uset_hashtable'",
-            \   ],
-            \ }
-            \}
+"let g:ycm_max_diagnostics_to_display = 1000
+"let g:ycm_clangd_uses_ycmd_caching = 0
+"let g:ycm_cache_omnifunc = 0
+"let g:ycm_filter_diagnostics = {
+"            \ "cpp": {
+"            \   "regex": [
+"            \       "'auto_ptr<boost::signals2::detail::foreign_weak_ptr_impl_base>' is deprecated",
+"            \       "'boost/tuple.hpp' file not found",
+"            \       "no template named 'tuple' in namespace 'boost'",
+"            \       "no matching function for call to 'throw_exception'",
+"            \       "variable templates are a C\\+\\+14 extension",
+"            \       "inline variables are a C\\+\\+17 extension",
+"            \       "expected ',' or '>' in template-parameter-list",
+"            \       "expected a qualified name after 'typename'",
+"            \       "expected ';' at end of declaration list",
+"            \       "'std::unordered_set::_Hashtable' \\(aka 'int'\\) is not a class, namespace, or enumeration",
+"            \       "no template named '__uset_hashtable'",
+"            \   ],
+"            \ }
+"            \}
 
 " ===============
 " Stash / Unstash
