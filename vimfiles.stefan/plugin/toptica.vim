@@ -64,8 +64,8 @@ function s:ProjectSet(project_type, project_base_dir)
 "    let s:oselas_gdb = '/opt/OSELAS.Toolchain-2018.12.0/arm-v7a-linux-gnueabi/gcc-8.2.1-glibc-2.28-binutils-2.31.1-kernel-3.6-sanitized/bin/arm-v7a-linux-gnueabi-gdb'
     let s:oselas_gdb = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
 "    let s:oselas_gdb = '/opt/OSELAS.Toolchain-2020.08.0/arm-v7a-linux-gnueabi/gcc-10.2.1-clang-10.0.1-glibc-2.32-binutils-2.35-kernel-5.8-sanitized/bin/arm-v7a-linux-gnueabi-gdb'
-    let s:jlink_path = '/home/stefan/opt/JLink_Linux_V654a_x86_64'
-"    let s:jlink_path = '/home/stefan/opt/JLink_Linux_V688b_x86_64'
+    let s:jlink_path = '/home/stefan/opt/SEGGER/JLink_Linux_V654a_x86_64'
+"    let s:jlink_path = '/home/stefan/opt/SEGGER/JLink_Linux_V688b_x86_64'
 
     if (g:project_type == 'dlcpro')
         let s:Program = '/device-control/device-control'
@@ -74,11 +74,12 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+        let s:makeprg = 'make'
         let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
-"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        execute 'ConqueGdbExe '.g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
@@ -89,11 +90,12 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         let s:makegoals = []
+        let s:makeprg = 'make'
         let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
-"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        execute 'ConqueGdbExe '.g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
@@ -105,11 +107,12 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/firmware/src/device-control/**
         set wildignore+=**/shg-firmware/**
         let s:makegoals = []
+        let s:makeprg = 'make'
         let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
-"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        execute 'ConqueGdbExe '.g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
@@ -121,11 +124,12 @@ function s:ProjectSet(project_type, project_base_dir)
         set wildignore-=**/shg-firmware/**
         set wildignore+=**/firmware/src/device-control/**
         let s:makegoals = ['artifacts', 'device-control', 'user-interface', 'doxygen', 'fw-updates', 'shg-firmware', 'can-updater', 'specalyser', 'docu-ul0', 'code-generation', 'dependency-graphs', 'clean', 'distclean', 'help', 'jamplayer', 'dlcpro-slot']
+        let s:makeprg = 'make'
         let g:DeviceIP = 'DLC_PRO__040083'
         let g:GdbPort = '6666'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized"
         let g:termdebugger = s:oselas_gdb
-"        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        execute 'ConqueGdbExe '.g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = '-o ForwardAgent=yes -o ProxyCommand="ssh -q -W shg:22 root@%h" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR'
         let g:SshOpts2 = "-L localhost:1998:localhost:1998 -L localhost:1999:localhost:1999"
         execute 'set path+=' .  g:GccRoot . s:oselas_include
@@ -134,17 +138,19 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:Program = '/TOPAS_DLC_pro'
         let s:Elffile = s:Program
         let s:makegoals = []
+        let s:makeprg = 'make'
         let g:termdebugger = 'gdb'
     elseif (g:project_type == 'topmode')
         let s:Program = '/topmode'
         let s:Elffile = s:Program
         let g:ProgramRemote = '/usr/toptica/topmode'
         let s:makegoals = []
+        let s:makeprg = 'make'
         let g:DeviceIP = 'topmode_stefan'
         let g:GdbPort = '2345'
         let g:GccRoot = "/opt/OSELAS.Toolchain-2011.11.3/arm-cortexa8-linux-gnueabi/gcc-4.6.2-glibc-2.14.1-binutils-2.21.1a-kernel-2.6.39-sanitized"
         let g:termdebugger = s:oselas_gdb
-        let g:ConqueGdb_GdbExe = g:GccRoot.'/bin/arm-cortexa8-linux-gnueabi-gdb'
+        execute 'ConqueGdbExe '.'/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized'.'/bin/arm-cortexa8-linux-gnueabi-gdb'
         let g:SshOpts = ""
         let g:SshOpts2 = ""
         execute 'set path+=' .  g:GccRoot . s:oselas_include
@@ -153,12 +159,13 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:Program = '/TOPAS_Topmode'
         let s:Elffile = s:Program
         let s:makegoals = []
+        let s:makeprg = 'make'
         let g:termdebugger = 'gdb'
     elseif (g:project_type == 'digifalc')
         let s:Program = '/digifalc-image.bin'
         let s:Elffile = '/application/digifalc.elf'
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'digifalc.elf', 'bootloader.elf']
-        let &makeprg = 'cmake --build . --target'
+        let s:makeprg = 'cmake --build . --target'
         let g:GdbPort = '2331'
         let g:GccRoot = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
         let g:termdebugger = g:GccRoot.'/bin/arm-none-eabi-gdb'
@@ -167,16 +174,16 @@ function s:ProjectSet(project_type, project_base_dir)
         let s:Program = '/servo-board-image.bin'
         let s:Elffile = '/application/servo-board.elf'
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'servo-board.elf', 'bootloader.elf']
-        let &makeprg = 'cmake --build . --target'
+        let s:makeprg = 'cmake --build . --target'
         let g:GdbPort = '2331'
-        let g:GccRoot = '/opt/gcc-arm-none-eabi-8-2019-q3-update'
+        let g:GccRoot = '/home/stefan/opt/gcc/gcc-arm-none-eabi-8-2019-q3-update'
         let g:termdebugger = g:GccRoot.'/bin/arm-none-eabi-gdb'
-        let $PATH = $PATH.':'.g:GccRoot.'/bin'
+        let $PATH = g:GccRoot.'/bin'.':'.$PATH
     elseif (g:project_type == 'dl-motor')
         let s:Program = '/dl-motor-image.bin'
         let s:Elffile = '/application/dl-motor.elf'
         let s:makegoals = ['firmware-update', 'html-docs', 'doxygen', 'dl-motor.elf', 'bootloader.elf']
-        let &makeprg = 'cmake --build . --target'
+        let s:makeprg = 'cmake --build . --target'
         let g:GdbPort = '2331'
         let g:GccRoot = '/home/stefan/opt/gcc/gcc-arm-none-eabi-9-2020-q2-update'
         let g:termdebugger = g:GccRoot.'/bin/arm-none-eabi-gdb'
@@ -201,7 +208,8 @@ function s:ProjectSet(project_type, project_base_dir)
     let g:Elffile = g:ProjectBuildDir.s:Elffile
     command! -complete=custom,GetAllMakeCompletions -nargs=* MakeCmd call s:Make('<args>', 0)
     command! MakeTestBuild call s:MakeTestBuild()
-    command! -nargs=* Ctest call s:Ctest('<args>')
+    command! -nargs=* Ctest call s:Ctest('<args>', 0)
+    command! -nargs=1 MakeCheck call s:MakeCheck('<args>', 0)
 
     " cmake
     command! -nargs=1 -complete=custom,CmakeBuildTypes Cmake call s:Cmake('<args>', 0)
@@ -258,17 +266,25 @@ function GetAllMakeCompletions(ArgLead, CmdLine, CursorPos)
 endfunction
 
 function s:Make(args, async_mode)
+    let &makeprg = s:makeprg
     call asyncrun#quickfix_toggle(10, 1)
 "    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -program=make @ --directory='.g:ProjectBuildDir.' '.a:args
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -program=make -cwd='.g:ProjectBuildDir. ' @ '.a:args
 endfunction
 
 function s:MakeTestBuild()
+    let &makeprg = s:makeprg
     call s:BuildDirStash('save')
     call s:Cmake('Release', 1)
     call s:Make('-j4 device-control artifacts doxygen user-interface', 1)
     call s:BuildDirStash('release-test')
     call s:BuildDirUnStash('save')
+endfunction
+
+function s:MakeCheck(args, async_mode)
+    let &makeprg = s:ProjectSrcDir.'/tools/static-check.py'
+    call asyncrun#quickfix_toggle(10, 1)
+    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -program=make -cwd='.g:ProjectBuildDir. ' @ --infile='.a:args
 endfunction
 
 function s:Cmake(build_type, async_mode)
@@ -298,10 +314,10 @@ function s:Cmake(build_type, async_mode)
     execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.g:ProjectBuildDir.' @ cmake '.args
 endfunction
 
-function s:Ctest(args)
+function s:Ctest(args, async_mode)
     let cmd = 'ctest --build-and-test ./src unit-tests --build-generator "Unix Makefiles" --build-target unit_tests --nocompress-output -T Test --build-options -DCMAKE_BUILD_TYPE=Debug --test-command ctest'
-    call asyncrun#quickfix_toggle(10, 0)
-    execute 'AsyncRun -mode=1 -save=2 -cwd='.s:ProjectBaseDir.' @ ' . cmd .' '. a:args
+    call asyncrun#quickfix_toggle(10, 1)
+    execute 'AsyncRun -mode='.a:async_mode.' -save=2 -cwd='.s:ProjectBaseDir.' @ ' . cmd .' '. a:args
 endfunction
 
 function s:Call_and_log(cmd)
@@ -324,11 +340,11 @@ endfunction
 "endfunction
 
 function s:DlcproEmission(state)
-    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "echo '.state.' > /sys/bus/i2c/devices/200-0028/emission_button_state"')
+    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "echo '.a:state.' > /sys/bus/i2c/devices/200-0028/emission_button_state"')
 endfunction
 
 function s:DlcproShutup()
-    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "modprobe -r tam3517_busser"')
+    call s:Call_and_log('ssh '.g:SshOpts.' root@'.g:DeviceIP.' "modprobe -r tam3517_buzzer"')
 endfunction
 
 function s:JLinkFlashProgram()
@@ -391,7 +407,7 @@ function s:SendToDebugger(command)
 endfunction
 
 function s:StartDebugger(elffile, attach)
-    if ((g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
+    if ((g:project_type == 'dlcpro-gui') ||(g:project_type == 'digifalc') || (g:project_type == 'servoboard') || (g:project_type == 'dl-motor'))
         if (a:attach == 0)
             Termdebug
         else
@@ -450,31 +466,31 @@ function g:DlcProRegtestCmd(arguments)
     return s:DlcProRegtestCmd('',              '',            '0', '1', '',          '--capture=no',                  a:arguments)
 endfunction
 function g:DlcProRegtestDlProCmd(arguments)
-    return s:DlcProRegtestCmd('192.168.54.24', 'elab-dlcpro', '2', '1', 'DLpro',     '',                              a:arguments)
+    return s:DlcProRegtestCmd('dlc_pro__040011', 'elab-dlcpro2', '2', '1', 'DLpro',     '',                              a:arguments)
 endfunction
 function g:DlcProRegtestTaProCmd(arguments)
-    return s:DlcProRegtestCmd('192.168.54.9',  'elab-dlcpro', '3', '1', 'TApro',     '-m "not usb and not usbstick"', a:arguments)
+    return s:DlcProRegtestCmd('dlc_pro_020372',  'elab-dlcpro2', '3', '1', 'TApro',     '-m "not usb and not usbstick"', a:arguments)
 endfunction
 function g:DlcProRegtestCtlCmd(arguments)
-    return s:DlcProRegtestCmd('192.168.54.27', 'elab-dlcpro', '1', '1', 'CTL',       '-m "not usb and not usbstick"', a:arguments)
+    return s:DlcProRegtestCmd('dlc_pro__040120', 'elab-dlcpro2', '1', '1', 'CTL',       '-m "not usb and not usbstick"', a:arguments)
 endfunction
 function g:DlcProRegtestDualDlCmd(arguments)
-    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', a:arguments)
+    return s:DlcProRegtestCmd('dlc_pro_041299', 'elab-dlcpro2', '4', '2', 'DLpro',     '-m "not usb and not usbstick"', a:arguments)
 endfunction
 function g:DlcProRegtestDualDl1Cmd(arguments)
-    return s:DlcProRegtestCmd('192.168.54.28', 'elab-dlcpro', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', a:arguments)
+    return s:DlcProRegtestCmd('dlc_pro_041299', 'elab-dlcpro2', '4', '1', 'DLpro',     '-m "not usb and not usbstick"', a:arguments)
 endfunction
 function g:DlcProRegtestShgProCmd(arguments)
-    return s:DlcProRegtestCmd('192.168.54.29', 'elab-dlcpro', '7', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', a:arguments)
+    return s:DlcProRegtestCmd('dlc_pro_041355', 'elab-dlcpro2', '7', '1', 'TA-SHGpro', '-m "not usb and not usbstick"', a:arguments)
 endfunction
 
 command -nargs=1 -complete=file DlcProRegtest        call s:DlcProRegtest(g:DlcProRegtestCmd('<args>'))
-command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest(g:DlcProRegtestDlProCmd()'args')
-command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest(g:DlcProRegtestTaProCmd()'args')
-command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest(g:DlcProRegtestCtlCmd()'args')
-command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest(g:DlcProRegtestDualDl1Cmd()'args')
-command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest(g:DlcProRegtestDualDl1Cmd()'args')
-command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest(g:DlcProRegtestShgProCmd()'args')
+command -nargs=1 -complete=file DlcProRegtestDlPro   call s:DlcProRegtest(g:DlcProRegtestDlProCmd('<args>'))
+command -nargs=1 -complete=file DlcProRegtestTaPro   call s:DlcProRegtest(g:DlcProRegtestTaProCmd('<args>'))
+command -nargs=1 -complete=file DlcProRegtestCtl     call s:DlcProRegtest(g:DlcProRegtestCtlCmd('<args>'))
+command -nargs=1 -complete=file DlcProRegtestDualDl  call s:DlcProRegtest(g:DlcProRegtestDualDl1Cmd('<args>'))
+command -nargs=1 -complete=file DlcProRegtestDualDl1 call s:DlcProRegtest(g:DlcProRegtestDualDl1Cmd('<args>'))
+command -nargs=1 -complete=file DlcProRegtestShgPro  call s:DlcProRegtest(g:DlcProRegtestShgProCmd('<args>'))
 
 let g:DlcProRegtest_fast_restart = 1
 "let g:DlcProRegtest_marks = "-m (not not_yet_active and not usb and not usbstick and not si1 and not servo_control and not eom)"
@@ -502,6 +518,7 @@ function s:DlcProRegtestCmd(ip, powerswitch_ip, powerplug, laser_count, laser_ty
     let archive_dir = g:ProjectBuildDir."/artifacts"
     let license_builddir = s:ProjectBaseDir.'/build.license'
     let licensetool = license_builddir."/libdlcprolicense/dlcprolicense-tool"
+    let $JENKINS_URL = 'http://jenkins1muc.toptica.com'
 
     let test_cmd =
                 \s:ProjectSrcDir."/test/python-env/bin/python -u -m pytest ".
@@ -511,7 +528,7 @@ function s:DlcProRegtestCmd(ip, powerswitch_ip, powerplug, laser_count, laser_ty
                 \"--debug_build ".
                 \"--laser_count=".a:laser_count." ".
                 \"--laser1_type=".laser_type." ".
-                \"--log_file=regtest.".laser_type.".log ".
+                \"--log-file=regtest.".laser_type.".log ".
                 \"--target_ip=".ip." ".
                 \"--powerswitch_ip=".powerswitch_ip." ".
                 \"--powerswitch_passwd=nimda ".

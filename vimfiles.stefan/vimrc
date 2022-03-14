@@ -292,11 +292,6 @@ command PyFlake Flake8
 " -----
 command PyIsort Isort
 
-" ----------
-" Conque GDB
-" ----------
-let g:ConqueGdb_GdbExe = '/opt/OSELAS.Toolchain-2012.12.1/arm-cortexa8-linux-gnueabi/gcc-4.7.3-glibc-2.16.0-binutils-2.22-kernel-3.6-sanitized/bin/arm-cortexa8-linux-gnueabi-gdb'
-
 " -------------
 " YouCompleteMe
 " -------------
