@@ -230,12 +230,7 @@ set patchmode=
 "       \ endif
 
 " set nomodifiable on writeprotected files
-autocmd BufReadPost *
-            \ if &readonly == 1 |
-            \       execute ':set nomodifiable' |
-            \ else |
-            \       execute ':set modifiable' |
-            \ endif
+autocmd BufReadPost * if &readonly == 1 | setlocal nomodifiable | endif
 " read all files on got of focus
 " autocmd FocusGained * execute
 " save all files on loss of focus
